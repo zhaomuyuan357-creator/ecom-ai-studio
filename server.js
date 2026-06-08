@@ -6,11 +6,16 @@ const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const REFERENCE_VIDEO_PATH = 'C:\\Users\\Edward\\Videos\\NVIDIA\\Desktop\\Desktop 2026.06.08 - 12.55.40.01.mp4';
 
 // 中间件
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.get('/reference-video', (req, res) => {
+  res.sendFile(REFERENCE_VIDEO_PATH);
+});
 
 // 通义千问 API 配置
 const DASHSCOPE_API_KEY = process.env.DASHSCOPE_API_KEY;

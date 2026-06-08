@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reference Inspect</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 24px;
+      font-family: "Segoe UI", "PingFang SC", sans-serif;
+      background: #0b0d10;
+      color: #f5f7fb;
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: 24px;
+    }
+    p {
+      margin: 0 0 20px;
+      color: #98a2b3;
+    }
+    video {
+      width: min(100%, 960px);
+      display: block;
+      margin-bottom: 20px;
+      border-radius: 16px;
+      background: #000;
+    }
+    .actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 10px 16px;
+      background: #1f2937;
+      color: white;
+      cursor: pointer;
+    }
+    .frames {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+    .frame {
+      background: #12161c;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 18px;
+      padding: 12px;
+    }
+    .frame strong {
+      display: block;
+      margin-bottom: 10px;
+      color: #cdd6e1;
+      font-size: 13px;
+    }
+    canvas {
+      width: 100%;
+      border-radius: 12px;
+      display: block;
+      background: #050608;
+    }
+  </style>
+</head>
+<body>
+  <h1>Reference Video Inspect</h1>
+  <p>用于拆解参考视频的关键帧，帮助还原布局、间距、配色和组件语言。</p>
+
+  <video id="video" src="/reference-video" controls preload="auto" muted playsinline crossorigin="anonymous"></video>
+
+  <div class="actions">
+    <button id="capture">抓取关键帧</button>
+  </div>
+
+  <div class="frames" id="frames"></div>
+
+  <script>
+    const video = document.getElementById("video");
+    const frames = document.getElementById("frames");
+    const times = [1, 4, 8, 12, 16, 20];
+
+    async function seekTo(time) {
+      return new Promise((resolve) => {
+        const onSeeked = () => {
+          video.removeEventListener("seeked", onSeeked);
+          resolve();
+        };
+        video.addEventListener("seeked", onSeeked);
+        video.currentTime = Math.min(time, Math.max(0, video.duration - 0.2 || time));
+      });
+    }
+
+    async function ensureReady() {
+      if (video.readyState >= 1 && video.duration) return;
+      await new Promise((resolve, reject) => {
+        const onLoaded = () => {
+          cleanup();
+          resolve();
+        };
+        const onError = () => {
+          cleanup();
+          reject(new Error("video load failed"));
+        };
+        const cleanup = () => {
+          video.removeEventListener("loadedmetadata", onLoaded);
+          video.removeEventListener("error", onError);
+        };
+        video.addEventListener("loadedmetadata", onLoaded, { once: true });
+        video.addEventListener("error", onError, { once: true });
+        video.load();
+      });
+    }
+
+    async function captureFrames() {
+      await ensureReady();
+
+      frames.innerHTML = "";
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+
+      for (const time of times) {
+        await seekTo(time);
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        const item = document.createElement("div");
+        item.className = "frame";
+        item.innerHTML = `<strong>${time}s</strong>`;
+
+        const frameCanvas = document.createElement("canvas");
+        frameCanvas.width = canvas.width;
+        frameCanvas.height = canvas.height;
+        frameCanvas.getContext("2d").drawImage(canvas, 0, 0);
+        item.appendChild(frameCanvas);
+        frames.appendChild(item);
+      }
+    }
+
+    document.getElementById("capture").addEventListener("click", captureFrames);
+  </script>
+</body>
+</html>
