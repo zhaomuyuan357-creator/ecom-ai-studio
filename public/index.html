@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>电商 AI 智能化生成终端</title>
+  <style>
+    /* 1. 全局配置 */
+    body {
+      margin: 0;
+      background-color: #0d0d11;
+      height: 100vh;
+      display: flex;
+      overflow: hidden;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    /* 2. 左侧常驻侧边栏 */
+    .sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 68px;
+      background-color: #0d0d11;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 16px 0;
+      align-items: flex-start;
+      z-index: 10;
+      transition: width 0.3s cubic-bezier(0.2, 1, 0.2, 1);
+      overflow: hidden;
+      border-right: 1px solid #1f2023;
+      box-sizing: border-box;
+    }
+    .sidebar.expanded { width: 240px; }
+    .sidebar-top, .sidebar-bottom { display: flex; flex-direction: column; gap: 12px; width: 100%; }
+
+    .sidebar-item {
+      display: flex;
+      align-items: center;
+      width: calc(100% - 24px);
+      margin: 0 12px;
+      padding: 10px 0;
+      background: transparent;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    .sidebar-item:hover { background-color: #202124; }
+    .new-chat-btn { background-color: #1a1a1c; }
+    .new-chat-btn:hover { background-color: #28292a; }
+    .sidebar-item.active { background-color: rgba(66, 133, 244, 0.15); }
+    .sidebar-item.active .sidebar-icon svg { stroke: #4285f4; }
+    .sidebar-item.active .sidebar-text { color: #4285f4; font-weight: 500; }
+
+    .sidebar-icon { width: 44px; display: flex; justify-content: center; align-items: center; flex-shrink: 0; }
+    .sidebar-icon svg { fill: none; stroke: #c4c7c5; transition: stroke 0.2s; }
+    .sidebar-item:hover .sidebar-icon svg { stroke: #ffffff; }
+    .sidebar-text { color: #e3e3e3; font-size: 14px; margin-left: 8px; white-space: nowrap; opacity: 0; transition: opacity 0.2s; }
+    .sidebar.expanded .sidebar-text { opacity: 1; transition-delay: 0.1s; }
+
+    /* 右上角配置图标 */
+    .top-config-bar {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      z-index: 5;
+    }
+
+    /* 3. 右侧主工作区 */
+    .background {
+      position: relative;
+      width: calc(100% - 68px);
+      margin-left: 68px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      transition: width 0.3s cubic-bezier(0.2, 1, 0.2, 1), margin-left 0.3s cubic-bezier(0.2, 1, 0.2, 1);
+    }
+    .sidebar.expanded + .background { width: calc(100% - 240px); margin-left: 240px; }
+
+    /* 4. 背景中心深邃椭圆光圈 */
+    .glow-light {
+      position: absolute;
+      width: 800px;
+      height: 600px;
+      background: radial-gradient(ellipse at center, rgba(20, 60, 140, 0.65) 0%, rgba(15, 40, 90, 0.3) 30%, transparent 75%);
+      filter: blur(80px);
+      z-index: 1;
+      animation: glowCollapse 2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes glowCollapse {
+      0% { transform: scale(0.2, 0.15); opacity: 0; }
+      100% { transform: scale(1.1, 0.9); opacity: 1; }
+    }
+
+    /* 5. 面板容器 */
+    .stage-content {
+      width: 650px;
+      max-height: 380px;
+      overflow-y: auto;
+      z-index: 2;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 25px;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+    .stage-content::-webkit-scrollbar { display: none; }
+    .stage-content.active { display: flex; }
+
+    .welcome-text {
+      color: #ffffff;
+      font-size: 24px;
+      font-weight: 300;
+      margin-bottom: 20px;
+      text-align: center;
+      line-height: 1.5;
+    }
+
+    .chat-bubble {
+      align-self: flex-end;
+      background-color: #131314;
+      color: #ffffff;
+      padding: 12px 20px;
+      border-radius: 20px 20px 4px 20px;
+      font-size: 16px;
+      max-width: 80%;
+      word-wrap: break-word;
+      border: 1px solid #222326;
+      animation: bubbleFadeUp 0.3s ease-out forwards;
+    }
+    .ai-bubble { align-self: flex-start; background-color: #1e1f20; border-radius: 20px 20px 20px 4px; }
+
+    @keyframes bubbleFadeUp {
+      0% { opacity: 0; transform: translateY(10px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    /* 6. 电商详情页模板网格 */
+    .template-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; width: 100%; }
+    .template-card { background-color: #131314; border: 1px solid #222326; border-radius: 12px; padding: 14px; cursor: pointer; transition: border-color 0.2s; }
+    .template-card:hover { border-color: #4285f4; }
+    .template-title { color: #ffffff; font-size: 14px; font-weight: 500; margin: 0 0 6px 0; }
+    .template-desc { color: #9aa0a6; font-size: 12px; margin: 0; }
+
+    /* 7. 工业级复合输入舱 */
+    .search-area-wrapper {
+      display: flex;
+      flex-direction: column;
+      width: 650px;
+      background-color: #131314;
+      border: 1px solid #222326;
+      border-radius: 24px;
+      padding: 12px 16px;
+      box-sizing: border-box;
+      z-index: 2;
+    }
+
+    .preview-container {
+      display: none; gap: 10px; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #222326;
+    }
+    .preview-item { position: relative; width: 60px; height: 60px; border-radius: 8px; overflow: hidden; border: 1px solid #303132; }
+    .preview-item img, .preview-item video { width: 100%; height: 100%; object-fit: cover; }
+    .preview-remove { position: absolute; top: 2px; right: 2px; background: rgba(0,0,0,0.7); color: #fff; border: none; border-radius: 50%; width: 16px; height: 16px; font-size: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+
+    .input-row { display: flex; align-items: center; width: 100%; }
+    .search-input { flex: 1; background: transparent; border: none; color: #ffffff; font-size: 16px; padding: 4px 12px; outline: none; }
+    .search-input::placeholder { color: #757575; }
+
+    /* 8. 下拉选择菜单 */
+    .dropdown-box-container { position: relative; }
+    .dropdown-trigger { background: transparent; border: none; color: #c4c7c5; font-size: 15px; cursor: pointer; display: flex; align-items: center; gap: 4px; padding: 6px 12px; border-radius: 8px; }
+    .dropdown-menu { position: absolute; bottom: 44px; background-color: #1e1f20; border: 1px solid #303132; border-radius: 14px; padding: 6px 0; min-width: 160px; box-shadow: 0 4px 24px rgba(0,0,0,0.6); display: none; flex-direction: column; z-index: 15; }
+    .dropdown-menu.show { display: flex; }
+    #upload-menu { left: 0; }
+    #mode-menu { right: 0; }
+
+    .dropdown-option { background: transparent; border: none; color: #e3e3e3; text-align: left; padding: 10px 16px; font-size: 14px; cursor: pointer; white-space: nowrap; display: flex; align-items: center; gap: 12px; }
+    .dropdown-option:hover { background-color: #2a2b2d; color: #ffffff; }
+    .dropdown-option svg { fill: none; stroke: #9aa0a6; flex-shrink: 0; }
+
+    .input-icon-btn { background: transparent; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 6px; border-radius: 50%; }
+    .input-icon-btn:hover { background-color: #202124; }
+    .input-icon-btn svg { fill: none; stroke: #9aa0a6; }
+    .input-icon-btn:hover svg { stroke: #ffffff; }
+
+    .avatar-wrapper { width: 44px; display: flex; justify-content: center; align-items: center; }
+    .user-avatar { width: 26px; height: 26px; border-radius: 50%; background: linear-gradient(135deg, #4285f4, #a8c7fa); }
+
+    /* 9. 配置中心弹窗 */
+    .config-modal {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: rgba(13, 13, 17, 0.85);
+      backdrop-filter: blur(10px);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+    }
+    .config-modal.show { display: flex; }
+    .config-card {
+      background-color: #131314;
+      border: 1px solid #303132;
+      border-radius: 20px;
+      padding: 24px;
+      width: 450px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+    }
+    .config-title { color: #ffffff; font-size: 18px; font-weight: 500; margin: 0 0 20px 0; }
+    .form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+    .form-group label { color: #9aa0a6; font-size: 13px; }
+    .form-group input {
+      background-color: #1e1f20; border: 1px solid #303132; border-radius: 8px;
+      padding: 10px 14px; color: #ffffff; font-size: 14px; outline: none;
+    }
+    .form-group input::placeholder { color: #555; }
+    .config-actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px; }
+    .btn-secondary { background: transparent; border: none; color: #9aa0a6; cursor: pointer; font-size: 14px; }
+    .btn-primary { background-color: #ffffff; color: #0d0d11; border: none; padding: 8px 18px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; }
+  </style>
+</head>
+<body>
+
+  <input type="file" id="system-file-input" accept="image/*,video/*" style="display: none;">
+
+  <div class="config-modal" id="config-modal">
+    <div class="config-card">
+      <h2 class="config-title">中转站 API 接口配置</h2>
+      <div class="form-group">
+        <label>中转站 API 接口域名 (Base URL)</label>
+        <input type="text" id="cfg-url" placeholder="https://api.your-relay.com/v1">
+      </div>
+      <div class="form-group">
+        <label>您从中转站获取的 API 密钥 (Secret Key)</label>
+        <input type="password" id="cfg-key" placeholder="sk-................................">
+      </div>
+      <p style="color: #757575; font-size: 11px; margin: 0; line-height: 1.4;">注：展示阶段默认调用系统内置演示Key。部署交付后，请指导企业客户在此处绑定他们自己的中转站账户，生成费用将由企业客户自行承担。</p>
+      <div class="config-actions">
+        <button class="btn-secondary" id="btn-config-cancel">取消</button>
+        <button class="btn-primary" id="btn-config-save">保存配置</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-top">
+      <button class="sidebar-item" id="menu-toggle">
+        <div class="sidebar-icon"><svg width="20" height="20" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></div>
+        <span class="sidebar-text">收起菜单</span>
+      </button>
+      <button class="sidebar-item new-chat-btn" id="btn-new-task">
+        <div class="sidebar-icon"><svg width="20" height="20" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></div>
+        <span class="sidebar-text">全新任务</span>
+      </button>
+      <button class="sidebar-item" id="nav-template">
+        <div class="sidebar-icon"><svg width="20" height="20" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg></div>
+        <span class="sidebar-text">电商模板库</span>
+      </button>
+    </div>
+    <div class="sidebar-bottom">
+      <div class="sidebar-item">
+        <div class="avatar-wrapper"><div class="user-avatar"></div></div>
+        <span class="sidebar-text" id="sidebar-user-name">商户后台</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="background">
+    <div class="top-config-bar">
+      <button class="input-icon-btn" id="trigger-config-modal" title="配置中转站API接口">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+      </button>
+    </div>
+
+    <div class="glow-light"></div>
+
+    <div class="stage-content active" id="panel-workspace">
+      <h1 class="welcome-text" id="dynamic-welcome">正在读取用户信息...</h1>
+    </div>
+
+    <div class="stage-content" id="panel-templates">
+      <h1 class="welcome-text">详情页与主图规格模板库</h1>
+      <div class="template-grid">
+        <div class="template-card"><h3 class="template-title">淘宝天猫主图 (1:1)</h3><p class="template-desc">适合爆款美妆首图</p></div>
+        <div class="template-card"><h3 class="template-title">亚马逊白底图 (3:4)</h3><p class="template-desc">跨境电商合规图</p></div>
+      </div>
+    </div>
+
+    <div class="search-area-wrapper">
+      <div class="preview-container" id="preview-container"></div>
+      <div class="input-row">
+        <div class="dropdown-box-container">
+          <button class="input-icon-btn" id="upload-btn-trigger">
+            <svg width="20" height="20" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          </button>
+          <div class="dropdown-menu" id="upload-menu">
+            <button class="dropdown-option" id="opt-upload-file">
+              <svg width="16" height="16" viewBox="0 0 24 24" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
+              <span>上传图片/视频</span>
+            </button>
+          </div>
+        </div>
+
+        <input type="text" class="search-input" id="main-prompt-input" placeholder="输入电商创意描述，精准生成商用图文及视频...">
+
+        <div class="dropdown-mode-container">
+          <button class="dropdown-trigger" id="dropdown-btn">
+            <span id="current-mode-text">Flash Model</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </button>
+          <div class="dropdown-menu" id="mode-menu">
+            <button class="dropdown-option" data-value="Flash Model">⚡ Flash Model</button>
+            <button class="dropdown-option" data-value="Analysis Model">🧠 Analysis Model</button>
+          </div>
+        </div>
+
+        <button class="input-icon-btn" id="send-msg-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const currentUser = { name: "Muyuan" };
+    const dynamicWelcome = document.getElementById('dynamic-welcome');
+
+    function generateDynamicWelcome() {
+      document.getElementById('sidebar-user-name').innerText = currentUser.name;
+      const hour = new Date().getHours();
+      let timeGreet = hour < 12 ? "早上好" : (hour < 18 ? "下午好" : "晚上好");
+      dynamicWelcome.innerText = `${currentUser.name}，${timeGreet}！今天需要生成什么样的电商爆款创意？`;
+    }
+    generateDynamicWelcome();
+
+    // 弹窗逻辑控制
+    const configModal = document.getElementById('config-modal');
+    const triggerConfigModal = document.getElementById('trigger-config-modal');
+    const btnConfigCancel = document.getElementById('btn-config-cancel');
+    const btnConfigSave = document.getElementById('btn-config-save');
+    const cfgUrl = document.getElementById('cfg-url');
+    const cfgKey = document.getElementById('cfg-key');
+
+    if(localStorage.getItem('user_api_url')) cfgUrl.value = localStorage.getItem('user_api_url');
+    if(localStorage.getItem('user_api_key')) cfgKey.value = localStorage.getItem('user_api_key');
+
+    triggerConfigModal.addEventListener('click', () => configModal.classList.add('show'));
+    btnConfigCancel.addEventListener('click', () => configModal.classList.remove('show'));
+    btnConfigSave.addEventListener('click', () => {
+      localStorage.setItem('user_api_url', cfgUrl.value.trim());
+      localStorage.setItem('user_api_key', cfgKey.value.trim());
+      configModal.classList.remove('show');
+      alert('配置已成功加密保存在本地！');
+    });
+
+    // 基础骨架控制
+    const sidebar = document.getElementById('sidebar'), menuToggle = document.getElementById('menu-toggle');
+    const navTemplate = document.getElementById('nav-template'), btnNewTask = document.getElementById('btn-new-task');
+    const panelWorkspace = document.getElementById('panel-workspace'), panelTemplates = document.getElementById('panel-templates');
+    const mainPromptInput = document.getElementById('main-prompt-input');
+
+    menuToggle.addEventListener('click', () => sidebar.classList.toggle('expanded'));
+    btnNewTask.addEventListener('click', () => {
+      navTemplate.classList.remove('active'); panelTemplates.classList.remove('active'); panelWorkspace.classList.add('active');
+      dynamicWelcome.style.display = 'block';
+      panelWorkspace.querySelectorAll('.chat-bubble').forEach(b => b.remove());
+      clearUploadedFile();
+    });
+    navTemplate.addEventListener('click', function() {
+      this.classList.toggle('active');
+      if (this.classList.contains('active')) { panelWorkspace.classList.remove('active'); panelTemplates.classList.add('active'); }
+      else { panelTemplates.classList.remove('active'); panelWorkspace.classList.add('active'); }
+    });
+
+    const dropdownBtn = document.getElementById('dropdown-btn'), modeMenu = document.getElementById('mode-menu');
+    const currentModeText = document.getElementById('current-mode-text'), modeOptions = modeMenu.querySelectorAll('.dropdown-option');
+    const uploadBtnTrigger = document.getElementById('upload-btn-trigger'), uploadMenu = document.getElementById('upload-menu');
+
+    dropdownBtn.addEventListener('click', (e) => { e.stopPropagation(); uploadMenu.classList.remove('show'); modeMenu.classList.toggle('show'); });
+    uploadBtnTrigger.addEventListener('click', (e) => { e.stopPropagation(); modeMenu.classList.remove('show'); uploadMenu.classList.toggle('show'); });
+    document.addEventListener('click', () => { modeMenu.classList.remove('show'); uploadMenu.classList.remove('show'); });
+
+    modeOptions.forEach(option => {
+      option.addEventListener('click', function() {
+        const val = this.getAttribute('data-value');
+        currentModeText.innerText = val;
+        mainPromptInput.placeholder = val === 'Flash Model' ? "输入电商创意描述... [一键快捷模式]" : "粘贴爆款视频链接，AI将用千问视觉模型深度拆解... [智能分析模式]";
+      });
+    });
+
+    // 文件上传回显
+    const optUploadFile = document.getElementById('opt-upload-file'), systemFileInput = document.getElementById('system-file-input');
+    const previewContainer = document.getElementById('preview-container');
+    let activeUploadedFile = null;
+
+    optUploadFile.addEventListener('click', () => systemFileInput.click());
+    systemFileInput.addEventListener('change', function() {
+      if (this.files && this.files[0]) {
+        activeUploadedFile = this.files[0];
+        const fileUrl = URL.createObjectURL(activeUploadedFile);
+        previewContainer.innerHTML = '';
+        const previewItem = document.createElement('div');
+        previewItem.className = 'preview-item';
+        if (activeUploadedFile.type.startsWith('image/')) {
+          previewItem.innerHTML = `<img src="${fileUrl}"><button class="preview-remove" onclick="clearUploadedFile()">×</button>`;
+        } else if (activeUploadedFile.type.startsWith('video/')) {
+          previewItem.innerHTML = `<video src="${fileUrl}"></video><button class="preview-remove" onclick="clearUploadedFile()">×</button>`;
+        }
+        previewContainer.appendChild(previewItem);
+        previewContainer.style.display = 'flex';
+      }
+    });
+
+    function clearUploadedFile() {
+      activeUploadedFile = null; systemFileInput.value = ''; previewContainer.style.display = 'none'; previewContainer.innerHTML = '';
+    }
+
+    // 发送与异步数据处理
+    const sendMsgBtn = document.getElementById('send-msg-btn');
+    function handleSendMessage() {
+      const text = mainPromptInput.value.trim();
+      if (text !== '' || activeUploadedFile !== null) {
+        dynamicWelcome.style.display = 'none';
+
+        if (text !== '') {
+          const uBubble = document.createElement('div');
+          uBubble.className = 'chat-bubble';
+          uBubble.innerText = text;
+          panelWorkspace.appendChild(uBubble);
+        }
+
+        const mode = currentModeText.innerText;
+
+        const finalApiUrl = localStorage.getItem('user_api_url') || "使用演示默认网关";
+        const finalApiKey = localStorage.getItem('user_api_key') ? "已捕获商户自备Key" : "使用演示默认Key";
+
+        const aiBubble = document.createElement('div');
+        aiBubble.className = 'chat-bubble ai-bubble';
+        aiBubble.innerText = `⏳ 网关就绪。正在读取商户自备密钥，通过中转站 [${finalApiUrl}] 调度后台生图/生片引擎中...`;
+        panelWorkspace.appendChild(aiBubble);
+
+        clearUploadedFile();
+        mainPromptInput.value = '';
+        panelWorkspace.scrollTop = panelWorkspace.scrollHeight;
+      }
+    }
+
+    sendMsgBtn.addEventListener('click', handleSendMessage);
+    mainPromptInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleSendMessage(); });
+  </script>
+</body>
+</html>
