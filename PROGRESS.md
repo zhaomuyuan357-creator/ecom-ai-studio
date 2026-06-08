@@ -15,6 +15,13 @@
 - [x] Phase 3: Market Research — 7 agents — 2026-06-07
 - [x] Phase 3.5: Research Gate — 绿灯（有条件继续） — 2026-06-07
 - [x] PRD 生成与对齐 — 2026-06-07
+- [x] Day 1: 搭建 Express 项目 + 改造 HTML + 场景图生成链路 — 2026-06-08
+- [ ] Day 2: 对接通义千问 API + 场景图生成功能跑通
+- [ ] Day 3: 场景模板 + 进度动画 + 结果展示/下载完善
+- [ ] Day 4: 详情页生成功能（URL分析 + 多图生成）
+- [ ] Day 5: 详情页修改 + 单张重新生成
+- [ ] Day 6: API密钥配置 + 历史记录 + 本地存储
+- [ ] Day 7: 测试 + 修复bug + 演示准备
 - [ ] Phase 4: Strategy
 - [ ] Phase 5: Brand
 - [ ] Phase 6: Product
