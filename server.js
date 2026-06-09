@@ -775,6 +775,24 @@ function getSceneImageTaskInput(body = {}) {
   };
 }
 
+async function generateSceneImageResult(body = {}) {
+  const { prompt, imageBase64 } = getSceneImageTaskInput(body);
+
+  if (!prompt || !imageBase64) {
+    const error = new Error('璇蜂笂浼犲晢鍝佸浘鐗囧苟濉啓鍦烘櫙鎻忚堪');
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const task = createImageGenerationTask({
+    useCase: 'scene_fusion',
+    prompt,
+    imageBase64,
+  });
+  const rawResult = await runImageGenerationTask(task);
+  return normalizeImageGenerationResponse(task, rawResult);
+}
+
 async function runDashScopeImageTask(task) {
   const imageDataUrl = toDashScopeImageDataUrl(task.imageBase64);
 
@@ -1128,6 +1146,36 @@ app.post('/api/analyze-detail-page', async (req, res) => {
     console.error('[详情页方案整理失败]', err);
     res.status(500).json({
       error: '整理方案失败，请稍后重试',
+      detail: err.message,
+    });
+  }
+});
+
+app.use('/api/generate-scene-image', async (req, res, next) => {
+  if (req.method !== 'POST') return next();
+
+  try {
+    const data = await generateSceneImageResult(req.body);
+    return res.json(data);
+  } catch (err) {
+    console.error('[scene-image-route]', err);
+    return res.status(err.statusCode || 500).json({
+      error: err.statusCode ? err.message : '鏈嶅姟鍣ㄥ唴閮ㄩ敊璇?',
+      detail: err.message,
+    });
+  }
+});
+
+app.use('/api/generate-scene-fusion', async (req, res, next) => {
+  if (req.method !== 'POST') return next();
+
+  try {
+    const data = await generateSceneImageResult(req.body);
+    return res.json(data);
+  } catch (err) {
+    console.error('[scene-fusion-route]', err);
+    return res.status(err.statusCode || 500).json({
+      error: err.statusCode ? err.message : '鏈嶅姟鍣ㄥ唴閮ㄩ敊璇?',
       detail: err.message,
     });
   }

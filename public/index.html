@@ -898,6 +898,318 @@
       box-shadow: 0 10px 24px rgba(139, 92, 246, 0.18);
     }
 
+    .detail-module-planner {
+      display: none;
+      gap: 18px;
+      margin-top: 4px;
+      padding: 20px;
+      border-radius: 24px;
+      border: 1px solid rgba(115, 96, 182, 0.12);
+      background:
+        radial-gradient(circle at top right, rgba(255, 214, 102, 0.16), transparent 28%),
+        linear-gradient(180deg, rgba(255,255,255,0.98), rgba(247, 244, 252, 0.94));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.92);
+    }
+
+    .detail-module-planner.show {
+      display: grid;
+    }
+
+    .detail-module-planner-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      align-items: flex-start;
+    }
+
+    .detail-module-planner-head strong {
+      display: block;
+      font-size: 18px;
+      letter-spacing: -0.03em;
+    }
+
+    .detail-module-planner-head p {
+      margin-top: 8px;
+      max-width: 680px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.75;
+    }
+
+    .detail-module-plan-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 30px;
+      padding: 0 12px;
+      border-radius: 999px;
+      background: rgba(139, 92, 246, 0.1);
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .detail-module-plan-note {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 34px;
+      padding: 0 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid rgba(115, 96, 182, 0.12);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .detail-module-stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .detail-module-stat {
+      padding: 16px 18px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(115, 96, 182, 0.1);
+    }
+
+    .detail-module-stat label {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+
+    .detail-module-stat strong {
+      display: block;
+      font-size: 24px;
+      letter-spacing: -0.03em;
+    }
+
+    .detail-module-stat span {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .detail-module-groups {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .detail-module-group {
+      padding: 18px;
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.84);
+      border: 1px solid rgba(115, 96, 182, 0.1);
+      display: grid;
+      gap: 14px;
+    }
+
+    .detail-module-group-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .detail-module-group-head strong {
+      font-size: 15px;
+      letter-spacing: -0.02em;
+    }
+
+    .detail-module-group-head span {
+      min-height: 30px;
+      padding: 0 12px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.16), rgba(168, 85, 247, 0.12));
+      color: #7c3aed;
+      border: 1px solid rgba(139, 92, 246, 0.14);
+      font-size: 12px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .detail-module-group-note {
+      color: #8b5cf6;
+      font-size: 12px;
+      line-height: 1.65;
+      margin-top: -4px;
+    }
+
+    .detail-module-card-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .detail-module-card {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px 15px;
+      border-radius: 18px;
+      border: 1px solid rgba(115, 96, 182, 0.1);
+      background: rgba(249, 247, 255, 0.9);
+    }
+
+    .detail-module-card.selectable {
+      cursor: pointer;
+      transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .detail-module-card.selectable:hover {
+      transform: translateY(-1px);
+      border-color: rgba(139, 92, 246, 0.22);
+      box-shadow: 0 10px 22px rgba(139, 92, 246, 0.08);
+    }
+
+    .detail-module-card.inactive {
+      background: rgba(255, 255, 255, 0.72);
+      border-style: dashed;
+      opacity: 0.78;
+    }
+
+    .detail-module-card-main {
+      display: grid;
+      gap: 5px;
+    }
+
+    .detail-module-card-main strong {
+      font-size: 14px;
+      letter-spacing: -0.02em;
+    }
+
+    .detail-module-card-main p {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.65;
+    }
+
+    .detail-module-card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 2px;
+    }
+
+    .detail-module-tag {
+      min-height: 26px;
+      padding: 0 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid rgba(115, 96, 182, 0.1);
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .detail-module-tag.required {
+      color: #b45309;
+      background: rgba(245, 158, 11, 0.12);
+      border-color: rgba(245, 158, 11, 0.2);
+    }
+
+    .detail-module-tag.active {
+      color: #15803d;
+      background: rgba(34, 197, 94, 0.12);
+      border-color: rgba(34, 197, 94, 0.2);
+    }
+
+    .detail-module-tag.inactive {
+      color: #8b5cf6;
+      background: rgba(139, 92, 246, 0.08);
+      border-color: rgba(139, 92, 246, 0.16);
+    }
+
+    .detail-module-toggle {
+      width: 54px;
+      min-width: 54px;
+      height: 30px;
+      border-radius: 999px;
+      border: 1px solid rgba(115, 96, 182, 0.14);
+      background: rgba(226, 232, 240, 0.8);
+      position: relative;
+      margin-top: 2px;
+      transition: background 0.18s ease, border-color 0.18s ease;
+    }
+
+    .detail-module-toggle::after {
+      content: "";
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: white;
+      box-shadow: 0 4px 10px rgba(36, 31, 56, 0.14);
+      transition: transform 0.18s ease;
+    }
+
+    .detail-module-toggle.active {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      border-color: transparent;
+    }
+
+    .detail-module-toggle.active::after {
+      transform: translateX(24px);
+    }
+
+    .detail-module-planner-actions {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+      align-items: center;
+      padding-top: 2px;
+    }
+
+    .detail-module-planner-actions p {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.7;
+      max-width: 620px;
+    }
+
+    .detail-module-planner-actions button {
+      min-height: 46px;
+      padding: 0 18px;
+      border-radius: 999px;
+      border: 1px solid rgba(114, 92, 185, 0.12);
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: white;
+      font-size: 13px;
+      font-weight: 700;
+      box-shadow: 0 12px 28px rgba(139, 92, 246, 0.18);
+    }
+
+    @media (max-width: 900px) {
+      .detail-module-stats,
+      .detail-module-groups {
+        grid-template-columns: 1fr;
+      }
+
+      .detail-module-planner-actions {
+        align-items: flex-start;
+      }
+    }
+
     .detail-revision-panel {
       display: none;
       gap: 14px;
@@ -2948,6 +3260,7 @@
     let currentDetailHeroImageUrl = "";
     let currentDetailHeroPrompt = "";
     let currentDetailHeroApproval = "pending";
+    let currentDetailModulePlan = null;
     let currentDetailApproval = "pending";
     let currentDetailRevisionDraft = {
       feedbackText: "",
@@ -2960,6 +3273,25 @@
       format: "JPEG",
       count: "1"
     };
+
+    const DETAIL_REQUIRED_MODULES = [
+      { key: "hero", name: "首屏海报", note: "继续沿用第 6 步确认通过的首图方向，作为整套详情页第一屏基线。" },
+      { key: "selling-points", name: "核心卖点", note: "把核心优势拆成更适合电商阅读的卖点模块，而不是只堆文案。" },
+      { key: "params", name: "产品参数", note: "整理规格、材质、适用信息，补齐购买决策所需的基础说明。" },
+      { key: "details", name: "细节图", note: "强化局部特写、做工和质感，支撑卖点可信度。" },
+      { key: "scenes", name: "场景使用图", note: "说明商品适合在什么场景下使用，帮助买家建立代入感。" },
+      { key: "variants", name: "款式/颜色分类", note: "把可选款式、颜色或组合关系讲清楚，减少下单前反复确认。" },
+      { key: "trust", name: "资质/品牌保障", note: "补强平台信任感、品牌说明或合规背书。" },
+      { key: "after-sales", name: "售后说明", note: "把配送、退换、售后边界说清楚，作为详情页的收口保障。" }
+    ];
+
+    const DETAIL_OPTIONAL_MODULES = [
+      { key: "demo", name: "功能演示图", note: "适合有明确使用动作、步骤或功能效果的商品。", recommendedLabel: "建议补充" },
+      { key: "comparison", name: "对比图", note: "适合需要突出升级点、差异点或替代关系的商品。", recommendedLabel: "适合拉开差异" },
+      { key: "size-guide", name: "尺码选购指南", note: "服饰鞋包专属，非全品类必选。", recommendedLabel: "按品类启用" },
+      { key: "bundle", name: "搭配推荐", note: "适合组合销售、连带购买或提升客单价的商品。", recommendedLabel: "可提高连带率" },
+      { key: "reviews", name: "买家秀/口碑", note: "适合补真实反馈、使用感受和口碑证明。", recommendedLabel: "适合信任补强" }
+    ];
 
     function showToast(message) {
       toast.textContent = message;
@@ -3047,6 +3379,7 @@
       currentDetailHeroImageUrl = "";
       currentDetailHeroPrompt = "";
       currentDetailHeroApproval = "pending";
+      currentDetailModulePlan = null;
       currentDetailApproval = "pending";
       currentDetailRevisionDraft = {
         feedbackText: "",
@@ -3293,6 +3626,7 @@
       currentDetailHeroImageUrl = "";
       currentDetailHeroPrompt = "";
       currentDetailHeroApproval = "pending";
+      currentDetailModulePlan = null;
       currentDetailApproval = "pending";
       currentDetailRevisionDraft = {
         feedbackText: "",
@@ -3449,6 +3783,7 @@
       currentDetailHeroImageUrl = "";
       currentDetailHeroPrompt = "";
       currentDetailHeroApproval = "pending";
+      currentDetailModulePlan = null;
       currentDetailApproval = "pending";
       currentDetailRevisionRound = Number(summary?.revision?.revisionRound || currentDetailRevisionRound || 0);
       currentDetailRevisionDraft = {
@@ -3720,6 +4055,172 @@
         .map((item) => item.trim())
         .filter(Boolean);
       return source.length ? source : fallback;
+    }
+
+    function shouldSuggestSizeGuide(summary = currentDetailAnalysis) {
+      const source = [
+        summary?.productName,
+        summary?.productType,
+        detailProductNameInput?.value,
+        detailSellingPoints?.value
+      ].join(" ").toLowerCase();
+      return /服|鞋|靴|包|裙|裤|衣|t恤|衬衫|外套|穿搭|fashion|shoe|bag|apparel/.test(source);
+    }
+
+    function buildDetailModulePlan(summary = currentDetailAnalysis) {
+      const sizeGuideRecommended = shouldSuggestSizeGuide(summary);
+      const selectedOptionalKeys = DETAIL_OPTIONAL_MODULES
+        .filter((item) => item.key !== "size-guide" || sizeGuideRecommended)
+        .map((item) => item.key);
+
+      return {
+        required: DETAIL_REQUIRED_MODULES.map((item) => ({ ...item, selected: true })),
+        optional: DETAIL_OPTIONAL_MODULES.map((item) => ({
+          ...item,
+          selected: selectedOptionalKeys.includes(item.key),
+          recommended: item.key !== "size-guide" ? true : sizeGuideRecommended
+        }))
+      };
+    }
+
+    function getSelectedRequiredModuleCount() {
+      return (currentDetailModulePlan?.required || []).filter((item) => item.selected).length;
+    }
+
+    function getSelectedOptionalModuleCount() {
+      return (currentDetailModulePlan?.optional || []).filter((item) => item.selected).length;
+    }
+
+    function renderDetailModulePlanner() {
+      const plan = currentDetailModulePlan || buildDetailModulePlan();
+      const selectedRequiredCount = plan.required.filter((item) => item.selected).length;
+      const selectedOptionalCount = plan.optional.filter((item) => item.selected).length;
+      const totalSelected = selectedRequiredCount + selectedOptionalCount;
+
+      const requiredHtml = plan.required.map((item) => `
+        <article class="detail-module-card selectable ${item.selected ? "" : "inactive"}" data-required-module="${escapeHtml(item.key)}">
+          <div class="detail-module-card-main">
+            <strong>${escapeHtml(item.name)}</strong>
+            <p>${escapeHtml(item.note)}</p>
+            <div class="detail-module-card-tags">
+              <span class="detail-module-tag required">必备</span>
+              <span class="detail-module-tag ${item.selected ? "active" : "inactive"}">${item.selected ? "本次生成" : "暂不生成"}</span>
+            </div>
+          </div>
+          <button class="detail-module-toggle ${item.selected ? "active" : ""}" type="button" aria-label="${item.selected ? "取消" : "启用"} ${escapeHtml(item.name)}"></button>
+        </article>
+      `).join("");
+
+      const optionalHtml = plan.optional.map((item) => `
+        <article class="detail-module-card selectable ${item.selected ? "" : "inactive"}" data-optional-module="${escapeHtml(item.key)}">
+          <div class="detail-module-card-main">
+            <strong>${escapeHtml(item.name)}</strong>
+            <p>${escapeHtml(item.note)}</p>
+            <div class="detail-module-card-tags">
+              <span class="detail-module-tag">${item.recommended ? escapeHtml(item.recommendedLabel || "可选补充") : "当前非必选"}</span>
+              <span class="detail-module-tag ${item.selected ? "active" : "inactive"}">${item.selected ? "建议生成" : "暂不生成"}</span>
+            </div>
+          </div>
+          <button class="detail-module-toggle ${item.selected ? "active" : ""}" type="button" aria-label="${item.selected ? "取消" : "启用"} ${escapeHtml(item.name)}"></button>
+        </article>
+      `).join("");
+
+      return `
+        <div class="detail-module-planner-head">
+          <div>
+            <span class="detail-module-plan-kicker">Step 07 / Module Planning</span>
+            <strong>首图通过后，先确认这次要生成哪些详情页板块</strong>
+            <p>这一步先做板块规划与统计，不直接展开整套详情页出图。必备板块固定纳入本次生成，可选板块先按品类和转化需求做勾选建议。</p>
+          </div>
+          <span class="detail-module-plan-note">当前总计 ${totalSelected} / ${DETAIL_REQUIRED_MODULES.length + DETAIL_OPTIONAL_MODULES.length} 项</span>
+        </div>
+
+        <div class="detail-module-stats">
+          <article class="detail-module-stat">
+            <label>必备板块</label>
+            <strong>${selectedRequiredCount}</strong>
+            <span>共 ${DETAIL_REQUIRED_MODULES.length} 项，默认自动全选，也可手动调整。</span>
+          </article>
+          <article class="detail-module-stat">
+            <label>可选板块</label>
+            <strong>${selectedOptionalCount}</strong>
+            <span>共 ${DETAIL_OPTIONAL_MODULES.length} 项，可按品类和商品策略开关。</span>
+          </article>
+          <article class="detail-module-stat">
+            <label>本次预计生成</label>
+            <strong>${totalSelected}</strong>
+            <span>必备 + 已勾选可选板块，作为后续详情页生成清单。</span>
+          </article>
+        </div>
+
+        <div class="detail-module-groups">
+          <section class="detail-module-group">
+            <div class="detail-module-group-head">
+              <strong>必备板块（共 ${DETAIL_REQUIRED_MODULES.length} 项）</strong>
+              <span>建议自动全勾选</span>
+            </div>
+            <p class="detail-module-group-note">注：建议自动全部勾选，如有特殊商品也可以手动取消。</p>
+            <div class="detail-module-card-list">${requiredHtml}</div>
+          </section>
+
+          <section class="detail-module-group">
+            <div class="detail-module-group-head">
+              <strong>可选板块（已选 ${selectedOptionalCount} / ${DETAIL_OPTIONAL_MODULES.length}）</strong>
+              <span>支持手动勾选</span>
+            </div>
+            <div class="detail-module-card-list">${optionalHtml}</div>
+          </section>
+        </div>
+
+        <div class="detail-module-planner-actions">
+          <p>下一步建议仍然先停留在“生成规划”层。等你确认这次的板块清单没问题，再进入真正的详情页板块生成，避免过早把整套模块一次性做死。</p>
+          <button type="button" id="detail-module-start-btn">开始生成详情页板块（下一步）</button>
+        </div>
+      `;
+    }
+
+    function updateDetailModulePlanner() {
+      const planner = document.getElementById("detail-module-planner");
+      if (!planner) return;
+      planner.innerHTML = renderDetailModulePlanner();
+      bindDetailModulePlannerActions();
+    }
+
+    function bindDetailModulePlannerActions() {
+      const planner = document.getElementById("detail-module-planner");
+      if (!planner) return;
+
+      planner.querySelectorAll("[data-required-module]").forEach((card) => {
+        card.addEventListener("click", (event) => {
+          event.preventDefault();
+          const key = card.dataset.requiredModule;
+          if (!key || !currentDetailModulePlan) return;
+          currentDetailModulePlan.required = currentDetailModulePlan.required.map((item) => (
+            item.key === key ? { ...item, selected: !item.selected } : item
+          ));
+          updateDetailModulePlanner();
+        });
+      });
+
+      planner.querySelectorAll("[data-optional-module]").forEach((card) => {
+        card.addEventListener("click", (event) => {
+          event.preventDefault();
+          const key = card.dataset.optionalModule;
+          if (!key || !currentDetailModulePlan) return;
+          currentDetailModulePlan.optional = currentDetailModulePlan.optional.map((item) => (
+            item.key === key ? { ...item, selected: !item.selected } : item
+          ));
+          updateDetailModulePlanner();
+        });
+      });
+
+      const startBtn = document.getElementById("detail-module-start-btn");
+      if (startBtn) {
+        startBtn.addEventListener("click", () => {
+          const total = getSelectedRequiredModuleCount() + getSelectedOptionalModuleCount();
+          showToast(`已确认本次详情页规划：${total} 个板块，下一步再进入正式生成。`);
+        });
+      }
     }
 
     function fileToDataUrl(file) {
@@ -4115,6 +4616,11 @@
         </div>
       `;
 
+      const nextStepItems = resultZone.querySelectorAll(".detail-preview-plan .detail-preview-list-item");
+      if (nextStepItems[2]) {
+        nextStepItems[2].textContent = "如果这张首图通过，就先把这个方向当作后续详情页的基线。具体模块名称和提示区，等你给出更准确的说法后再补。";
+      }
+
       currentResultUrl = heroImage || "";
       resultStatus.textContent = "\u8be6\u60c5\u9875\u65b9\u6848\u5df2\u751f\u6210";
       if (download) download.disabled = false;
@@ -4128,6 +4634,7 @@
       currentDetailHeroImageUrl = imageUrl;
       currentDetailHeroPrompt = promptText;
       currentDetailHeroApproval = "pending";
+      currentDetailModulePlan = buildDetailModulePlan(currentDetailAnalysis || {});
 
       const { download } = getActionButtons();
       const summary = currentDetailAnalysis || {};
@@ -4245,6 +4752,7 @@
 
       resultStatus.textContent = "首图已生成";
       if (download) download.disabled = false;
+      updateDetailModulePlanner();
       bindDetailHeroActions();
       updateResultActions();
     }
@@ -4254,6 +4762,7 @@
       const statusEl = document.getElementById("detail-hero-status");
       const copyEl = document.getElementById("detail-hero-copy");
       const chipStatusEl = document.getElementById("detail-hero-chip-status");
+      const planner = document.getElementById("detail-module-planner");
       if (!statusEl || !copyEl || !chipStatusEl) return;
 
       statusEl.classList.remove("approved", "revise");
@@ -4278,6 +4787,54 @@
       statusEl.textContent = "待确认";
       chipStatusEl.textContent = "待确认是否继续";
       copyEl.textContent = "如果这张首图已经能作为后续详情页内容的第一屏基线，就继续后面的阶段；如果还不够稳，可以直接重做，或者回到摘要阶段先微调方案。";
+      resultStatus.textContent = "首图已生成";
+    }
+
+    function setDetailHeroApprovalState(state) {
+      currentDetailHeroApproval = state;
+      const statusEl = document.getElementById("detail-hero-status");
+      const copyEl = document.getElementById("detail-hero-copy");
+      const chipStatusEl = document.getElementById("detail-hero-chip-status");
+      const planner = document.getElementById("detail-module-planner");
+      if (!statusEl || !copyEl || !chipStatusEl) return;
+
+      statusEl.classList.remove("approved", "revise");
+
+      if (state === "approved") {
+        statusEl.textContent = "已确认，可以继续";
+        statusEl.classList.add("approved");
+        chipStatusEl.textContent = "可继续规划详情页";
+        copyEl.textContent = "这张首图已经通过，可以先把它当作后续详情页第一屏的基线。下面先确认本次详情页需要生成哪些板块。";
+        let activePlanner = planner;
+        if (!activePlanner) {
+          const plannerHost = document.querySelector(".detail-preview-module:last-child");
+          if (plannerHost) {
+            plannerHost.insertAdjacentHTML("beforeend", '<div class="detail-module-planner" id="detail-module-planner"></div>');
+            activePlanner = document.getElementById("detail-module-planner");
+          }
+        }
+        if (activePlanner) {
+          activePlanner.classList.add("show");
+          updateDetailModulePlanner();
+        }
+        resultStatus.textContent = "首图方向已确认";
+        return;
+      }
+
+      if (state === "revise") {
+        statusEl.textContent = "待回到摘要";
+        statusEl.classList.add("revise");
+        chipStatusEl.textContent = "建议先回摘要微调";
+        copyEl.textContent = "这张图先不要继续往后扩。建议回到第 5 步摘要，把首图方向、卖点或风格再收一版，然后重新生成首图。";
+        planner?.classList.remove("show");
+        resultStatus.textContent = "首图待微调";
+        return;
+      }
+
+      statusEl.textContent = "待确认";
+      chipStatusEl.textContent = "待确认是否继续";
+      copyEl.textContent = "如果这张首图已经能作为后续详情页内容的第一屏基线，就继续后面的阶段；如果还不够稳，可以直接重做，或者回到摘要阶段先微调方案。";
+      planner?.classList.remove("show");
       resultStatus.textContent = "首图已生成";
     }
 
