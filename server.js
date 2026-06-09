@@ -9,6 +9,8 @@ const PORT = process.env.PORT || 3000;
 const REFERENCE_VIDEO_PATH = 'C:\\Users\\Edward\\Videos\\NVIDIA\\Desktop\\Desktop 2026.06.08 - 12.55.40.01.mp4';
 const DASHSCOPE_API_KEY = process.env.DASHSCOPE_API_KEY;
 const DASHSCOPE_BASE_URL = 'https://dashscope.aliyuncs.com/compatible-mode/v1';
+const IMAGE_PROVIDER = process.env.IMAGE_PROVIDER || 'dashscope';
+const DASHSCOPE_IMAGE_MODEL = process.env.DASHSCOPE_IMAGE_MODEL || 'wan2.5-i2i-preview';
 
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
@@ -601,6 +603,261 @@ function buildScenePrompt(sceneDesc) {
 5. 画面清晰，分辨率高`;
 }
 
+function buildDetailHeroPrompt(input = {}) {
+  const visualKeywords = toArray(input.visualKeywords).slice(0, 6).join('、');
+  return `
+你是电商首图生成助手。现在不是生成整套详情页，只生成第 6 步的首图。
+请严格以用户上传的商品图为准，不要改商品主体颜色、外观、材质、比例和主要结构。
+
+这次首图的目标：
+1. 先把商品主体讲清楚
+2. 先把第一卖点讲清楚
+3. 画面要像真实电商首图，不要像泛创意海报
+4. 风格、文案气质和构图都要服务后续详情页延展
+
+已确认的首图方向：
+- 商品名称：${input.productName || '待确认商品'}
+- 首图主打：${input.heroHeadline || '待补充'}
+- 视觉重点：${input.heroVisualFocus || '待补充'}
+- 情绪钩子：${input.emotionalHook || '待补充'}
+- 目标人群：${input.audienceInsight || '待补充'}
+- 视觉关键词：${visualKeywords || '待补充'}
+- 商品识别摘要：${input.productVisualSummary || '待补充'}
+- 风格方向：${input.style || '电商高转化'}
+
+可直接参考的首图草稿：
+${input.imagePromptDraft || ''}
+
+生成要求：
+1. 商品必须仍然是这张商品图里的同一件商品
+2. 如果商品图里已经能看清颜色，就绝对不能改色
+3. 首图优先突出主体和第一卖点，不要堆太多装饰元素
+4. 保持干净、可信、适合电商转化的画面
+5. 构图适合做详情页第一屏，方便后续继续扩展卖点图和长图模块
+6. 如果有场景，只做轻量辅助，不要喧宾夺主
+  `.trim();
+}
+
+function ensureImageProviderReady() {
+  if (IMAGE_PROVIDER !== 'dashscope') {
+    throw new Error(`暂不支持的生图供应商: ${IMAGE_PROVIDER}`);
+  }
+
+  if (!DASHSCOPE_API_KEY || DASHSCOPE_API_KEY === 'sk-your-api-key-here') {
+    throw new Error('请在 .env 文件中配置 DASHSCOPE_API_KEY');
+  }
+}
+
+function toDashScopeImageDataUrl(imageBase64) {
+  const mime = String(imageBase64 || '').trim().startsWith('/9j/') ? 'image/jpeg' : 'image/png';
+  return `data:${mime};base64,${imageBase64}`;
+}
+
+function createImageGenerationTask(input = {}) {
+  return {
+    provider: IMAGE_PROVIDER,
+    model: input.model || DASHSCOPE_IMAGE_MODEL,
+    prompt: String(input.prompt || '').trim(),
+    imageBase64: String(input.imageBase64 || '').trim(),
+    size: input.size || '1024*1024',
+    useCase: input.useCase || 'generic',
+  };
+}
+
+function normalizeGeneratedImages(result) {
+  const mapImageItem = (item) => {
+    const imageUrl = String(
+      item?.url ||
+      item?.image ||
+      item?.image_url ||
+      item?.imageUrl ||
+      ''
+    ).trim();
+    const imageB64 = String(
+      item?.b64_json ||
+      item?.b64 ||
+      item?.image_base64 ||
+      item?.imageBase64 ||
+      ''
+    ).trim();
+
+    return {
+      url: imageUrl,
+      b64: imageB64,
+    };
+  };
+
+  const collectNestedImageItems = (value, depth = 0, bucket = []) => {
+    if (!value || depth > 6) return bucket;
+
+    if (Array.isArray(value)) {
+      value.forEach((item) => collectNestedImageItems(item, depth + 1, bucket));
+      return bucket;
+    }
+
+    if (typeof value !== 'object') {
+      return bucket;
+    }
+
+    const normalized = mapImageItem(value);
+    if (normalized.url || normalized.b64) {
+      bucket.push(normalized);
+    }
+
+    Object.keys(value).forEach((key) => {
+      const child = value[key];
+      if (child && (Array.isArray(child) || typeof child === 'object')) {
+        collectNestedImageItems(child, depth + 1, bucket);
+      }
+    });
+
+    return bucket;
+  };
+
+  const uniqueImageItems = (items) => {
+    const seen = new Set();
+    return items.filter((item) => {
+      const signature = `${item.url}::${item.b64}`;
+      if ((!item.url && !item.b64) || seen.has(signature)) return false;
+      seen.add(signature);
+      return true;
+    });
+  };
+
+  if (Array.isArray(result?.data)) {
+    return result.data
+      .map(mapImageItem)
+      .filter((item) => item.url || item.b64);
+  }
+
+  if (Array.isArray(result?.output?.results)) {
+    return result.output.results
+      .map(mapImageItem)
+      .filter((item) => item.url || item.b64);
+  }
+
+  if (Array.isArray(result?.output?.image_url)) {
+    return result.output.image_url
+      .map((item) => mapImageItem(typeof item === 'string' ? { image_url: item } : item))
+      .filter((item) => item.url || item.b64);
+  }
+
+  if (result?.output?.image_url || result?.output?.image) {
+    const normalized = mapImageItem(result.output);
+    return normalized.url || normalized.b64 ? [normalized] : [];
+  }
+
+  const nestedMatches = uniqueImageItems(collectNestedImageItems(result));
+  if (nestedMatches.length) {
+    return nestedMatches;
+  }
+
+  return [];
+}
+
+function normalizeImageGenerationResponse(task, rawResult, meta = {}) {
+  return {
+    success: true,
+    result: {
+      provider: task.provider,
+      model: task.model,
+      useCase: task.useCase,
+      images: normalizeGeneratedImages(rawResult),
+    },
+    meta,
+  };
+}
+
+function getSceneImageTaskInput(body = {}) {
+  return {
+    prompt: String(body.sceneDesc || body.prompt || '').trim(),
+    imageBase64: String(body.imageBase64 || body.image || '').trim(),
+  };
+}
+
+async function runDashScopeImageTask(task) {
+  const imageDataUrl = toDashScopeImageDataUrl(task.imageBase64);
+
+  const generateResponse = await fetch('https://dashscope.aliyuncs.com/api/v1/services/aigc/image2image/image-synthesis', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${DASHSCOPE_API_KEY}`,
+      'X-DashScope-Async': 'enable',
+    },
+    body: JSON.stringify({
+      model: task.model,
+      input: {
+        prompt: task.prompt,
+        images: [imageDataUrl],
+      },
+      parameters: {
+        n: 1,
+        size: task.size,
+        prompt_extend: true,
+      },
+    }),
+  });
+
+  const rawText = await generateResponse.text();
+
+  if (!generateResponse.ok) {
+    throw new Error(rawText || `API 调用失败: ${generateResponse.status}`);
+  }
+
+  const data = JSON.parse(rawText);
+
+  if (data.output?.task_status === 'PENDING' || data.output?.task_status === 'RUNNING') {
+    const taskId = data.output.task_id;
+    let result = null;
+
+    for (let i = 0; i < 60; i++) {
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      const pollRes = await fetch(`https://dashscope.aliyuncs.com/api/v1/tasks/${taskId}`, {
+        headers: { Authorization: `Bearer ${DASHSCOPE_API_KEY}` },
+      });
+      const pollData = await pollRes.json();
+      const status = pollData.output?.task_status;
+
+      if (status === 'SUCCEEDED') {
+        result = pollData;
+        break;
+      }
+
+      if (status === 'FAILED') {
+        throw new Error(pollData.output?.message || JSON.stringify(pollData));
+      }
+    }
+
+    if (!result) {
+      throw new Error('生成超时，请稍后重试');
+    }
+
+    return { data: normalizeGeneratedImages(result) };
+  }
+
+  return data;
+}
+
+async function runImageGenerationTask(task) {
+  ensureImageProviderReady();
+
+  if (!task.prompt) {
+    throw new Error('请提供生成描述');
+  }
+
+  if (!task.imageBase64) {
+    throw new Error('请先上传商品图片');
+  }
+
+  switch (task.provider) {
+    case 'dashscope':
+      return runDashScopeImageTask(task);
+    default:
+      throw new Error(`暂不支持的生图供应商: ${task.provider}`);
+  }
+}
+
 app.post('/api/generate-scene', async (req, res) => {
   try {
     const { image, sceneDesc } = req.body;
@@ -609,7 +866,7 @@ app.post('/api/generate-scene', async (req, res) => {
       return res.status(400).json({ error: '请上传商品图片并填写场景描述' });
     }
 
-    if (!DASHSCOPE_API_KEY || DASHSCOPE_API_KEY === 'sk-your-api-key-here') {
+    {
       return res.status(500).json({ error: '请在 .env 文件中配置 DASHSCOPE_API_KEY' });
     }
 
@@ -878,15 +1135,24 @@ app.post('/api/analyze-detail-page', async (req, res) => {
 
 app.post('/api/generate-scene-image', async (req, res) => {
   try {
-    const { prompt } = req.body;
+    const { prompt, imageBase64 } = getSceneImageTaskInput(req.body);
+    const sceneDesc = prompt;
 
-    if (!prompt) {
-      return res.status(400).json({ error: '请提供生成描述' });
+    if (!prompt || !imageBase64) {
+      return res.status(400).json({ error: '请上传商品图片并填写场景描述' });
     }
 
     if (!DASHSCOPE_API_KEY || DASHSCOPE_API_KEY === 'sk-your-api-key-here') {
       return res.status(500).json({ error: '请在 .env 文件中配置 DASHSCOPE_API_KEY' });
     }
+
+    const task = createImageGenerationTask({
+      useCase: 'scene_fusion',
+      prompt,
+      imageBase64,
+    });
+    const rawResult = await runImageGenerationTask(task);
+    return res.json(normalizeImageGenerationResponse(task, rawResult));
 
     const response = await fetch(`${DASHSCOPE_BASE_URL}/images/generations`, {
       method: 'POST',
@@ -919,91 +1185,72 @@ app.post('/api/generate-scene-image', async (req, res) => {
   }
 });
 
+app.post('/api/generate-detail-hero', async (req, res) => {
+  try {
+    const {
+      productImageBase64,
+      productName,
+      style,
+      imagePromptDraft,
+      heroDirection,
+      emotionalHook,
+      audienceInsight,
+      visualKeywords,
+      productVisualSummary,
+    } = req.body || {};
+
+    if (!productImageBase64 || !String(productImageBase64).trim()) {
+      return res.status(400).json({ error: '请先上传商品白底图' });
+    }
+
+    if (!String(imagePromptDraft || '').trim()) {
+      return res.status(400).json({ error: '请先完成第 5 步方案确认，再进入首图生成' });
+    }
+
+    const prompt = buildDetailHeroPrompt({
+      productName,
+      style,
+      imagePromptDraft,
+      heroHeadline: heroDirection?.headline,
+      heroVisualFocus: heroDirection?.visualFocus,
+      emotionalHook,
+      audienceInsight,
+      visualKeywords,
+      productVisualSummary,
+    });
+
+    const task = createImageGenerationTask({
+      useCase: 'detail_hero',
+      prompt,
+      imageBase64: String(productImageBase64).trim(),
+    });
+    const rawResult = await runImageGenerationTask(task);
+    res.json(normalizeImageGenerationResponse(task, rawResult, { prompt }));
+  } catch (err) {
+    console.error('[详情页首图生成失败]', err);
+    res.status(500).json({ error: '首图生成失败，请稍后重试', detail: err.message });
+  }
+});
+
 app.post('/api/generate-scene-fusion', async (req, res) => {
   try {
-    const { image, sceneDesc } = req.body;
+    const { prompt, imageBase64 } = getSceneImageTaskInput(req.body);
+    const sceneDesc = prompt;
 
-    if (!image || !sceneDesc) {
+    if (!prompt || !imageBase64) {
       return res.status(400).json({ error: '请上传商品图片并填写场景描述' });
     }
 
-    if (!DASHSCOPE_API_KEY || DASHSCOPE_API_KEY === 'sk-your-api-key-here') {
-      return res.status(500).json({ error: '请在 .env 文件中配置 DASHSCOPE_API_KEY' });
-    }
-
     console.log('[生成] 场景描述:', sceneDesc.slice(0, 80));
-    console.log('[生成] 调用 wanx-v1 图生图 API...');
+    console.log(`[生成] 调用 ${IMAGE_PROVIDER} 图生图 API...`);
 
-    const generateResponse = await fetch('https://dashscope.aliyuncs.com/api/v1/services/aigc/image2image/image-synthesis', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${DASHSCOPE_API_KEY}`,
-        'X-DashScope-Async': 'enable',
-      },
-      body: JSON.stringify({
-        model: 'wanx-v1',
-        input: {
-          ref_image_url: `data:image/png;base64,${image}`,
-          prompt: sceneDesc,
-        },
-        parameters: {
-          n: 1,
-          size: '1024*1024',
-          ref_strength: 0.55,
-        },
-      }),
+    const task = createImageGenerationTask({
+      useCase: 'scene_fusion',
+      prompt,
+      imageBase64,
     });
-
-    const rawText = await generateResponse.text();
-    console.log('[生成] API 响应状态:', generateResponse.status);
-    console.log('[生成] API 响应:', rawText.slice(0, 500));
-
-    if (!generateResponse.ok) {
-      return res.status(502).json({ error: '图像生成失败', detail: rawText });
-    }
-
-    const data = JSON.parse(rawText);
-
-    if (data.output?.task_status === 'PENDING' || data.output?.task_status === 'RUNNING') {
-      const taskId = data.output.task_id;
-      console.log('[生成] 异步任务:', taskId);
-
-      let result = null;
-      for (let i = 0; i < 60; i++) {
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-        const pollRes = await fetch(`https://dashscope.aliyuncs.com/api/v1/tasks/${taskId}`, {
-          headers: { Authorization: `Bearer ${DASHSCOPE_API_KEY}` },
-        });
-        const pollData = await pollRes.json();
-        const status = pollData.output?.task_status;
-        console.log(`[轮询 #${i + 1}] ${status}`);
-
-        if (status === 'SUCCEEDED') {
-          result = pollData;
-          break;
-        }
-
-        if (status === 'FAILED') {
-          console.error('[失败]', JSON.stringify(pollData, null, 2));
-          return res.status(502).json({
-            error: '图像生成失败',
-            detail: pollData.output?.message || JSON.stringify(pollData),
-          });
-        }
-      }
-
-      if (!result) {
-        return res.status(504).json({ error: '生成超时（120秒）' });
-      }
-
-      return res.json({
-        success: true,
-        result: { data: result.output.results.map((item) => ({ url: item.url })) },
-      });
-    }
-
-    res.json({ success: true, result: data });
+    const rawResult = await runImageGenerationTask(task);
+    res.json(normalizeImageGenerationResponse(task, rawResult));
   } catch (err) {
     console.error('[服务端错误]', err);
     res.status(500).json({ error: '服务器内部错误', detail: err.message });

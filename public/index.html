@@ -2944,6 +2944,10 @@
     let currentDetailPreviewUrls = [];
     let currentDetailReadResult = null;
     let currentDetailAnalysis = null;
+    let currentDetailAnalysisMeta = null;
+    let currentDetailHeroImageUrl = "";
+    let currentDetailHeroPrompt = "";
+    let currentDetailHeroApproval = "pending";
     let currentDetailApproval = "pending";
     let currentDetailRevisionDraft = {
       feedbackText: "",
@@ -3039,6 +3043,10 @@
       currentResultUrl = "";
       currentResultKind = "detail";
       currentDetailAnalysis = null;
+      currentDetailAnalysisMeta = null;
+      currentDetailHeroImageUrl = "";
+      currentDetailHeroPrompt = "";
+      currentDetailHeroApproval = "pending";
       currentDetailApproval = "pending";
       currentDetailRevisionDraft = {
         feedbackText: "",
@@ -3050,11 +3058,11 @@
       const subject = kind === "product" ? "商品图" : "参考图";
       resultZone.innerHTML = `
         <div class="result-placeholder">
-          <strong>已更新${subject}，可以直接重新生成</strong>
-          <p>新的上传文件已经生效，保留当前产品信息和卖点后，点击“生成详情页”即可继续出下一版方案。</p>
+          <strong>已更新${subject}，可以直接重新整理方案</strong>
+          <p>新的上传文件已经生效，保留当前产品信息和卖点后，点击“整理方案摘要”即可继续出下一版方案。</p>
         </div>
       `;
-      resultStatus.textContent = "待重新生成";
+      resultStatus.textContent = "待重新整理";
 
       const { download } = getActionButtons();
       if (download) download.disabled = true;
@@ -3105,6 +3113,15 @@
       return Boolean(activeDetailProductFile && summary.productName && summary.sellingPoints);
     }
 
+    function canGenerateDetailHero() {
+      return Boolean(
+        currentMode === "detail" &&
+        activeDetailProductFile &&
+        currentDetailAnalysis &&
+        currentDetailApproval === "approved"
+      );
+    }
+
     function getActionButtons() {
       return {
         download: document.getElementById("btn-download"),
@@ -3115,10 +3132,26 @@
     function updateResultActions() {
       const { download, regenerate } = getActionButtons();
       if (!download || !regenerate) return;
-      download.textContent = currentMode === "scene" ? "下载图片" : "导出摘要";
-      regenerate.textContent = currentMode === "scene" ? "重新生成" : "重新整理摘要";
-      if (!isGenerating) regenerate.disabled = !canRegenerateCurrentMode();
-      if (currentMode === "detail") download.disabled = true;
+      if (currentMode === "scene") {
+        download.textContent = "下载图片";
+        regenerate.textContent = "重新生成";
+        if (!isGenerating) regenerate.disabled = !canRegenerateCurrentMode();
+      } else if (currentDetailHeroImageUrl) {
+        download.textContent = "下载首图";
+        regenerate.textContent = "重新生成首图";
+        if (!isGenerating) regenerate.disabled = !canGenerateDetailHero();
+        download.disabled = false;
+      } else if (canGenerateDetailHero()) {
+        download.textContent = "导出摘要";
+        regenerate.textContent = "开始生成首图";
+        if (!isGenerating) regenerate.disabled = false;
+        download.disabled = true;
+      } else {
+        download.textContent = "导出摘要";
+        regenerate.textContent = "重新整理摘要";
+        if (!isGenerating) regenerate.disabled = !canRegenerateCurrentMode();
+        download.disabled = true;
+      }
       if (btnDetailRead) btnDetailRead.disabled = isGenerating || !canReadDetailLink();
     }
 
@@ -3142,14 +3175,19 @@
     }
 
     function setResultPlaceholder() {
+      const isDetailMode = currentMode === "detail";
+      const title = isDetailMode ? "第 5 步的方案摘要会显示在这里" : "结果会显示在这里";
+      const description = isDetailMode
+        ? "上传商品白底图，填写商品信息后，系统会先整理出“出图前方案摘要”，方便你先确认这版方向要不要继续。"
+        : "上传商品白底图，填写场景描述后，系统会把生成结果放在这里，方便你确认和下载。";
       resultPanel.classList.add("show");
       resultZone.innerHTML = `
         <div class="result-placeholder">
-          <strong>结果会显示在这里</strong>
-          <p>上传商品白底图，填写场景描述后，系统会把生成结果放在这里，方便你确认和下载。</p>
+          <strong>${title}</strong>
+          <p>${description}</p>
         </div>
       `;
-      resultStatus.textContent = "等待生成";
+      resultStatus.textContent = isDetailMode ? "等待整理" : "等待生成";
       btnDownload.disabled = true;
     }
 
@@ -3204,6 +3242,22 @@
       if (regenerate) regenerate.disabled = true;
     }
 
+    function setDetailHeroLoading() {
+      currentResultKind = "detail";
+      const { download, regenerate } = getActionButtons();
+      resultPanel.classList.add("show");
+      resultZone.innerHTML = `
+        <div class="result-loading">
+          <div class="spinner"></div>
+          <strong>正在生成第 6 步首图</strong>
+          <p>系统会基于你已经确认通过的摘要和商品图，只先生成一张首图，确认方向没问题后再继续扩展后续模块。</p>
+        </div>
+      `;
+      resultStatus.textContent = "首图生成中";
+      if (download) download.disabled = true;
+      if (regenerate) regenerate.disabled = true;
+    }
+
     function setDetailReadLoading() {
       currentResultKind = "detail";
       const { download, regenerate } = getActionButtons();
@@ -3235,6 +3289,10 @@
       currentResultUrl = "";
       currentDetailReadResult = payload;
       currentDetailAnalysis = null;
+      currentDetailAnalysisMeta = null;
+      currentDetailHeroImageUrl = "";
+      currentDetailHeroPrompt = "";
+      currentDetailHeroApproval = "pending";
       currentDetailApproval = "pending";
       currentDetailRevisionDraft = {
         feedbackText: "",
@@ -3387,6 +3445,10 @@
       currentResultKind = "detail";
       currentResultUrl = "";
       currentDetailAnalysis = summary;
+      currentDetailAnalysisMeta = meta || {};
+      currentDetailHeroImageUrl = "";
+      currentDetailHeroPrompt = "";
+      currentDetailHeroApproval = "pending";
       currentDetailApproval = "pending";
       currentDetailRevisionRound = Number(summary?.revision?.revisionRound || currentDetailRevisionRound || 0);
       currentDetailRevisionDraft = {
@@ -3577,8 +3639,9 @@
         statusEl.textContent = "已确认，可以继续";
         statusEl.classList.add("approved");
         copyEl.textContent = "这版摘要已经确认通过，下一步就可以基于这个方向进入首图生成。";
-        resultStatus.textContent = "方案方向已确认";
+        resultStatus.textContent = "第 5 步已确认";
         if (revisionPanel) revisionPanel.classList.remove("show");
+        updateResultActions();
         return;
       }
 
@@ -3586,37 +3649,17 @@
         statusEl.textContent = "待回改";
         statusEl.classList.add("revise");
         copyEl.textContent = "把要改的地方写在下面，系统会先自动归类，再重新整理一版方案给你确认。";
-        resultStatus.textContent = "方案待回改";
+        resultStatus.textContent = "第 5 步待回改";
         if (revisionPanel) revisionPanel.classList.add("show");
+        updateResultActions();
         return;
       }
 
       statusEl.textContent = "待确认";
       copyEl.textContent = "如果你觉得这版摘要已经能指导后面的首图生成，就点“这个方向可以继续”；如果还不够准，就点“这版还要修改”。";
-      resultStatus.textContent = "方案摘要已整理";
+      resultStatus.textContent = "第 5 步摘要已整理";
       if (revisionPanel) revisionPanel.classList.remove("show");
-      return;
-
-      statusEl.classList.remove("approved", "revise");
-      if (state === "approved") {
-        statusEl.textContent = "已确认，可以继续";
-        statusEl.classList.add("approved");
-        copyEl.textContent = "这版摘要已经被确认通过，下一步就可以基于这个方向进入首图生成。";
-        resultStatus.textContent = "方案方向已确认";
-        return;
-      }
-
-      if (state === "revise") {
-        statusEl.textContent = "待回改";
-        statusEl.classList.add("revise");
-        copyEl.textContent = "这版摘要还需要回去改，建议继续补链接、商品信息或卖点后，再重新整理一版方案。";
-        resultStatus.textContent = "方案待回改";
-        return;
-      }
-
-      statusEl.textContent = "待确认";
-      copyEl.textContent = "如果你觉得这版摘要已经能指导后面的首图生成，就点“这个方向可以继续”；如果还不够准，就点“这版还要修改”。";
-      resultStatus.textContent = "方案摘要已整理";
+      updateResultActions();
     }
 
     function bindDetailRevisionActions() {
@@ -3693,6 +3736,42 @@
         reader.onerror = () => reject(new Error("读取参考截图失败"));
         reader.readAsDataURL(file);
       });
+    }
+
+    async function postJson(url, body) {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        const error = new Error(data.error || "请求失败");
+        error.payload = data;
+        throw error;
+      }
+      return data;
+    }
+
+    function getFirstGeneratedImage(data) {
+      const images = Array.isArray(data?.result?.images)
+        ? data.result.images
+        : Array.isArray(data?.result?.data)
+          ? data.result.data
+          : [];
+      const first = images[0];
+      if (!first) return "";
+      if (first.url) return first.url;
+      if (first.imageUrl) return first.imageUrl;
+      if (first.image) return first.image;
+      if (first.image_url) return first.image_url;
+      if (first.result_url) return first.result_url;
+      if (first.resource_url) return first.resource_url;
+      if (first.b64) return "data:image/png;base64," + first.b64;
+      if (first.imageBase64) return "data:image/png;base64," + first.imageBase64;
+      if (first.image_base64) return "data:image/png;base64," + first.image_base64;
+      if (first.b64_json) return "data:image/png;base64," + first.b64_json;
+      return "";
     }
 
     function classifyColorName(red, green, blue) {
@@ -4042,6 +4121,201 @@
       updateResultActions();
     }
 
+    function setDetailHeroResult(imageUrl, promptText = "") {
+      clearDetailPreviewUrls();
+      currentResultKind = "detail";
+      currentResultUrl = imageUrl;
+      currentDetailHeroImageUrl = imageUrl;
+      currentDetailHeroPrompt = promptText;
+      currentDetailHeroApproval = "pending";
+
+      const { download } = getActionButtons();
+      const summary = currentDetailAnalysis || {};
+      const productName = escapeHtml(summary.productName || detailProductNameInput.value.trim() || "未命名商品");
+      const heroHeadline = escapeHtml(summary.heroDirection?.headline || "首图方向已确认");
+      const heroFocus = escapeHtml(summary.heroDirection?.visualFocus || "商品主体 + 第一卖点");
+      const styleText = escapeHtml(currentDetailStyle);
+      const promptBody = escapeHtml(promptText || summary.imagePromptDraft || "当前未返回首图提示词。");
+      const sellingPoints = splitDetailText(detailSellingPoints.value.trim(), ["核心卖点待补充"]).slice(0, 3);
+      const heroPointsHtml = sellingPoints.map((point) => `<div>${escapeHtml(point)}</div>`).join("");
+      const visualKeywords = (summary.visualKeywords || [])
+        .slice(0, 6)
+        .map((item) => `<span>${escapeHtml(item)}</span>`)
+        .join("") || "<span>电商首图</span><span>商品主体清晰</span><span>后续可延展</span>";
+
+      resultPanel.classList.add("show");
+      resultZone.innerHTML = `
+        <div class="detail-preview-stage">
+          <div class="detail-preview-summary">
+            <section class="detail-preview-card detail-preview-brief">
+              <div class="detail-preview-kicker">Step 06 / Hero Generation</div>
+              <div class="detail-preview-title">
+                <strong>${productName} 首图已生成</strong>
+                <span>这一步只先确认首图方向，暂时还不进入整套详情页批量出图。</span>
+              </div>
+              <div class="detail-preview-chip-row">
+                <em>首图已落地</em>
+                <em>${styleText}</em>
+                <em id="detail-hero-chip-status">待确认是否继续</em>
+              </div>
+              <div class="detail-preview-meta-grid">
+                <div class="detail-preview-meta">
+                  <label>首图主打</label>
+                  <strong>${heroHeadline}</strong>
+                </div>
+                <div class="detail-preview-meta">
+                  <label>视觉重点</label>
+                  <strong>${heroFocus}</strong>
+                </div>
+                <div class="detail-preview-meta">
+                  <label>当前状态</label>
+                  <strong>第 6 步已完成</strong>
+                </div>
+              </div>
+            </section>
+            <aside class="detail-preview-card detail-preview-plan">
+              <strong>下一步建议</strong>
+              <div class="detail-preview-list">
+                <div class="detail-preview-list-item">先确认这张首图的主体、卖点和风格是否稳定，再继续扩展后续详情页内容。</div>
+                <div class="detail-preview-list-item">如果首图方向还要改，可以直接点“重新生成首图”，不需要回到整套详情页阶段。</div>
+                <div class="detail-preview-list-item">如果这张首图通过，就可以进入后续详情页阶段；具体模块名称等你确认后再补。</div>
+              </div>
+            </aside>
+          </div>
+
+          <section class="detail-preview-sheet">
+            <article class="detail-preview-module detail-preview-hero">
+              <div class="detail-preview-hero-copy">
+                <div>
+                  <div class="detail-preview-module-header">
+                    <span class="detail-preview-module-index">Module 01</span>
+                    <span class="detail-preview-module-label">Hero / 首图结果</span>
+                  </div>
+                  <h3>${productName}</h3>
+                  <p>这张图已经从第 5 步的方案摘要进入了第 6 步实际出图。当前重点是先确认它能不能作为后续详情页内容的第一屏基线。</p>
+                </div>
+                <div class="detail-preview-hero-points">${heroPointsHtml}</div>
+              </div>
+              <div class="detail-preview-image-wrap">
+                <img src="${imageUrl}" alt="详情页首图生成结果">
+                <div class="detail-preview-image-badge">${styleText} / 第 6 步首图</div>
+              </div>
+            </article>
+
+            <article class="detail-preview-module">
+              <div class="detail-preview-module-header">
+                <span class="detail-preview-module-index">Prompt</span>
+                <span class="detail-preview-module-label">本轮生图说明</span>
+              </div>
+              <div class="detail-preview-two-col">
+                <div class="detail-preview-section-copy">
+                  <h3>这轮首图是按什么方向生成的</h3>
+                  <p>${promptBody}</p>
+                </div>
+                <div class="detail-preview-plan">
+                  <strong>视觉关键词</strong>
+                  <div class="detail-preview-tags">
+                    ${visualKeywords}
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <article class="detail-preview-module">
+              <div class="detail-preview-module-header">
+                <span class="detail-preview-module-index">Next</span>
+                <span class="detail-preview-module-label">首图确认动作</span>
+              </div>
+              <div class="detail-confirm-bar">
+                <div class="detail-confirm-head">
+                  <strong>这张首图是否可以继续</strong>
+                  <span class="detail-confirm-status" id="detail-hero-status">待确认</span>
+                </div>
+                <p class="detail-confirm-copy" id="detail-hero-copy">如果这张首图已经能作为后续详情页内容的第一屏基线，就继续后面的阶段；如果还不够稳，可以直接重做，或者回到摘要阶段先微调方案。</p>
+                <div class="detail-confirm-actions">
+                  <button class="detail-confirm-btn primary" type="button" id="detail-hero-approve-btn">这张可以继续</button>
+                  <button class="detail-confirm-btn" type="button" id="detail-hero-regenerate-btn">这张还要重做</button>
+                  <button class="detail-confirm-btn" type="button" id="detail-hero-back-btn">回到摘要微调</button>
+                </div>
+              </div>
+            </article>
+          </section>
+        </div>
+      `;
+
+      resultStatus.textContent = "首图已生成";
+      if (download) download.disabled = false;
+      bindDetailHeroActions();
+      updateResultActions();
+    }
+
+    function setDetailHeroApprovalState(state) {
+      currentDetailHeroApproval = state;
+      const statusEl = document.getElementById("detail-hero-status");
+      const copyEl = document.getElementById("detail-hero-copy");
+      const chipStatusEl = document.getElementById("detail-hero-chip-status");
+      if (!statusEl || !copyEl || !chipStatusEl) return;
+
+      statusEl.classList.remove("approved", "revise");
+      if (state === "approved") {
+        statusEl.textContent = "已确认，可以继续";
+        statusEl.classList.add("approved");
+        chipStatusEl.textContent = "可继续扩展详情页";
+        copyEl.textContent = "这张首图已经通过，可以把它作为后续详情页内容的第一屏基线。";
+        resultStatus.textContent = "首图方向已确认";
+        return;
+      }
+
+      if (state === "revise") {
+        statusEl.textContent = "待回到摘要";
+        statusEl.classList.add("revise");
+        chipStatusEl.textContent = "建议先回摘要微调";
+        copyEl.textContent = "这张图先不要继续往后扩。建议回到第 5 步摘要，把首图方向、卖点或风格再收一版，然后重新生成首图。";
+        resultStatus.textContent = "首图待微调";
+        return;
+      }
+
+      statusEl.textContent = "待确认";
+      chipStatusEl.textContent = "待确认是否继续";
+      copyEl.textContent = "如果这张首图已经能作为后续详情页内容的第一屏基线，就继续后面的阶段；如果还不够稳，可以直接重做，或者回到摘要阶段先微调方案。";
+      resultStatus.textContent = "首图已生成";
+    }
+
+    function bindDetailHeroActions() {
+      const approveBtn = document.getElementById("detail-hero-approve-btn");
+      const regenerateBtn = document.getElementById("detail-hero-regenerate-btn");
+      const backBtn = document.getElementById("detail-hero-back-btn");
+
+      if (approveBtn) {
+        approveBtn.addEventListener("click", () => {
+          setDetailHeroApprovalState("approved");
+          showToast("首图方向已确认，可以继续后续详情页阶段");
+        });
+      }
+
+      if (regenerateBtn) {
+        regenerateBtn.addEventListener("click", () => {
+          setDetailHeroApprovalState("pending");
+          handleDetailHeroGenerate();
+        });
+      }
+
+      if (backBtn) {
+        backBtn.addEventListener("click", () => {
+          if (!currentDetailAnalysis) {
+            showToast("当前没有可回退的方案摘要");
+            return;
+          }
+          currentDetailHeroImageUrl = "";
+          currentDetailHeroPrompt = "";
+          currentDetailHeroApproval = "revise";
+          setDetailAnalysisResult(currentDetailAnalysis, currentDetailAnalysisMeta || {});
+          setDetailApprovalState("revise");
+          showToast("已回到第 5 步摘要，可以继续微调方案");
+        });
+      }
+    }
+
     async function handleDetailGenerate(options = {}) {
       if (isGenerating) return;
 
@@ -4080,33 +4354,81 @@
         const productImageBase64 = await fileToDataUrl(activeDetailProductFile);
         const productColorHint = await extractImageColorHint(activeDetailProductFile);
         const referenceScreenshotBase64 = await fileToDataUrl(activeDetailReferenceFile);
-        const response = await fetch("/api/analyze-detail-page", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            productName,
-            sellingPoints,
-            scenes: detailScenes.value.trim(),
-            audience: detailAudience.value.trim(),
-            extra: detailExtra.value.trim(),
-            style: currentDetailStyle,
-            url: targetUrl,
-            readResult: activeReadResult,
-            revisionFeedback,
-            revisionTags,
-            revisionRound: revisionFeedback || revisionTags.length ? currentDetailRevisionRound + 1 : currentDetailRevisionRound,
-            productColorHint,
-            productImageBase64: productImageBase64 || undefined,
-            referenceScreenshotBase64: referenceScreenshotBase64 || undefined,
-          })
+        const data = await postJson("/api/analyze-detail-page", {
+          productName,
+          sellingPoints,
+          scenes: detailScenes.value.trim(),
+          audience: detailAudience.value.trim(),
+          extra: detailExtra.value.trim(),
+          style: currentDetailStyle,
+          url: targetUrl,
+          readResult: activeReadResult,
+          revisionFeedback,
+          revisionTags,
+          revisionRound: revisionFeedback || revisionTags.length ? currentDetailRevisionRound + 1 : currentDetailRevisionRound,
+          productColorHint,
+          productImageBase64: productImageBase64 || undefined,
+          referenceScreenshotBase64: referenceScreenshotBase64 || undefined,
         });
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.error || "整理方案失败");
 
         setDetailAnalysisResult(data.result, data.meta || {});
         showToast(data.meta?.mode === "model" ? "方案摘要已由模型整理完成" : "方案摘要已基础整理完成");
       } catch (error) {
         setResultError(error.message || "整理方案失败");
+      } finally {
+        isGenerating = false;
+        btnDetailGenerate.disabled = false;
+        updateResultActions();
+      }
+    }
+
+    async function handleDetailHeroGenerate() {
+      if (isGenerating) return;
+
+      if (!activeDetailProductFile) {
+        showToast("请先上传商品白底图");
+        return;
+      }
+
+      if (!currentDetailAnalysis) {
+        showToast("请先完成第 5 步方案摘要");
+        return;
+      }
+
+      if (currentDetailApproval !== "approved") {
+        showToast("请先确认第 5 步摘要通过，再进入首图生成");
+        return;
+      }
+
+      isGenerating = true;
+      btnDetailGenerate.disabled = true;
+      setDetailHeroLoading();
+      resultPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+
+      try {
+        const productImageDataUrl = await fileToDataUrl(activeDetailProductFile);
+        const productImageBase64 = String(productImageDataUrl || "").split(",")[1];
+        const data = await postJson("/api/generate-detail-hero", {
+          productImageBase64,
+          productName: currentDetailAnalysis.productName || detailProductNameInput.value.trim(),
+          style: currentDetailStyle,
+          imagePromptDraft: currentDetailAnalysis.imagePromptDraft || "",
+          heroDirection: currentDetailAnalysis.heroDirection || {},
+          emotionalHook: currentDetailAnalysis.emotionalHook || "",
+          audienceInsight: currentDetailAnalysis.audienceInsight || "",
+          visualKeywords: currentDetailAnalysis.visualKeywords || [],
+          productVisualSummary: currentDetailAnalysis.productVisualSummary || "",
+        });
+
+        const imgUrl = getFirstGeneratedImage(data);
+        if (!imgUrl) {
+          throw new Error("接口未返回首图结果");
+        }
+
+        setDetailHeroResult(imgUrl, data.meta?.prompt || currentDetailAnalysis.imagePromptDraft || "");
+        showToast("第 6 步首图生成完成");
+      } catch (error) {
+        setResultError(error.message || "首图生成失败");
       } finally {
         isGenerating = false;
         btnDetailGenerate.disabled = false;
@@ -4153,26 +4475,14 @@
       resultPanel.scrollIntoView({ behavior: "smooth", block: "start" });
 
       try {
-        const response = await fetch("/api/read-detail-page", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ url: targetUrl })
-        });
-        const data = await response.json();
-
-        if (!response.ok) {
-          if (data.result) {
-            setDetailReadResult(data.result);
-          } else {
-            setResultError(data.error || "读取详情页失败");
-          }
-          throw new Error(data.error || "读取详情页失败");
-        }
+        const data = await postJson("/api/read-detail-page", { url: targetUrl });
 
         setDetailReadResult(data.result);
         showToast("参考详情页读取完成");
       } catch (error) {
-        if (!currentDetailReadResult) {
+        if (error?.payload?.result) {
+          setDetailReadResult(error.payload.result);
+        } else if (!currentDetailReadResult) {
           setResultError(error.message || "读取详情页失败");
         }
         showToast(error.message || "读取详情页失败");
@@ -4186,6 +4496,10 @@
 
     function handleRegenerate() {
       if (currentMode === "detail") {
+        if (canGenerateDetailHero()) {
+          handleDetailHeroGenerate();
+          return;
+        }
         handleDetailGenerate();
         return;
       }
@@ -4275,20 +4589,15 @@
       reader.onload = async (event) => {
         try {
           const base64 = String(event.target.result).split(",")[1];
-          const response = await fetch("/api/generate-scene-fusion", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ image: base64, sceneDesc })
+          const response = { ok: true };
+          const data = await postJson("/api/generate-scene-image", {
+            imageBase64: base64,
+            sceneDesc
           });
-          const data = await response.json();
           if (!response.ok) throw new Error(data.error || "生成失败");
 
-          let imgUrl = "";
-          if (data.result?.data?.[0]?.url) {
-            imgUrl = data.result.data[0].url;
-          } else if (data.result?.data?.[0]?.b64_json) {
-            imgUrl = "data:image/png;base64," + data.result.data[0].b64_json;
-          } else {
+          const imgUrl = getFirstGeneratedImage(data);
+          if (!imgUrl) {
             throw new Error("接口未返回图片结果");
           }
 
