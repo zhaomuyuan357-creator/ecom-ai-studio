@@ -430,6 +430,487 @@ function buildFallbackDetailAnalysis(input) {
   };
 }
 
+const DETAIL_MODULE_LIBRARY = [
+  {
+    key: 'hero',
+    group: 'required',
+    name: '首屏海报',
+    order: 1,
+    lockedWithHero: true,
+    aliases: ['hero', '首图', '首屏', '海报'],
+    purpose: '延续第 6 步已确认的首图方向，作为整套详情页的第一屏基线。',
+    visualFocus: '沿用 hero 主体、第一卖点和当前风格基线',
+    copyAngle: '第一屏先把商品身份和用户第一眼能感知到的好处讲清楚',
+    startAction: '直接沿用已确认 hero，不重复出图，从下一屏开始继续扩展',
+    requiredInputs: [],
+    optionalInputs: ['productName', 'sellingPoints', 'heroImageUrl'],
+  },
+  {
+    key: 'selling-points',
+    group: 'required',
+    name: '核心卖点',
+    order: 2,
+    aliases: ['卖点', '核心卖点', '优势'],
+    purpose: '把核心优势拆成更适合电商浏览的卖点模块，避免只堆一段文案。',
+    visualFocus: '主卖点图标、局部特写和关键信息分层',
+    copyAngle: '把 2 到 3 个最值得讲的理由拆开讲清楚',
+    startAction: '建议先从这块开始进入正式生成，最容易承接首图后的转化节奏',
+    requiredInputs: ['sellingPoints'],
+    optionalInputs: ['productName', 'audience', 'scenes', 'extra'],
+  },
+  {
+    key: 'params',
+    group: 'required',
+    name: '产品参数',
+    order: 3,
+    aliases: ['参数', '规格', '尺寸'],
+    purpose: '整理规格、材质和适用信息，补齐购买决策所需的基础说明。',
+    visualFocus: '参数表、尺寸结构和材质信息的清晰排布',
+    copyAngle: '用最低理解成本把购买前必须确认的信息说明白',
+    startAction: '放在卖点后面承接理性决策信息，避免过早打断首屏节奏',
+    requiredInputs: ['paramSpecs'],
+    optionalInputs: ['extra', 'readResult'],
+  },
+  {
+    key: 'details',
+    group: 'required',
+    name: '细节图',
+    order: 4,
+    aliases: ['细节', '特写', '做工', '材质'],
+    purpose: '强化局部特写、做工和质感，支持卖点可信度。',
+    visualFocus: '局部放大、材质纹理和结构细节',
+    copyAngle: '把“为什么值得买”落到可感知的细节证据上',
+    startAction: '适合在核心卖点之后进入，强化真实感和品质感',
+    requiredInputs: [],
+    optionalInputs: ['sellingPoints', 'productImage', 'extra'],
+  },
+  {
+    key: 'scenes',
+    group: 'required',
+    name: '场景使用图',
+    order: 5,
+    aliases: ['场景', '使用场景', '实拍场景'],
+    purpose: '说明商品适合在什么场景下使用，帮助买家建立代入感。',
+    visualFocus: '真实使用环境、人物关系或生活化陈列',
+    copyAngle: '告诉买家它适合在哪些时刻出现，而不只是长什么样',
+    startAction: '在理性信息后补生活化画面，更接近真实电商详情页节奏',
+    requiredInputs: ['scenes'],
+    optionalInputs: ['audience', 'sellingPoints'],
+  },
+  {
+    key: 'variants',
+    group: 'required',
+    name: '款式/颜色分类',
+    order: 6,
+    aliases: ['颜色', '款式', '变体', '分类'],
+    purpose: '把可选款式、颜色或组合关系讲清楚，减少下单前反复确认。',
+    visualFocus: '不同配色、规格或组合的并列展示',
+    copyAngle: '把选择差异说明白，减少用户理解成本',
+    startAction: '适合放在中后段，帮助用户快速完成版本选择',
+    requiredInputs: ['variantInfo'],
+    optionalInputs: ['extra', 'readResult'],
+  },
+  {
+    key: 'trust',
+    group: 'required',
+    name: '资质/品牌保障',
+    order: 7,
+    aliases: ['资质', '品牌', '保障', '认证', '信任'],
+    purpose: '补强平台信任感、品牌说明或合规背书。',
+    visualFocus: '证书、品牌说明、检测或保障信息',
+    copyAngle: '把用户最后的顾虑收掉，增强下单安心感',
+    startAction: '通常适合在中后段补强信任，不需要压到第一屏前面',
+    requiredInputs: ['trustInfo'],
+    optionalInputs: ['extra', 'readResult'],
+  },
+  {
+    key: 'after-sales',
+    group: 'required',
+    name: '售后说明',
+    order: 8,
+    aliases: ['售后', '配送', '退换', '服务'],
+    purpose: '把配送、退换和售后边界讲清楚，作为详情页收口保障。',
+    visualFocus: '服务说明、承诺条目和履约信息',
+    copyAngle: '降低购买风险感，给用户明确预期',
+    startAction: '建议作为后段收口模块，和 CTA 信息一起整理',
+    requiredInputs: ['afterSalesInfo'],
+    optionalInputs: ['extra'],
+  },
+  {
+    key: 'demo',
+    group: 'optional',
+    name: '功能演示图',
+    order: 9,
+    aliases: ['演示', '功能', '步骤'],
+    purpose: '适合有明确使用动作、步骤或功能效果的商品。',
+    visualFocus: '动作拆解、功能前后变化或步骤流程',
+    copyAngle: '让用户一眼看懂怎么用，以及用了会怎样',
+    startAction: '如果商品依赖功能理解，这块适合优先提前到卖点之后',
+    requiredInputs: ['sellingPoints'],
+    optionalInputs: ['scenes', 'extra', 'readResult'],
+  },
+  {
+    key: 'comparison',
+    group: 'optional',
+    name: '对比图',
+    order: 10,
+    aliases: ['对比', '升级', '差异'],
+    purpose: '适合需要突出升级点、差异点或替代关系的商品。',
+    visualFocus: '新旧对比、竞品对比或版本差异',
+    copyAngle: '明确说明为什么这款更值得选',
+    startAction: '适合在核心卖点之后加入，用来拉开差异感',
+    requiredInputs: ['comparisonBasis'],
+    optionalInputs: ['sellingPoints', 'readResult'],
+  },
+  {
+    key: 'size-guide',
+    group: 'optional',
+    name: '尺码选购指南',
+    order: 11,
+    aliases: ['尺码', '选购指南', '穿着'],
+    purpose: '服饰鞋包专属，帮助用户完成尺码或规格选择。',
+    visualFocus: '尺码表、测量方式和适配建议',
+    copyAngle: '降低尺寸不确定感，减少售后咨询',
+    startAction: '如果当前品类需要尺码判断，建议作为参数模块的增强版一起进入',
+    requiredInputs: ['sizeGuideInfo'],
+    optionalInputs: ['audience', 'extra'],
+  },
+  {
+    key: 'bundle',
+    group: 'optional',
+    name: '搭配推荐',
+    order: 12,
+    aliases: ['搭配', '组合', '连带'],
+    purpose: '适合组合销售、连带购买或提升客单价的商品。',
+    visualFocus: '组合陈列、关联商品和使用搭配',
+    copyAngle: '把单件商品放进更完整的购买场景里',
+    startAction: '适合作为后段的加购模块，不需要和主卖点抢第一波注意力',
+    requiredInputs: ['bundleInfo'],
+    optionalInputs: ['scenes', 'sellingPoints', 'extra'],
+  },
+  {
+    key: 'reviews',
+    group: 'optional',
+    name: '买家秀/口碑',
+    order: 13,
+    aliases: ['买家秀', '口碑', '评价', '反馈'],
+    purpose: '适合补真实反馈、使用感受和口碑证明。',
+    visualFocus: '真实反馈截图、用户评价摘录和场景返图',
+    copyAngle: '用第三方视角补可信度，而不是自己反复自夸',
+    startAction: '适合靠后补强信任，在资质保障之后自然衔接',
+    requiredInputs: ['reviewProof'],
+    optionalInputs: ['readResult', 'extra'],
+  },
+];
+
+const DETAIL_INPUT_REQUIREMENT_COPY = {
+  productName: {
+    label: '商品名称',
+    missingLabel: '补商品名称',
+    description: '先明确这块在讲哪一款商品。',
+  },
+  sellingPoints: {
+    label: '核心卖点',
+    missingLabel: '补核心卖点',
+    description: '没有明确卖点时，这块容易写空话。',
+  },
+  scenes: {
+    label: '使用场景',
+    missingLabel: '补使用场景',
+    description: '需要明确商品适合什么使用情境，场景图才不会乱演。',
+  },
+  audience: {
+    label: '目标人群',
+    missingLabel: '补目标人群',
+    description: '补充给谁买，有助于收紧文案语气和表达重点。',
+  },
+  extra: {
+    label: '补充说明',
+    missingLabel: '补充业务说明',
+    description: '如果有特殊业务口径，建议先写进补充说明。',
+  },
+  readResult: {
+    label: '参考详情页摘要',
+    missingLabel: '补参考页摘要',
+    description: '参考页读到的结构信息可以帮助这块更贴近真实详情页。',
+  },
+  heroImageUrl: {
+    label: '首图基线',
+    missingLabel: '先确认首图',
+    description: '这一块需要沿用已确认的首图基线。',
+  },
+  productImage: {
+    label: '商品图',
+    missingLabel: '先上传商品图',
+    description: '细节类板块需要以真实商品图为准，而不是靠脑补。',
+  },
+  paramSpecs: {
+    label: '规格/参数信息',
+    missingLabel: '补规格参数',
+    description: '没有尺寸、材质、规格这类明确数据时，不能正式生成参数板块。',
+  },
+  variantInfo: {
+    label: '款式/颜色信息',
+    missingLabel: '补款式颜色',
+    description: '需要先说明有哪些颜色、款式或组合，AI 不能自己编变体。',
+  },
+  trustInfo: {
+    label: '资质/品牌/背书信息',
+    missingLabel: '补资质或品牌信息',
+    description: '没有品牌、证书或背书资料时，不能自动生成信任证明。',
+  },
+  afterSalesInfo: {
+    label: '售后政策',
+    missingLabel: '补售后政策',
+    description: '退换、配送、保修这类规则必须由用户给出，不能让 AI 乱写。',
+  },
+  comparisonBasis: {
+    label: '对比依据',
+    missingLabel: '补对比依据',
+    description: '需要明确是和旧款、竞品还是基础款对比，避免凭空制造差异。',
+  },
+  sizeGuideInfo: {
+    label: '尺码/选购依据',
+    missingLabel: '补尺码信息',
+    description: '没有尺码表、测量方式或选购建议时，不应该生成尺码模块。',
+  },
+  bundleInfo: {
+    label: '搭配/组合信息',
+    missingLabel: '补搭配方案',
+    description: '要先告诉系统搭配什么卖、怎么组合，才能做连带推荐。',
+  },
+  reviewProof: {
+    label: '买家反馈/口碑素材',
+    missingLabel: '补评价素材',
+    description: '买家秀和口碑模块必须依赖真实反馈，不能凭空生成评价。',
+  },
+};
+
+function normalizeSelectedDetailModules(value) {
+  if (!Array.isArray(value)) return [];
+
+  return value
+    .map((item) => ({
+      key: String(item?.key || '').trim(),
+      group: item?.group === 'optional' ? 'optional' : 'required',
+      selected: item?.selected !== false,
+    }))
+    .filter((item) => item.key && item.selected);
+}
+
+function includesModuleAlias(text, aliases = []) {
+  return aliases.some((alias) => text.includes(alias));
+}
+
+function findModuleInsight(summary, moduleDef) {
+  const blueprint = (summary?.moduleBlueprints || []).find((item) => {
+    const haystack = `${item?.name || ''} ${item?.purpose || ''} ${item?.visualFocus || ''} ${item?.copyAngle || ''}`;
+    return includesModuleAlias(haystack, moduleDef.aliases);
+  });
+
+  if (blueprint) {
+    return {
+      sourceName: String(blueprint.name || '').trim(),
+      purpose: String(blueprint.purpose || '').trim(),
+      visualFocus: String(blueprint.visualFocus || '').trim(),
+      copyAngle: String(blueprint.copyAngle || '').trim(),
+    };
+  }
+
+  const pageModule = (summary?.pageModules || []).find((item) => {
+    const haystack = `${item?.name || ''} ${item?.purpose || ''}`;
+    return includesModuleAlias(haystack, moduleDef.aliases);
+  });
+
+  if (pageModule) {
+    return {
+      sourceName: String(pageModule.name || '').trim(),
+      purpose: String(pageModule.purpose || '').trim(),
+      visualFocus: '',
+      copyAngle: '',
+    };
+  }
+
+  return null;
+}
+
+function findModulePlanHint(summary, moduleDef) {
+  return (summary?.modulePlan || []).find((item) => includesModuleAlias(String(item || ''), moduleDef.aliases)) || '';
+}
+
+function normalizeWorkbenchContext(input = {}) {
+  const supplementalInfo = input.supplementalInfo && typeof input.supplementalInfo === 'object'
+    ? input.supplementalInfo
+    : {};
+  const supplementalText = Object.values(supplementalInfo).map((value) => String(value || '').trim()).join(' ').toLowerCase();
+  const textFields = {
+    productName: String(input.productName || '').trim(),
+    sellingPoints: String(input.sellingPoints || '').trim(),
+    scenes: String(input.scenes || '').trim(),
+    audience: String(input.audience || '').trim(),
+    extra: String(input.extra || '').trim(),
+  };
+
+  const readResult = input.readResult && typeof input.readResult === 'object' ? input.readResult : null;
+  const extraText = textFields.extra.toLowerCase();
+  const readText = JSON.stringify(readResult || {}).toLowerCase();
+  const nameAndSceneText = `${textFields.productName} ${textFields.scenes} ${textFields.extra}`.toLowerCase();
+
+  return {
+    ...textFields,
+    heroImageUrl: String(input.heroImageUrl || '').trim(),
+    readResult,
+    productImage: Boolean(input.hasProductImage),
+    supplementalInfo,
+    paramSpecs: String(supplementalInfo.paramSpecs || '').trim() || /尺寸|尺码|规格|参数|材质|容量|重量|长宽高|面料|克重|功率|续航/.test(`${extraText} ${supplementalText}`) || /尺寸|规格|参数/.test(readText),
+    variantInfo: String(supplementalInfo.variantInfo || '').trim() || /颜色|色号|款式|套装|组合|规格可选|版本/.test(`${extraText} ${supplementalText}`) || /颜色|款式|套餐/.test(readText),
+    trustInfo: String(supplementalInfo.trustInfo || '').trim() || /品牌|资质|认证|检测|质保|正品|专利|背书|授权/.test(`${extraText} ${supplementalText}`) || /品牌|认证|质保|授权/.test(readText),
+    afterSalesInfo: String(supplementalInfo.afterSalesInfo || '').trim() || /售后|退换|运费险|保修|发货|配送|包邮|换货/.test(`${extraText} ${supplementalText}`),
+    comparisonBasis: String(supplementalInfo.comparisonBasis || '').trim() || /对比|竞品|升级|旧款|新版|前后/.test(`${extraText} ${supplementalText}`) || /对比|升级/.test(readText),
+    sizeGuideInfo: String(supplementalInfo.sizeGuideInfo || '').trim() || /尺码|胸围|衣长|鞋码|脚长|选码|试穿/.test(`${extraText} ${supplementalText}`) || /shoe|apparel|fashion|服|鞋|裤|裙|包/.test(nameAndSceneText),
+    bundleInfo: String(supplementalInfo.bundleInfo || '').trim() || /搭配|组合|加购|套餐|连带|推荐搭配/.test(`${extraText} ${supplementalText}`),
+    reviewProof: String(supplementalInfo.reviewProof || '').trim() || /评价|口碑|买家秀|反馈|晒单/.test(`${extraText} ${supplementalText}`) || /评价|口碑|买家/.test(readText),
+  };
+}
+
+function getRequirementInfo(key) {
+  return DETAIL_INPUT_REQUIREMENT_COPY[key] || {
+    label: key,
+    missingLabel: `补${key}`,
+    description: '需要先补充这项信息。',
+  };
+}
+
+function evaluateModuleReadiness(moduleDef, context) {
+  const requiredInputs = Array.isArray(moduleDef.requiredInputs) ? moduleDef.requiredInputs : [];
+  const optionalInputs = Array.isArray(moduleDef.optionalInputs) ? moduleDef.optionalInputs : [];
+  const missingRequiredInputs = requiredInputs.filter((key) => {
+    const value = context[key];
+    return !(Array.isArray(value) ? value.length : value);
+  });
+
+  const ready = missingRequiredInputs.length === 0;
+  const missingInputBadges = missingRequiredInputs.map((key) => {
+    const info = getRequirementInfo(key);
+    return {
+      key,
+      label: info.missingLabel,
+      description: info.description,
+    };
+  });
+
+  const suggestedInputBadges = optionalInputs
+    .filter((key) => {
+      const value = context[key];
+      return Array.isArray(value) ? value.length : value;
+    })
+    .map((key) => {
+      const info = getRequirementInfo(key);
+      return {
+        key,
+        label: info.label,
+      };
+    });
+
+  let status = 'ready';
+  let statusLabel = '可进入正式生成';
+  let readinessNote = '当前信息足够进入这一块的正式生成。';
+
+  if (moduleDef.lockedWithHero && context.heroImageUrl) {
+    status = 'locked';
+    statusLabel = '已由第 6 步首图锁定';
+    readinessNote = '这一块直接沿用已确认首图，不需要重复出图。';
+  } else if (!ready) {
+    status = 'needs_input';
+    statusLabel = '需先补信息';
+    readinessNote = `缺少${missingRequiredInputs.map((key) => getRequirementInfo(key).label).join('、')}，先补完再生成更稳。`;
+  }
+
+  return {
+    status,
+    statusLabel,
+    readinessNote,
+    ready,
+    requiredInputs,
+    missingRequiredInputs,
+    missingInputBadges,
+    suggestedInputBadges,
+  };
+}
+
+function buildDetailModuleWorkbench(input = {}) {
+  const summary = input.summary || {};
+  const context = normalizeWorkbenchContext(input);
+  const selectedModules = normalizeSelectedDetailModules(input.selectedModules);
+  const selectedDefs = selectedModules
+    .map((item) => {
+      const moduleDef = DETAIL_MODULE_LIBRARY.find((candidate) => candidate.key === item.key);
+      if (!moduleDef) return null;
+      return { ...moduleDef, group: item.group || moduleDef.group };
+    })
+    .filter(Boolean)
+    .sort((a, b) => a.order - b.order);
+
+  const modules = selectedDefs.map((moduleDef, index) => {
+    const insight = findModuleInsight(summary, moduleDef);
+    const planHint = findModulePlanHint(summary, moduleDef);
+    const readiness = evaluateModuleReadiness(moduleDef, context);
+    const isHeroLocked = readiness.status === 'locked';
+
+    return {
+      key: moduleDef.key,
+      group: moduleDef.group,
+      name: moduleDef.name,
+      queueIndex: index + 1,
+      lockedWithHero: isHeroLocked,
+      ready: readiness.ready,
+      status: readiness.status,
+      statusLabel: readiness.statusLabel,
+      readinessNote: readiness.readinessNote,
+      requiredInputs: readiness.requiredInputs,
+      missingRequiredInputs: readiness.missingRequiredInputs,
+      missingInputBadges: readiness.missingInputBadges,
+      suggestedInputBadges: readiness.suggestedInputBadges,
+      generationGoal: insight?.purpose || moduleDef.purpose,
+      visualFocus: insight?.visualFocus || moduleDef.visualFocus,
+      copyAngle: insight?.copyAngle || moduleDef.copyAngle,
+      sourceHint: insight?.sourceName || '',
+      planHint: readiness.status === 'needs_input'
+        ? readiness.readinessNote
+        : (planHint || moduleDef.startAction),
+      startAction: moduleDef.startAction,
+    };
+  });
+
+  const firstReadyModule = modules.find((item) => item.status === 'ready') || null;
+  const needsInputCount = modules.filter((item) => item.status === 'needs_input').length;
+
+  return {
+    productName: String(input.productName || summary.productName || '').trim(),
+    style: String(input.style || '').trim(),
+    heroImageUrl: String(input.heroImageUrl || '').trim(),
+    totalSelected: modules.length,
+    requiredSelected: modules.filter((item) => item.group === 'required').length,
+    optionalSelected: modules.filter((item) => item.group === 'optional').length,
+    readyCount: modules.filter((item) => item.status === 'ready').length,
+    lockedCount: modules.filter((item) => item.status === 'locked').length,
+    needsInputCount,
+    nextRecommendedModule: firstReadyModule
+      ? {
+          key: firstReadyModule.key,
+          name: firstReadyModule.name,
+          queueIndex: firstReadyModule.queueIndex,
+        }
+      : null,
+    stageSummary: firstReadyModule
+      ? `已进入详情页板块工作台，建议先从「${firstReadyModule.name}」开始正式生成。`
+      : needsInputCount
+        ? '当前已选板块里有信息不足的部分，建议先补资料，再继续往下生成。'
+        : '当前已选板块都已完成基础锁定，可继续确认是否还要补充新的模块。',
+    modules,
+  };
+}
+
 function buildDetailAnalysisPrompt(input) {
   const sourceMode = input.readResult ? 'reference' : 'description';
   return `
@@ -530,6 +1011,37 @@ function buildProductVisualPrompt() {
 2. 如果图里是蓝色车，primaryColor 就必须写蓝色，不能写黑色。
 3. 如果主体类型不确定，就写“待确认”。
 4. conditionNotes 只写图里真的看得到的状态，例如 车身有水珠、引擎盖未完全合拢、背景有其他车辆。
+  `.trim();
+}
+
+function buildSupplementalImagePrompt(fieldKey) {
+  const fieldPrompts = {
+    paramSpecs: '这是一张商品参数、规格或材质相关图片。请只提取图片里明确可读的尺寸、规格、材质、容量、重量、适用信息。',
+    variantInfo: '这是一张商品颜色、款式、版本或组合相关图片。请只提取图片里明确出现的颜色、款式、规格、套装关系。',
+    trustInfo: '这是一张品牌、资质、认证、检测或背书相关图片。请只提取图片里能明确识别出的品牌、认证、质检、授权、保障信息。',
+    afterSalesInfo: '这是一张售后、配送、退换或保修相关图片。请只提取图片里明确写出的发货、退换、运费险、保修、服务政策。',
+    comparisonBasis: '这是一张商品对比、升级点或差异说明相关图片。请只提取图片里明确写出的对比对象和差异点。',
+    sizeGuideInfo: '这是一张尺码表或选购指南相关图片。请只提取图片里明确写出的尺码、测量方式、身高体重建议或选购建议。',
+    bundleInfo: '这是一张搭配推荐、套餐组合或关联销售相关图片。请只提取图片里明确写出的搭配关系、套餐组成和组合卖点。',
+    reviewProof: '这是一张买家评价、口碑反馈或晒单相关图片。请只提取图片里明确出现的真实评价、反馈关键词和使用感受。',
+  };
+
+  return `
+你是电商详情页资料识别助手。你的任务不是创作，而是从图片里提取可以直接用于详情页板块补资料的文字信息。
+
+当前字段：${fieldKey}
+识别重点：${fieldPrompts[fieldKey] || '请提取图片里与当前详情页资料补充最相关的文字信息。'}
+
+输出要求：
+1. 只输出严格 JSON，不要输出 markdown，不要解释。
+2. 只能提取图片里明确可见或可读的内容，不要脑补，不要扩写。
+3. 如果图片里信息不清楚，就忽略那部分，不要编造。
+4. 把结果压缩成适合直接回填输入框的一段中文。
+
+输出 JSON 结构：
+{
+  "text": "提取后的简洁中文，适合直接回填到补充输入框"
+}
   `.trim();
 }
 
@@ -636,6 +1148,210 @@ ${input.imagePromptDraft || ''}
 5. 构图适合做详情页第一屏，方便后续继续扩展卖点图和长图模块
 6. 如果有场景，只做轻量辅助，不要喧宾夺主
   `.trim();
+}
+
+function buildDetailSellingPointsPrompt(input = {}) {
+  const sellingPoints = toArray(input.coreSellingPoints).slice(0, 4).join('、');
+  const visualKeywords = toArray(input.visualKeywords).slice(0, 6).join('、');
+
+  return `
+你是电商详情页模块生成助手。现在不要生成整套详情页，只生成“核心卖点模块”这一张图。
+请严格以用户上传的商品图为准，不要改商品主体颜色、外观、材质、比例和主要结构。
+
+这次只做第一个正式进入生成的详情页板块：
+- 模块名称：核心卖点
+- 商品名称：${input.productName || '待确认商品'}
+- 当前风格：${input.style || '电商高转化'}
+- 首图基线：${input.heroHeadline || '待补充'}
+- 首图视觉重点：${input.heroVisualFocus || '待补充'}
+- 商品视觉摘要：${input.productVisualSummary || '待补充'}
+- 核心卖点：${sellingPoints || '待补充'}
+- 目标人群：${input.audienceInsight || '待补充'}
+- 使用场景：${input.scenes || '待补充'}
+- 情绪钩子：${input.emotionalHook || '待补充'}
+- 视觉关键词：${visualKeywords || '待补充'}
+
+生成要求：
+1. 这是详情页里的“卖点模块”，不是重新做首图。
+2. 画面要延续第 6 步首图的风格基线，但更聚焦卖点表达。
+3. 允许加入轻量文案编排感、图标感、局部特写感，但不要做成杂乱海报。
+4. 优先突出 2 到 3 个最值得讲的卖点，不要堆过多信息。
+5. 适合放在首图之后，作为详情页第二屏或第三屏。
+6. 商品主体仍然要真实、清晰、可信，不能为了卖点夸张变形。
+  `.trim();
+}
+
+function buildDetailDetailsPrompt(input = {}) {
+  const sellingPoints = toArray(input.coreSellingPoints).slice(0, 4).join('、');
+  const visualKeywords = toArray(input.visualKeywords).slice(0, 6).join('、');
+
+  return `
+你是电商详情页模块生成助手。现在不要生成整套详情页，只生成“细节图模块”这一张图。
+请严格以用户上传的商品图为准，不要改商品主体颜色、外观、材质、比例和主要结构。
+
+当前模块信息：
+- 模块名称：细节图
+- 商品名称：${input.productName || '待确认商品'}
+- 当前风格：${input.style || '电商高转化'}
+- 首图基线：${input.heroHeadline || '待补充'}
+- 首图视觉重点：${input.heroVisualFocus || '待补充'}
+- 商品视觉摘要：${input.productVisualSummary || '待补充'}
+- 核心卖点：${sellingPoints || '待补充'}
+- 目标人群：${input.audienceInsight || '待补充'}
+- 使用场景：${input.scenes || '待补充'}
+- 情绪钩子：${input.emotionalHook || '待补充'}
+- 视觉关键词：${visualKeywords || '待补充'}
+
+生成要求：
+1. 这是详情页里的“细节图模块”，重点是局部特写、材质、做工、真实痕迹，不是重新做首图。
+2. 画面要延续第 6 步首图基线，但更聚焦可验证的细节证据。
+3. 尽量用近景、局部放大、结构特写来支撑卖点可信度。
+4. 如果商品有真实使用痕迹、材质纹理、反光、缝线、接口、边角等，可适度强化这些内容。
+5. 整体仍要保持电商感、真实感和清晰度，不要做成抽象广告图。
+6. 适合放在卖点模块后，作为用户进一步确认品质的那一屏。
+  `.trim();
+}
+
+function buildDetailParamsPrompt(input = {}) {
+  const paramSpecs = String(input.paramSpecs || '').trim();
+  const variantInfo = String(input.variantInfo || '').trim();
+  const sizeGuideInfo = String(input.sizeGuideInfo || '').trim();
+  const visualKeywords = toArray(input.visualKeywords).slice(0, 6).join('、');
+
+  return `
+你是电商详情页模块生成助手。现在不要生成整套详情页，只生成“产品参数模块”这一张图。
+请严格以用户上传的商品图为准，不要改商品主体颜色、外观、材质、比例和主要结构。
+
+当前模块信息：
+- 模块名称：产品参数
+- 商品名称：${input.productName || '待确认商品'}
+- 当前风格：${input.style || '电商高转化'}
+- 首图基线：${input.heroHeadline || '待补充'}
+- 首图视觉重点：${input.heroVisualFocus || '待补充'}
+- 商品视觉摘要：${input.productVisualSummary || '待补充'}
+- 规格/参数信息：${paramSpecs || '待补充'}
+- 款式/颜色信息：${variantInfo || '待补充'}
+- 尺码/选购依据：${sizeGuideInfo || '待补充'}
+- 视觉关键词：${visualKeywords || '待补充'}
+
+生成要求：
+1. 这是详情页里的“参数模块”，重点是把用户已经给出的尺寸、规格、材质、容量、年份、排量、配置等信息整理清楚。
+2. 不能新增用户没有提供的数据，不能编参数。
+3. 画面可以做成清晰的信息分栏、参数卡片、结构化表格感，但仍要延续当前详情页风格。
+4. 如果同时给了款式/颜色或尺码信息，可以轻量并入这一屏，但主重点仍是参数清晰展示。
+5. 参数信息必须可读、整齐、低理解成本，适合放在卖点模块之后承接理性决策。
+6. 仍然保留商品主体或局部辅助视觉，不要只做纯文字海报。
+  `.trim();
+}
+
+function buildDetailScenesPrompt(input = {}) {
+  const sellingPoints = toArray(input.coreSellingPoints).slice(0, 4).join(' / ');
+  const visualKeywords = toArray(input.visualKeywords).slice(0, 6).join(' / ');
+
+  return `
+你是电商详情页模块生成助手。现在只生成“场景使用图模块”这一张图，不是重做首图，也不是整套详情页批量出图。
+请严格以用户上传的商品图为准，不要改商品主体颜色、外形和结构。
+
+当前模块信息：
+- 模块名称：场景使用图
+- 商品名称：${input.productName || '待确认商品'}
+- 当前风格：${input.style || '电商高转化'}
+- 首图基线：${input.heroHeadline || '待补充'}
+- 首图视觉重点：${input.heroVisualFocus || '待补充'}
+- 商品视觉摘要：${input.productVisualSummary || '待补充'}
+- 核心卖点：${sellingPoints || '待补充'}
+- 使用场景：${input.scenes || '待补充'}
+- 目标人群：${input.audienceInsight || '待补充'}
+- 情绪钩子：${input.emotionalHook || '待补充'}
+- 视觉关键词：${visualKeywords || '待补充'}
+
+生成要求：
+1. 这一屏要让用户看懂“这个商品会在什么真实情境中被使用”。
+2. 画面是详情页里的场景化展示，不是泛创意海报。
+3. 优先突出环境、动作关系、生活化代入感，不要空泛摆拍。
+4. 如需人物或手部入镜，只能作为轻辅助，不能喧宾夺主。
+5. 场景必须以用户提供的信息为准，不能擅自编造新的用途。
+6. 风格继续沿用 Step 06 首图基线，但更像详情页中后段的生活化模块。`.trim();
+}
+
+function buildDetailVariantsPrompt(input = {}) {
+  const variantInfo = String(input.variantInfo || '').trim();
+  const sizeGuideInfo = String(input.sizeGuideInfo || '').trim();
+  const visualKeywords = toArray(input.visualKeywords).slice(0, 6).join(' / ');
+
+  return `
+你是电商详情页模块生成助手。现在只生成“款式/颜色分类模块”这一张图。
+这块内容只能基于用户明确提供的款式、颜色、组合、版本信息，不能自行补写不存在的变体。
+
+当前模块信息：
+- 模块名称：款式/颜色分类
+- 商品名称：${input.productName || '待确认商品'}
+- 当前风格：${input.style || '电商高转化'}
+- 首图基线：${input.heroHeadline || '待补充'}
+- 商品视觉摘要：${input.productVisualSummary || '待补充'}
+- 变体信息：${variantInfo || '待补充'}
+- 尺码/选购依据：${sizeGuideInfo || '待补充'}
+- 视觉关键词：${visualKeywords || '待补充'}
+
+生成要求：
+1. 把不同版本、颜色、款式或组合关系展示清楚，降低下单前反复确认。
+2. 不能新增用户没提供的颜色、规格或套餐。
+3. 画面可用并列卡片、标签、分栏或样机对比，但必须一眼看懂差异。
+4. 如果有尺码或选购建议，可以轻量带入，但主重点仍是变体差异。
+5. 商品主体要真实，不能为了排版把商品改成不存在的样子。
+6. 风格继续沿用当前详情页基线，适合放在参数模块之后作为选购辅助。`.trim();
+}
+
+function buildDetailTrustPrompt(input = {}) {
+  const trustInfo = String(input.trustInfo || '').trim();
+  const visualKeywords = toArray(input.visualKeywords).slice(0, 6).join(' / ');
+
+  return `
+你是电商详情页模块生成助手。现在只生成“资质/品牌保障模块”这一张图。
+这一块只能基于用户提供的品牌、资质、认证、授权、检测或质保信息来生成，不能虚构任何背书。
+
+当前模块信息：
+- 模块名称：资质/品牌保障
+- 商品名称：${input.productName || '待确认商品'}
+- 当前风格：${input.style || '电商高转化'}
+- 首图基线：${input.heroHeadline || '待补充'}
+- 商品视觉摘要：${input.productVisualSummary || '待补充'}
+- 信任/资质信息：${trustInfo || '待补充'}
+- 视觉关键词：${visualKeywords || '待补充'}
+
+生成要求：
+1. 用已经提供的证据支撑“为什么可信”，不能编资质。
+2. 画面可以包含证书、品牌说明、授权信息、检测摘要，但必须正式、克制、可信。
+3. 如果素材不够支撑复杂背书画面，就采用保守排版，不要做成假证书墙。
+4. 这是中后段的信任提升模块，不要做成主卖点海报。
+5. 风格要与当前详情页一致，但语气更偏权威、安心、合规。
+6. 商品主体可以轻量露出，核心仍是信任证据的清晰展示。`.trim();
+}
+
+function buildDetailAfterSalesPrompt(input = {}) {
+  const afterSalesInfo = String(input.afterSalesInfo || '').trim();
+  const visualKeywords = toArray(input.visualKeywords).slice(0, 6).join(' / ');
+
+  return `
+你是电商详情页模块生成助手。现在只生成“售后说明模块”这一张图。
+这一块只能依据用户明确提供的退换、发货、配送、保修、客服承诺等政策信息，不能自行补写售后规则。
+
+当前模块信息：
+- 模块名称：售后说明
+- 商品名称：${input.productName || '待确认商品'}
+- 当前风格：${input.style || '电商高转化'}
+- 首图基线：${input.heroHeadline || '待补充'}
+- 商品视觉摘要：${input.productVisualSummary || '待补充'}
+- 售后政策：${afterSalesInfo || '待补充'}
+- 视觉关键词：${visualKeywords || '待补充'}
+
+生成要求：
+1. 目标是降低购买前风险感，让售后承诺和边界清楚好读。
+2. 不能新增用户没有提供的退换时效、保修年限、运费规则或其他条款。
+3. 画面可以做成卡片式说明、清单式承诺、服务标签或流程化表达，但必须易读。
+4. 它属于详情页尾段的收口保障，不要过度花哨。
+5. 如政策信息较多，优先做清晰层级，不要堆满小字。
+6. 风格继续沿用当前详情页基线，但语气更稳定、更让人安心。`.trim();
 }
 
 function ensureImageProviderReady() {
@@ -1277,6 +1993,246 @@ app.post('/api/generate-detail-hero', async (req, res) => {
   } catch (err) {
     console.error('[详情页首图生成失败]', err);
     res.status(500).json({ error: '首图生成失败，请稍后重试', detail: err.message });
+  }
+});
+
+app.post('/api/generate-detail-module', async (req, res) => {
+  try {
+    const {
+      moduleKey,
+      productImageBase64,
+      productName,
+      style,
+      summary,
+      scenes,
+      supplementalInfo,
+    } = req.body || {};
+
+    const normalizedModuleKey = String(moduleKey || '').trim();
+    if (!productImageBase64 || !String(productImageBase64).trim()) {
+      return res.status(400).json({ error: '请先上传商品白底图，再生成详情页板块' });
+    }
+
+    if (!summary || typeof summary !== 'object') {
+      return res.status(400).json({ error: '请先完成前面的详情页摘要和首图确认' });
+    }
+
+    const promptInput = {
+      productName,
+      style,
+      scenes,
+      coreSellingPoints: summary.coreSellingPoints || [],
+      visualKeywords: summary.visualKeywords || [],
+      heroHeadline: summary.heroDirection?.headline || '',
+      heroVisualFocus: summary.heroDirection?.visualFocus || '',
+      productVisualSummary: summary.productVisualSummary || '',
+      audienceInsight: summary.audienceInsight || '',
+      emotionalHook: summary.emotionalHook || '',
+      paramSpecs: supplementalInfo?.paramSpecs || '',
+      variantInfo: supplementalInfo?.variantInfo || '',
+      trustInfo: supplementalInfo?.trustInfo || '',
+      afterSalesInfo: supplementalInfo?.afterSalesInfo || '',
+      sizeGuideInfo: supplementalInfo?.sizeGuideInfo || '',
+    };
+
+    let prompt = '';
+    let useCase = '';
+    if (normalizedModuleKey === 'selling-points') {
+      prompt = buildDetailSellingPointsPrompt(promptInput);
+      useCase = 'detail_selling_points';
+    } else if (normalizedModuleKey === 'details') {
+      prompt = buildDetailDetailsPrompt(promptInput);
+      useCase = 'detail_details';
+    } else if (normalizedModuleKey === 'params') {
+      if (!String(promptInput.paramSpecs || '').trim()) {
+        return res.status(400).json({ error: '产品参数板块必须先补充规格/参数信息，再进入正式生成' });
+      }
+      prompt = buildDetailParamsPrompt(promptInput);
+      useCase = 'detail_params';
+    } else if (normalizedModuleKey === 'scenes') {
+      if (!String(promptInput.scenes || '').trim()) {
+        return res.status(400).json({ error: '场景使用图需要先补充明确的使用场景，再进入正式生成' });
+      }
+      prompt = buildDetailScenesPrompt(promptInput);
+      useCase = 'detail_scenes';
+    } else if (normalizedModuleKey === 'variants') {
+      if (!String(promptInput.variantInfo || '').trim()) {
+        return res.status(400).json({ error: '款式/颜色分类模块需要先补充变体信息，再进入正式生成' });
+      }
+      prompt = buildDetailVariantsPrompt(promptInput);
+      useCase = 'detail_variants';
+    } else if (normalizedModuleKey === 'trust') {
+      if (!String(promptInput.trustInfo || '').trim()) {
+        return res.status(400).json({ error: '资质/品牌保障模块需要先补充品牌或资质信息，再进入正式生成' });
+      }
+      prompt = buildDetailTrustPrompt(promptInput);
+      useCase = 'detail_trust';
+    } else if (normalizedModuleKey === 'after-sales') {
+      if (!String(promptInput.afterSalesInfo || '').trim()) {
+        return res.status(400).json({ error: '售后说明模块需要先补充售后政策，再进入正式生成' });
+      }
+      prompt = buildDetailAfterSalesPrompt(promptInput);
+      useCase = 'detail_after_sales';
+    } else {
+      return res.status(400).json({ error: '当前只接入了核心卖点、细节图和产品参数板块的正式生成' });
+    }
+
+    const task = createImageGenerationTask({
+      useCase,
+      prompt,
+      imageBase64: String(productImageBase64).trim(),
+    });
+    const rawResult = await runImageGenerationTask(task);
+    res.json(normalizeImageGenerationResponse(task, rawResult, {
+      prompt,
+      moduleKey: normalizedModuleKey,
+    }));
+  } catch (err) {
+    console.error('[detail-module-generation]', err);
+    res.status(500).json({
+      error: '详情页板块生成失败，请稍后重试',
+      detail: err.message,
+    });
+  }
+});
+
+app.post('/api/prepare-detail-modules', async (req, res) => {
+  try {
+    const {
+      productName,
+      style,
+      summary,
+      selectedModules,
+      heroImageUrl,
+      sellingPoints,
+      scenes,
+      audience,
+      extra,
+      readResult,
+      hasProductImage,
+      supplementalInfo,
+    } = req.body || {};
+
+    if (!summary || typeof summary !== 'object') {
+      return res.status(400).json({ error: '请先完成第 5 步方案摘要确认，再进入详情页板块工作台' });
+    }
+
+    const normalizedModules = normalizeSelectedDetailModules(selectedModules);
+    if (!normalizedModules.length) {
+      return res.status(400).json({ error: '请先确认本次要生成的详情页板块' });
+    }
+
+    const result = buildDetailModuleWorkbench({
+      productName,
+      style,
+      summary,
+      selectedModules: normalizedModules,
+      heroImageUrl,
+      sellingPoints,
+      scenes,
+      audience,
+      extra,
+      readResult,
+      hasProductImage,
+      supplementalInfo,
+    });
+
+    res.json({
+      success: true,
+      result,
+      meta: { mode: 'planner' },
+    });
+  } catch (err) {
+    console.error('[detail-module-workbench]', err);
+    res.status(500).json({
+      error: '整理详情页板块工作台失败，请稍后重试',
+      detail: err.message,
+    });
+  }
+});
+
+app.post('/api/analyze-detail-module-asset', async (req, res) => {
+  try {
+    const { fieldKey, imageBase64 } = req.body || {};
+    const normalizedFieldKey = String(fieldKey || '').trim();
+    const normalizedImageBase64 = String(imageBase64 || '').trim();
+
+    if (!normalizedFieldKey) {
+      return res.status(400).json({ error: '请先说明当前要识别的是哪类板块资料' });
+    }
+
+    if (!normalizedImageBase64) {
+      return res.status(400).json({ error: '请先上传要识别的图片' });
+    }
+
+    if (!DASHSCOPE_API_KEY || DASHSCOPE_API_KEY === 'sk-your-api-key-here') {
+      return res.json({
+        success: true,
+        result: {
+          text: '当前环境还没有配置图片识别能力，请先手动补充这项信息。',
+        },
+        meta: { mode: 'fallback', reason: 'missing_api_key' },
+      });
+    }
+
+    const response = await fetch(`${DASHSCOPE_BASE_URL}/chat/completions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${DASHSCOPE_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: 'qwen-vl-max',
+        temperature: 0.1,
+        messages: [
+          {
+            role: 'user',
+            content: [
+              {
+                type: 'image_url',
+                image_url: {
+                  url: toImageDataUrl(normalizedImageBase64),
+                },
+              },
+              {
+                type: 'text',
+                text: buildSupplementalImagePrompt(normalizedFieldKey),
+              },
+            ],
+          },
+        ],
+      }),
+    });
+
+    if (!response.ok) {
+      const errText = await response.text();
+      console.error('[detail-module-asset-recognition]', response.status, errText);
+      return res.status(502).json({ error: '图片识别失败，请换一张更清晰的图再试', detail: errText });
+    }
+
+    const data = await response.json();
+    const choice = data.choices?.[0]?.message?.content;
+    const responseText = Array.isArray(choice)
+      ? choice.map((item) => item?.text || '').join('\n')
+      : String(choice || '');
+    const parsed = extractJsonObject(responseText);
+    const text = String(parsed?.text || responseText || '').trim();
+
+    if (!text) {
+      return res.status(422).json({ error: '暂时没有从图片里识别出可直接使用的信息' });
+    }
+
+    res.json({
+      success: true,
+      result: { text },
+      meta: { mode: 'model' },
+    });
+  } catch (err) {
+    console.error('[detail-module-asset-recognition]', err);
+    res.status(500).json({
+      error: '图片识别失败，请稍后重试',
+      detail: err.message,
+    });
   }
 });
 

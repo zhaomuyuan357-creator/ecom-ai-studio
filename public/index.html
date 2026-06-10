@@ -1199,9 +1199,342 @@
       box-shadow: 0 12px 28px rgba(139, 92, 246, 0.18);
     }
 
+    .detail-module-stage {
+      display: none;
+      margin-top: 4px;
+    }
+
+    .detail-module-stage.show {
+      display: block;
+    }
+
+    .detail-module-workbench {
+      display: grid;
+      gap: 16px;
+      padding: 20px;
+      border-radius: 24px;
+      border: 1px solid rgba(115, 96, 182, 0.12);
+      background:
+        radial-gradient(circle at top left, rgba(139, 92, 246, 0.1), transparent 26%),
+        linear-gradient(180deg, rgba(255,255,255,0.98), rgba(244, 241, 252, 0.95));
+    }
+
+    .detail-module-workbench-loading {
+      place-items: center;
+      text-align: center;
+      min-height: 220px;
+    }
+
+    .detail-module-workbench-loading p {
+      max-width: 520px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .detail-module-workbench-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+
+    .detail-module-workbench-head strong {
+      display: block;
+      margin-top: 10px;
+      font-size: 22px;
+      letter-spacing: -0.03em;
+    }
+
+    .detail-module-workbench-head p {
+      margin-top: 8px;
+      max-width: 680px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.75;
+    }
+
+    .detail-module-workbench-hero {
+      width: 116px;
+      height: 116px;
+      border-radius: 22px;
+      overflow: hidden;
+      border: 1px solid rgba(115, 96, 182, 0.14);
+      box-shadow: 0 14px 30px rgba(139, 92, 246, 0.12);
+      flex-shrink: 0;
+    }
+
+    .detail-module-workbench-hero img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .detail-module-workbench-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .detail-module-workbench-card {
+      display: grid;
+      gap: 14px;
+      padding: 18px;
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(115, 96, 182, 0.1);
+    }
+
+    .detail-module-workbench-card.locked {
+      background: rgba(246, 243, 255, 0.92);
+      border-color: rgba(139, 92, 246, 0.16);
+    }
+
+    .detail-module-workbench-card-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+
+    .detail-module-workbench-card-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .detail-module-workbench-card-title strong {
+      font-size: 16px;
+      letter-spacing: -0.02em;
+    }
+
+    .detail-module-workbench-index {
+      min-width: 42px;
+      height: 30px;
+      padding: 0 10px;
+      border-radius: 999px;
+      background: rgba(139, 92, 246, 0.12);
+      color: var(--accent);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .detail-module-workbench-badges {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .detail-module-tag.warn {
+      color: #b45309;
+      background: rgba(245, 158, 11, 0.12);
+      border-color: rgba(245, 158, 11, 0.2);
+    }
+
+    .detail-module-workbench-copy {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .detail-module-workbench-copy label {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .detail-module-workbench-copy p {
+      color: var(--text);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .detail-module-workbench-readiness {
+      display: grid;
+      gap: 10px;
+      padding: 14px 15px;
+      border-radius: 18px;
+      background: rgba(249, 247, 255, 0.72);
+      border: 1px solid rgba(115, 96, 182, 0.1);
+    }
+
+    .detail-module-workbench-readiness strong {
+      font-size: 13px;
+      letter-spacing: -0.01em;
+    }
+
+    .detail-module-workbench-readiness p {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    .detail-module-workbench-chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .detail-module-workbench-generate {
+      display: grid;
+      gap: 12px;
+      padding: 14px 15px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.94);
+      border: 1px solid rgba(115, 96, 182, 0.1);
+    }
+
+    .detail-module-workbench-generate-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .detail-module-workbench-generate-head strong {
+      font-size: 13px;
+    }
+
+    .detail-module-workbench-generate img {
+      width: 100%;
+      max-height: 220px;
+      object-fit: cover;
+      border-radius: 16px;
+      border: 1px solid rgba(115, 96, 182, 0.1);
+      display: block;
+    }
+
+    .detail-module-workbench-generate p {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    .detail-module-supplemental-panel {
+      display: grid;
+      gap: 16px;
+      padding: 18px;
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid rgba(115, 96, 182, 0.1);
+    }
+
+    .detail-module-supplemental-head strong {
+      display: block;
+      font-size: 16px;
+      letter-spacing: -0.02em;
+    }
+
+    .detail-module-supplemental-head p {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.75;
+      max-width: 760px;
+    }
+
+    .detail-module-supplemental-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .detail-module-supplemental-item {
+      display: grid;
+      gap: 10px;
+      padding: 14px;
+      border-radius: 18px;
+      background: rgba(249, 247, 255, 0.84);
+      border: 1px solid rgba(115, 96, 182, 0.08);
+    }
+
+    .detail-module-supplemental-item label {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .detail-module-supplemental-item p {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.65;
+    }
+
+    .detail-module-supplemental-item textarea {
+      min-height: 108px;
+      resize: vertical;
+      border-radius: 16px;
+      border: 1px solid rgba(115, 96, 182, 0.12);
+      background: rgba(255,255,255,0.96);
+      padding: 12px 14px;
+      font: inherit;
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    .detail-module-supplemental-upload {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .detail-module-supplemental-upload button {
+      min-height: 38px;
+      padding: 0 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(115, 96, 182, 0.12);
+      background: rgba(255,255,255,0.95);
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .detail-module-supplemental-upload span {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .detail-module-supplemental-preview {
+      width: 100%;
+      max-height: 180px;
+      object-fit: cover;
+      border-radius: 16px;
+      border: 1px solid rgba(115, 96, 182, 0.1);
+      display: block;
+    }
+
+    .detail-module-supplemental-actions {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .detail-module-supplemental-actions p {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.7;
+      max-width: 620px;
+    }
+
     @media (max-width: 900px) {
       .detail-module-stats,
-      .detail-module-groups {
+      .detail-module-groups,
+      .detail-module-workbench-list,
+      .detail-module-workbench-copy,
+      .detail-module-supplemental-grid {
         grid-template-columns: 1fr;
       }
 
@@ -3261,6 +3594,13 @@
     let currentDetailHeroPrompt = "";
     let currentDetailHeroApproval = "pending";
     let currentDetailModulePlan = null;
+    let currentDetailModuleWorkbench = null;
+    let currentDetailModuleStageState = "idle";
+    let currentDetailModuleSupplementalInfo = {};
+    let currentDetailModuleSupplementalImages = {};
+    let currentDetailSupplementalAnalyzingKey = "";
+    let currentDetailGeneratedModules = {};
+    let currentDetailModuleGeneratingKey = "";
     let currentDetailApproval = "pending";
     let currentDetailRevisionDraft = {
       feedbackText: "",
@@ -3292,6 +3632,41 @@
       { key: "bundle", name: "搭配推荐", note: "适合组合销售、连带购买或提升客单价的商品。", recommendedLabel: "可提高连带率" },
       { key: "reviews", name: "买家秀/口碑", note: "适合补真实反馈、使用感受和口碑证明。", recommendedLabel: "适合信任补强" }
     ];
+
+    const DETAIL_SUPPLEMENTAL_FIELD_COPY = {
+      paramSpecs: {
+        label: "规格/参数信息",
+        placeholder: "例如：尺寸 38x26x12cm；材质 牛津布；容量 15L；重量 620g；适用 14 寸笔记本"
+      },
+      variantInfo: {
+        label: "款式/颜色信息",
+        placeholder: "例如：黑色/米白色两色；标准版/升级版；单件装/双件装"
+      },
+      trustInfo: {
+        label: "资质/品牌/背书信息",
+        placeholder: "例如：品牌自有工厂；支持 7 天无理由；已通过质检；有品牌授权或检测报告"
+      },
+      afterSalesInfo: {
+        label: "售后政策",
+        placeholder: "例如：48 小时内发货；支持 7 天无理由；质量问题包退换；赠送运费险"
+      },
+      comparisonBasis: {
+        label: "对比依据",
+        placeholder: "例如：对比旧款更轻；比普通款多防水层；比同价位竞品容量更大"
+      },
+      sizeGuideInfo: {
+        label: "尺码/选购依据",
+        placeholder: "例如：S 适合 80-95 斤；M 适合 95-110 斤；脚长 24cm 选 38 码"
+      },
+      bundleInfo: {
+        label: "搭配/组合信息",
+        placeholder: "例如：主商品可搭配收纳包一起卖；推荐两件套/三件套组合"
+      },
+      reviewProof: {
+        label: "买家反馈/口碑素材",
+        placeholder: "例如：用户反馈轻便耐用；复购率高；通勤场景好评多；可补真实评价摘录"
+      }
+    };
 
     function showToast(message) {
       toast.textContent = message;
@@ -3380,6 +3755,10 @@
       currentDetailHeroPrompt = "";
       currentDetailHeroApproval = "pending";
       currentDetailModulePlan = null;
+      clearDetailModuleWorkbench();
+      clearDetailModuleSupplementalInfo();
+      clearDetailModuleSupplementalImages();
+      clearDetailGeneratedModules();
       currentDetailApproval = "pending";
       currentDetailRevisionDraft = {
         feedbackText: "",
@@ -3627,6 +4006,10 @@
       currentDetailHeroPrompt = "";
       currentDetailHeroApproval = "pending";
       currentDetailModulePlan = null;
+      clearDetailModuleWorkbench();
+      clearDetailModuleSupplementalInfo();
+      clearDetailModuleSupplementalImages();
+      clearDetailGeneratedModules();
       currentDetailApproval = "pending";
       currentDetailRevisionDraft = {
         feedbackText: "",
@@ -3784,6 +4167,10 @@
       currentDetailHeroPrompt = "";
       currentDetailHeroApproval = "pending";
       currentDetailModulePlan = null;
+      clearDetailModuleWorkbench();
+      clearDetailModuleSupplementalInfo();
+      clearDetailModuleSupplementalImages();
+      clearDetailGeneratedModules();
       currentDetailApproval = "pending";
       currentDetailRevisionRound = Number(summary?.revision?.revisionRound || currentDetailRevisionRound || 0);
       currentDetailRevisionDraft = {
@@ -4083,6 +4470,118 @@
       };
     }
 
+    function clearDetailModuleWorkbench() {
+      currentDetailModuleWorkbench = null;
+      currentDetailModuleStageState = "idle";
+    }
+
+    function clearDetailModuleSupplementalInfo() {
+      currentDetailModuleSupplementalInfo = {};
+    }
+
+    function clearDetailModuleSupplementalImages() {
+      currentDetailModuleSupplementalImages = {};
+      currentDetailSupplementalAnalyzingKey = "";
+    }
+
+    function clearDetailGeneratedModules() {
+      currentDetailGeneratedModules = {};
+      currentDetailModuleGeneratingKey = "";
+    }
+
+    function mergeSupplementalRecognizedText(fieldKey, recognizedText) {
+      const nextText = String(recognizedText || "").trim();
+      if (!fieldKey || !nextText) return;
+
+      const previousText = String(currentDetailModuleSupplementalInfo[fieldKey] || "").trim();
+      const mergedText = previousText
+        ? `${previousText}\n${nextText}`
+        : nextText;
+
+      currentDetailModuleSupplementalInfo = {
+        ...currentDetailModuleSupplementalInfo,
+        [fieldKey]: mergedText
+      };
+    }
+
+    function collectMissingSupplementalFields(workbench = currentDetailModuleWorkbench) {
+      const fields = new Map();
+      (workbench?.modules || []).forEach((module) => {
+        (module.missingInputBadges || []).forEach((badge) => {
+          if (!badge?.key || fields.has(badge.key)) return;
+          fields.set(badge.key, {
+            key: badge.key,
+            label: DETAIL_SUPPLEMENTAL_FIELD_COPY[badge.key]?.label || badge.label || badge.key,
+            description: badge.description || "",
+            placeholder: DETAIL_SUPPLEMENTAL_FIELD_COPY[badge.key]?.placeholder || "请补充这项信息"
+          });
+        });
+      });
+      return Array.from(fields.values());
+    }
+
+    function renderDetailModuleSupplementalPanel(workbench = currentDetailModuleWorkbench) {
+      const fields = collectMissingSupplementalFields(workbench);
+      if (!fields.length) return "";
+
+      const itemsHtml = fields.map((field) => `
+        ${(() => {
+          const previewUrl = currentDetailModuleSupplementalImages[field.key] || "";
+          const isAnalyzing = currentDetailSupplementalAnalyzingKey === field.key;
+          return `
+        <article class="detail-module-supplemental-item">
+          <div>
+            <label for="detail-supplemental-${escapeHtml(field.key)}">${escapeHtml(field.label)}</label>
+            <p>${escapeHtml(field.description || "请先补充这项信息，再继续生成对应板块。")}</p>
+          </div>
+          <div class="detail-module-supplemental-upload">
+            <input type="file" accept="image/*" id="detail-supplemental-file-${escapeHtml(field.key)}" data-supplemental-file="${escapeHtml(field.key)}" hidden>
+            <button type="button" data-supplemental-upload-btn="${escapeHtml(field.key)}">${isAnalyzing ? "识别中..." : "上传图片并自动识别"}</button>
+            <span>${previewUrl ? "已上传图片，可重新上传替换" : "支持上传截图、参数表、评价截图、资质图等"}</span>
+          </div>
+          ${previewUrl ? `<img class="detail-module-supplemental-preview" src="${escapeHtml(previewUrl)}" alt="${escapeHtml(field.label)}预览">` : ""}
+          <textarea
+            id="detail-supplemental-${escapeHtml(field.key)}"
+            data-supplemental-key="${escapeHtml(field.key)}"
+            placeholder="${escapeHtml(field.placeholder)}"
+          >${escapeHtml(currentDetailModuleSupplementalInfo[field.key] || "")}</textarea>
+        </article>
+          `;
+        })()}
+      `).join("");
+
+      return `
+        <section class="detail-module-supplemental-panel">
+          <div class="detail-module-supplemental-head">
+            <strong>先把这些板块资料补齐</strong>
+            <p>首图已经锁定了视觉基线，但像参数、售后、资质、评价这类板块不能靠 AI 自己脑补。你可以先在这里把缺的资料补进去，再重新判断哪些板块可以正式生成。</p>
+          </div>
+          <div class="detail-module-supplemental-grid">${itemsHtml}</div>
+          <div class="detail-module-supplemental-actions">
+            <p>补完后点击下面按钮，系统会按新资料重新检查 Step 07 工作台状态。</p>
+            <button type="button" class="detail-confirm-btn primary" id="detail-supplemental-refresh-btn">重新检查板块可生成状态</button>
+          </div>
+        </section>
+      `;
+    }
+
+    function getSelectedDetailModules() {
+      if (!currentDetailModulePlan) return [];
+
+      return [
+        ...(currentDetailModulePlan.required || []).map((item) => ({
+          key: item.key,
+          group: "required",
+          selected: Boolean(item.selected)
+        })),
+        ...(currentDetailModulePlan.optional || []).map((item) => ({
+          key: item.key,
+          group: "optional",
+          selected: Boolean(item.selected)
+        }))
+      ].filter((item) => item.selected);
+    }
+
     function getSelectedRequiredModuleCount() {
       return (currentDetailModulePlan?.required || []).filter((item) => item.selected).length;
     }
@@ -4091,11 +4590,157 @@
       return (currentDetailModulePlan?.optional || []).filter((item) => item.selected).length;
     }
 
+    function renderDetailModuleStage() {
+      if (currentDetailModuleStageState === "loading") {
+        return `
+          <div class="detail-module-stage show">
+            <section class="detail-module-workbench detail-module-workbench-loading">
+              <div class="spinner"></div>
+              <strong>正在整理详情页板块工作台</strong>
+              <p>系统会按你刚确认的板块清单，整理正式进入 Step 07 的顺序、每块目标和首个建议动作。</p>
+            </section>
+          </div>
+        `;
+      }
+
+      if (!currentDetailModuleWorkbench) {
+        return "";
+      }
+
+      const workbench = currentDetailModuleWorkbench;
+      const nextModule = workbench.nextRecommendedModule;
+      const supplementalPanel = renderDetailModuleSupplementalPanel(workbench);
+      const heroPreview = workbench.heroImageUrl
+        ? `<div class="detail-module-workbench-hero"><img src="${escapeHtml(workbench.heroImageUrl)}" alt="已确认首图预览"></div>`
+        : "";
+      const moduleCards = (workbench.modules || []).map((item) => `
+        ${(() => {
+          const statusClass = item.status === "needs_input"
+            ? "warn"
+            : item.lockedWithHero
+              ? "active"
+              : "inactive";
+          const missingChips = (item.missingInputBadges || [])
+            .map((badge) => `<span class="detail-module-tag warn" title="${escapeHtml(badge.description || "")}">${escapeHtml(badge.label)}</span>`)
+            .join("");
+          const suggestedChips = (item.suggestedInputBadges || [])
+            .map((badge) => `<span class="detail-module-tag">${escapeHtml(badge.label)}</span>`)
+            .join("");
+          const generatedModule = currentDetailGeneratedModules[item.key] || null;
+          const supportsGeneration = ["selling-points", "details", "params", "scenes", "variants", "trust", "after-sales"].includes(item.key) && item.status === "ready";
+          const isGenerating = currentDetailModuleGeneratingKey === item.key;
+          const readinessBlock = `
+            <div class="detail-module-workbench-readiness">
+              <div>
+                <strong>生成准入判断</strong>
+                <p>${escapeHtml(item.readinessNote || "待补充")}</p>
+              </div>
+              ${missingChips ? `<div><label>生成前必须先补</label><div class="detail-module-workbench-chip-row">${missingChips}</div></div>` : ""}
+              ${suggestedChips ? `<div><label>当前已可直接利用</label><div class="detail-module-workbench-chip-row">${suggestedChips}</div></div>` : ""}
+            </div>
+          `;
+          const generateBlock = item.status === "ready"
+            ? `
+              <div class="detail-module-workbench-generate">
+                <div class="detail-module-workbench-generate-head">
+                  <strong>正式生成入口</strong>
+                  ${supportsGeneration
+                    ? `<button class="detail-confirm-btn primary" type="button" data-generate-module="${escapeHtml(item.key)}">${isGenerating ? "生成中..." : (generatedModule ? "重新生成这一块" : "开始生成这一块")}</button>`
+                    : `<span class="detail-module-tag">下一批接入</span>`}
+                </div>
+                <p>${supportsGeneration ? "当前已逐步接入真实板块生成入口，用它来验证单板块正式生成链路，而不是直接整套批量出图。" : "这个板块的正式生成入口下一批接入，当前先完成工作台和补资料约束。"}</p>
+                ${generatedModule?.imageUrl ? `<img src="${escapeHtml(generatedModule.imageUrl)}" alt="${escapeHtml(item.name)}生成结果">` : ""}
+                ${generatedModule?.prompt ? `<p>${escapeHtml(generatedModule.prompt)}</p>` : ""}
+              </div>
+            `
+            : "";
+          return `
+        <article class="detail-module-workbench-card ${item.lockedWithHero ? "locked" : ""}">
+          <div class="detail-module-workbench-card-top">
+            <div class="detail-module-workbench-card-title">
+              <span class="detail-module-workbench-index">0${item.queueIndex}</span>
+              <strong>${escapeHtml(item.name)}</strong>
+            </div>
+            <div class="detail-module-workbench-badges">
+              <span class="detail-module-tag ${item.group === "required" ? "required" : ""}">${item.group === "required" ? "必备" : "可选"}</span>
+              <span class="detail-module-tag ${statusClass}">${escapeHtml(item.statusLabel)}</span>
+            </div>
+          </div>
+          <div class="detail-module-workbench-copy">
+            <div>
+              <label>这一块要完成什么</label>
+              <p>${escapeHtml(item.generationGoal || "待补充")}</p>
+            </div>
+            <div>
+              <label>视觉重点</label>
+              <p>${escapeHtml(item.visualFocus || "待补充")}</p>
+            </div>
+            <div>
+              <label>文案角度</label>
+              <p>${escapeHtml(item.copyAngle || "待补充")}</p>
+            </div>
+            <div>
+              <label>进入建议</label>
+              <p>${escapeHtml(item.planHint || item.startAction || "待补充")}</p>
+            </div>
+          </div>
+          ${readinessBlock}
+          ${generateBlock}
+        </article>
+          `;
+        })()}
+      `).join("");
+
+      return `
+        <div class="detail-module-stage show">
+          <section class="detail-module-workbench">
+            <div class="detail-module-workbench-head">
+              <div>
+                <span class="detail-module-plan-kicker">Step 07 / Module Workbench</span>
+                <strong>详情页板块工作台已准备好</strong>
+                <p>${escapeHtml(workbench.stageSummary || "已根据当前 hero 基线和板块勾选结果，整理出后续模块进入顺序。")}</p>
+              </div>
+              ${heroPreview}
+            </div>
+
+            <div class="detail-module-stats">
+              <article class="detail-module-stat">
+                <label>本次已确认板块</label>
+                <strong>${workbench.totalSelected || 0}</strong>
+                <span>当前工作台会按这个清单继续往下走，不会跳过规划层直接整套批量出图。</span>
+              </article>
+              <article class="detail-module-stat">
+                <label>必备 / 可选</label>
+                <strong>${workbench.requiredSelected || 0} / ${workbench.optionalSelected || 0}</strong>
+                <span>必备板块保证主干完整，可选板块按品类和转化策略补强。</span>
+              </article>
+              <article class="detail-module-stat">
+                <label>建议先进入</label>
+                <strong>${escapeHtml(nextModule?.name || "当前已锁定")}</strong>
+                <span>${nextModule ? `建议从第 ${nextModule.queueIndex} 个板块开始正式生成。` : "当前已选板块都完成了基础锁定，可继续补充新的板块规划。"}</span>
+              </article>
+              <article class="detail-module-stat">
+                <label>需先补信息</label>
+                <strong>${workbench.needsInputCount || 0}</strong>
+                <span>这些板块不会直接放给 AI 去脑补，会先拦住并提示补资料。</span>
+              </article>
+            </div>
+
+            <div class="detail-module-workbench-list">${moduleCards}</div>
+            ${supplementalPanel}
+          </section>
+        </div>
+      `;
+    }
+
     function renderDetailModulePlanner() {
       const plan = currentDetailModulePlan || buildDetailModulePlan();
       const selectedRequiredCount = plan.required.filter((item) => item.selected).length;
       const selectedOptionalCount = plan.optional.filter((item) => item.selected).length;
       const totalSelected = selectedRequiredCount + selectedOptionalCount;
+      const startButtonLabel = currentDetailModuleWorkbench
+        ? "重新整理详情页板块工作台"
+        : "开始生成详情页板块（下一步）";
 
       const requiredHtml = plan.required.map((item) => `
         <article class="detail-module-card selectable ${item.selected ? "" : "inactive"}" data-required-module="${escapeHtml(item.key)}">
@@ -4174,8 +4819,9 @@
 
         <div class="detail-module-planner-actions">
           <p>下一步建议仍然先停留在“生成规划”层。等你确认这次的板块清单没问题，再进入真正的详情页板块生成，避免过早把整套模块一次性做死。</p>
-          <button type="button" id="detail-module-start-btn">开始生成详情页板块（下一步）</button>
+          <button type="button" id="detail-module-start-btn">${startButtonLabel}</button>
         </div>
+        ${renderDetailModuleStage()}
       `;
     }
 
@@ -4184,6 +4830,7 @@
       if (!planner) return;
       planner.innerHTML = renderDetailModulePlanner();
       bindDetailModulePlannerActions();
+      bindDetailModuleSupplementalActions();
     }
 
     function bindDetailModulePlannerActions() {
@@ -4195,6 +4842,7 @@
           event.preventDefault();
           const key = card.dataset.requiredModule;
           if (!key || !currentDetailModulePlan) return;
+          clearDetailModuleWorkbench();
           currentDetailModulePlan.required = currentDetailModulePlan.required.map((item) => (
             item.key === key ? { ...item, selected: !item.selected } : item
           ));
@@ -4207,6 +4855,7 @@
           event.preventDefault();
           const key = card.dataset.optionalModule;
           if (!key || !currentDetailModulePlan) return;
+          clearDetailModuleWorkbench();
           currentDetailModulePlan.optional = currentDetailModulePlan.optional.map((item) => (
             item.key === key ? { ...item, selected: !item.selected } : item
           ));
@@ -4216,10 +4865,152 @@
 
       const startBtn = document.getElementById("detail-module-start-btn");
       if (startBtn) {
-        startBtn.addEventListener("click", () => {
-          const total = getSelectedRequiredModuleCount() + getSelectedOptionalModuleCount();
-          showToast(`已确认本次详情页规划：${total} 个板块，下一步再进入正式生成。`);
+        startBtn.addEventListener("click", handleDetailModuleStart);
+      }
+    }
+
+    function bindDetailModuleSupplementalActions() {
+      const planner = document.getElementById("detail-module-planner");
+      if (!planner) return;
+
+      planner.querySelectorAll("[data-supplemental-key]").forEach((field) => {
+        field.addEventListener("input", () => {
+          const key = field.dataset.supplementalKey;
+          if (!key) return;
+          currentDetailModuleSupplementalInfo = {
+            ...currentDetailModuleSupplementalInfo,
+            [key]: field.value.trim()
+          };
         });
+      });
+
+      planner.querySelectorAll("[data-supplemental-upload-btn]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const key = button.dataset.supplementalUploadBtn;
+          const fileInput = key ? document.getElementById(`detail-supplemental-file-${key}`) : null;
+          if (!fileInput) return;
+          fileInput.value = "";
+          fileInput.click();
+        });
+      });
+
+      planner.querySelectorAll("[data-supplemental-file]").forEach((input) => {
+        input.addEventListener("change", async () => {
+          const key = input.dataset.supplementalFile;
+          const file = input.files?.[0];
+          if (!key || !file) return;
+
+          const dataUrl = await fileToDataUrl(file);
+          currentDetailModuleSupplementalImages = {
+            ...currentDetailModuleSupplementalImages,
+            [key]: dataUrl
+          };
+          updateDetailModulePlanner();
+          await handleDetailSupplementalImageRecognize(key, file, dataUrl);
+        });
+      });
+
+      planner.querySelectorAll("[data-generate-module]").forEach((button) => {
+        button.addEventListener("click", async () => {
+          const key = button.dataset.generateModule;
+          if (!key) return;
+          await handleDetailModuleGenerate(key);
+        });
+      });
+
+      const refreshBtn = document.getElementById("detail-supplemental-refresh-btn");
+      if (refreshBtn) {
+        refreshBtn.addEventListener("click", handleDetailModuleStart);
+      }
+    }
+
+    async function handleDetailSupplementalImageRecognize(fieldKey, file, existingDataUrl = "") {
+      if (!fieldKey || !file || isGenerating) return;
+
+      try {
+        currentDetailSupplementalAnalyzingKey = fieldKey;
+        updateDetailModulePlanner();
+
+        const dataUrl = existingDataUrl || await fileToDataUrl(file);
+        const imageBase64 = String(dataUrl || "").split(",")[1];
+        if (!imageBase64) {
+          throw new Error("图片读取失败，请重新上传");
+        }
+
+        const data = await postJson("/api/analyze-detail-module-asset", {
+          fieldKey,
+          imageBase64
+        });
+
+        const recognizedText = String(data?.result?.text || "").trim();
+        if (!recognizedText) {
+          throw new Error("暂时没有从图片里识别出可用信息");
+        }
+
+        mergeSupplementalRecognizedText(fieldKey, recognizedText);
+        updateDetailModulePlanner();
+        showToast("图片识别完成，已回填到当前补充框");
+      } catch (error) {
+        showToast(error.message || "图片识别失败");
+      } finally {
+        currentDetailSupplementalAnalyzingKey = "";
+        updateDetailModulePlanner();
+      }
+    }
+
+    async function handleDetailModuleGenerate(moduleKey) {
+      if (isGenerating || currentDetailModuleGeneratingKey) return;
+
+      if (!["selling-points", "details", "params", "scenes", "variants", "trust", "after-sales"].includes(moduleKey)) {
+        showToast("当前先接入核心卖点和细节图板块的正式生成");
+        return;
+      }
+
+      if (!activeDetailProductFile) {
+        showToast("请先上传商品白底图");
+        return;
+      }
+
+      if (!currentDetailAnalysis || !currentDetailModuleWorkbench) {
+        showToast("请先完成工作台准备");
+        return;
+      }
+
+      currentDetailModuleGeneratingKey = moduleKey;
+      updateDetailModulePlanner();
+
+      try {
+        const productImageDataUrl = await fileToDataUrl(activeDetailProductFile);
+        const productImageBase64 = String(productImageDataUrl || "").split(",")[1];
+        const data = await postJson("/api/generate-detail-module", {
+          moduleKey,
+          productImageBase64,
+          productName: currentDetailAnalysis.productName || detailProductNameInput.value.trim(),
+          style: currentDetailStyle,
+          scenes: detailScenes.value.trim(),
+          summary: currentDetailAnalysis,
+          supplementalInfo: currentDetailModuleSupplementalInfo
+        });
+
+        const imageUrl = getFirstGeneratedImage(data);
+        if (!imageUrl) {
+          throw new Error("接口未返回板块图片结果");
+        }
+
+        currentDetailGeneratedModules = {
+          ...currentDetailGeneratedModules,
+          [moduleKey]: {
+            imageUrl,
+            prompt: String(data?.meta?.prompt || "").trim()
+          }
+        };
+        updateDetailModulePlanner();
+        showToast(moduleKey === "selling-points" ? "核心卖点板块已生成首版" : "细节图板块已生成首版");
+      } catch (error) {
+        showToast(error.message || "板块生成失败");
+      } finally {
+        currentDetailModuleGeneratingKey = "";
+        updateDetailModulePlanner();
       }
     }
 
@@ -4273,6 +5064,42 @@
       if (first.image_base64) return "data:image/png;base64," + first.image_base64;
       if (first.b64_json) return "data:image/png;base64," + first.b64_json;
       return "";
+    }
+
+    async function postJson(url, body) {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      });
+      const contentType = String(response.headers.get("content-type") || "").toLowerCase();
+      const rawText = await response.text();
+      let data = null;
+
+      if (contentType.includes("application/json")) {
+        try {
+          data = rawText ? JSON.parse(rawText) : {};
+        } catch (error) {
+          throw new Error("接口返回了无效 JSON，请确认当前启动的是最新服务");
+        }
+      } else {
+        const htmlLike = rawText.trim().startsWith("<");
+        if (!response.ok) {
+          throw new Error(
+            htmlLike
+              ? "接口返回了 HTML 页面，请确认当前浏览器连的是最新本地服务，而不是旧页面或旧进程"
+              : (rawText.trim() || "请求失败")
+          );
+        }
+        throw new Error("接口没有返回 JSON，请确认当前启动的是最新服务");
+      }
+
+      if (!response.ok) {
+        const error = new Error(data.error || "请求失败");
+        error.payload = data;
+        throw error;
+      }
+      return data;
     }
 
     function classifyColorName(red, green, blue) {
@@ -4635,6 +5462,10 @@
       currentDetailHeroPrompt = promptText;
       currentDetailHeroApproval = "pending";
       currentDetailModulePlan = buildDetailModulePlan(currentDetailAnalysis || {});
+      clearDetailModuleWorkbench();
+      clearDetailModuleSupplementalInfo();
+      clearDetailModuleSupplementalImages();
+      clearDetailGeneratedModules();
 
       const { download } = getActionButtons();
       const summary = currentDetailAnalysis || {};
@@ -4827,6 +5658,7 @@
         chipStatusEl.textContent = "建议先回摘要微调";
         copyEl.textContent = "这张图先不要继续往后扩。建议回到第 5 步摘要，把首图方向、卖点或风格再收一版，然后重新生成首图。";
         planner?.classList.remove("show");
+        clearDetailModuleWorkbench();
         resultStatus.textContent = "首图待微调";
         return;
       }
@@ -4835,6 +5667,7 @@
       chipStatusEl.textContent = "待确认是否继续";
       copyEl.textContent = "如果这张首图已经能作为后续详情页内容的第一屏基线，就继续后面的阶段；如果还不够稳，可以直接重做，或者回到摘要阶段先微调方案。";
       planner?.classList.remove("show");
+      clearDetailModuleWorkbench();
       resultStatus.textContent = "首图已生成";
     }
 
@@ -4866,10 +5699,144 @@
           currentDetailHeroImageUrl = "";
           currentDetailHeroPrompt = "";
           currentDetailHeroApproval = "revise";
+          clearDetailModuleWorkbench();
+          clearDetailModuleSupplementalInfo();
+          clearDetailModuleSupplementalImages();
+          clearDetailGeneratedModules();
           setDetailAnalysisResult(currentDetailAnalysis, currentDetailAnalysisMeta || {});
           setDetailApprovalState("revise");
           showToast("已回到第 5 步摘要，可以继续微调方案");
         });
+      }
+    }
+
+    async function handleDetailModuleStart() {
+      if (isGenerating) return;
+
+      if (!currentDetailAnalysis) {
+        showToast("请先完成第 5 步方案摘要");
+        return;
+      }
+
+      if (currentDetailHeroApproval !== "approved") {
+        showToast("请先确认第 6 步首图通过，再进入详情页板块工作台");
+        return;
+      }
+
+      if (!currentDetailModulePlan) {
+        currentDetailModulePlan = buildDetailModulePlan(currentDetailAnalysis || {});
+      }
+
+      const selectedModules = getSelectedDetailModules();
+      if (!selectedModules.length) {
+        showToast("请先勾选本次要进入生成的详情页板块");
+        return;
+      }
+
+      isGenerating = true;
+      btnDetailGenerate.disabled = true;
+      currentDetailModuleStageState = "loading";
+      currentDetailModuleWorkbench = null;
+      updateDetailModulePlanner();
+
+      try {
+        const data = await postJson("/api/prepare-detail-modules", {
+          productName: currentDetailAnalysis.productName || detailProductNameInput.value.trim(),
+          style: currentDetailStyle,
+          summary: currentDetailAnalysis,
+          selectedModules,
+          heroImageUrl: currentDetailHeroImageUrl,
+          sellingPoints: detailSellingPoints.value.trim(),
+          scenes: detailScenes.value.trim(),
+          audience: detailAudience.value.trim(),
+          extra: detailExtra.value.trim(),
+          readResult: getEffectiveDetailReadResult(),
+          hasProductImage: Boolean(activeDetailProductFile),
+          supplementalInfo: currentDetailModuleSupplementalInfo
+        });
+
+        currentDetailModuleWorkbench = data.result || null;
+        currentDetailModuleStageState = "ready";
+        updateDetailModulePlanner();
+        showToast(data.result?.stageSummary || "已进入详情页板块工作台");
+      } catch (error) {
+        clearDetailModuleWorkbench();
+        updateDetailModulePlanner();
+        showToast(error.message || "进入详情页板块工作台失败");
+      } finally {
+        isGenerating = false;
+        btnDetailGenerate.disabled = false;
+        updateResultActions();
+      }
+    }
+
+    async function handleDetailModuleGenerate(moduleKey) {
+      if (isGenerating || currentDetailModuleGeneratingKey) return;
+
+      if (!["selling-points", "details", "params", "scenes", "variants", "trust", "after-sales"].includes(moduleKey)) {
+        showToast("当前先接入核心卖点、细节图和产品参数板块的正式生成");
+        return;
+      }
+
+      if (!activeDetailProductFile) {
+        showToast("请先上传商品白底图");
+        return;
+      }
+
+      if (!currentDetailAnalysis || !currentDetailModuleWorkbench) {
+        showToast("请先完成工作台准备");
+        return;
+      }
+
+      currentDetailModuleGeneratingKey = moduleKey;
+      updateDetailModulePlanner();
+
+      try {
+        const productImageDataUrl = await fileToDataUrl(activeDetailProductFile);
+        const productImageBase64 = String(productImageDataUrl || "").split(",")[1];
+        const data = await postJson("/api/generate-detail-module", {
+          moduleKey,
+          productImageBase64,
+          productName: currentDetailAnalysis.productName || detailProductNameInput.value.trim(),
+          style: currentDetailStyle,
+          scenes: detailScenes.value.trim(),
+          summary: currentDetailAnalysis,
+          supplementalInfo: currentDetailModuleSupplementalInfo
+        });
+
+        const imageUrl = getFirstGeneratedImage(data);
+        if (!imageUrl) {
+          throw new Error("接口未返回板块图片结果");
+        }
+
+        currentDetailGeneratedModules = {
+          ...currentDetailGeneratedModules,
+          [moduleKey]: {
+            imageUrl,
+            prompt: String(data?.meta?.prompt || "").trim()
+          }
+        };
+        updateDetailModulePlanner();
+
+        const moduleToast = moduleKey === "selling-points"
+          ? "核心卖点板块已生成首版"
+          : moduleKey === "details"
+            ? "细节图板块已生成首版"
+            : "产品参数板块已生成首版";
+        showToast(({
+          "selling-points": "核心卖点板块已生成首版",
+          "details": "细节图板块已生成首版",
+          "params": "产品参数板块已生成首版",
+          "scenes": "场景使用图板块已生成首版",
+          "variants": "款式/颜色分类板块已生成首版",
+          "trust": "资质/品牌保障板块已生成首版",
+          "after-sales": "售后说明板块已生成首版"
+        })[moduleKey] || moduleToast);
+      } catch (error) {
+        showToast(error.message || "板块生成失败");
+      } finally {
+        currentDetailModuleGeneratingKey = "";
+        updateDetailModulePlanner();
       }
     }
 
