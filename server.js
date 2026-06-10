@@ -1045,6 +1045,63 @@ function buildSupplementalImagePrompt(fieldKey) {
   `.trim();
 }
 
+function buildSupplementalSuggestionFallback(input = {}) {
+  const fieldKey = String(input.fieldKey || '').trim();
+  const productName = String(input.productName || '').trim() || '该商品';
+  const scenes = String(input.scenes || '').trim();
+  const audience = String(input.audience || '').trim();
+  const coreSellingPoints = toArray(input.coreSellingPoints).slice(0, 4);
+  const visualSummary = String(input.productVisualSummary || '').trim();
+
+  switch (fieldKey) {
+    case 'paramSpecs':
+      return `${productName}的规格信息请按真实参数补充，例如尺寸、材质、容量、重量、适用范围；当前先围绕${coreSellingPoints.join('、') || '核心卖点'}整理，不确定的参数不要编。`;
+    case 'variantInfo':
+      return `${productName}如有不同颜色、款式或组合，请按真实可售版本填写；建议先说明主推版本，再补可选差异。`;
+    case 'trustInfo':
+      return `${productName}可补品牌来源、检测信息、真实质保或可验证背书；没有证书就不要虚构，只写能落地的信任信息。`;
+    case 'afterSalesInfo':
+      return `${productName}的售后信息请只写真实规则，例如发货时效、退换边界、运费险或质保范围，尽量写得简洁直接。`;
+    case 'comparisonBasis':
+      return `${productName}的对比依据建议围绕${coreSellingPoints.join('、') || '核心卖点'}展开，只写真实差异，不写无法证明的碾压式结论。`;
+    case 'sizeGuideInfo':
+      return `${productName}的尺码/选购建议请按真实尺寸或适配范围填写；如果适合${audience || '目标人群'}，可以补一句选购提醒。`;
+    case 'bundleInfo':
+      return `${productName}如有搭配销售或组合建议，可围绕${scenes || '实际使用场景'}说明为什么这样搭配更合适。`;
+    case 'reviewProof':
+      return `${productName}的口碑信息请只整理真实买家反馈关键词，例如${coreSellingPoints[0] || '使用感受'}、做工、性价比，不要虚构评价内容。`;
+    default:
+      return `${productName}请围绕真实商品信息补充这一项，优先结合${visualSummary || '当前商品外观'}和${coreSellingPoints.join('、') || '核心卖点'}来写，不确定的内容不要编。`;
+  }
+}
+
+function buildSupplementalSuggestionPrompt(input = {}) {
+  const fieldKey = String(input.fieldKey || '').trim();
+  return `
+你是电商详情页资料补全助手。你的任务不是自由创作，而是在已有商品方向内，帮用户生成一段可直接放进输入框里的中文补充内容。
+
+字段：${fieldKey || 'unknown'}
+商品名：${input.productName || 'TBD'}
+商品视觉摘要：${input.productVisualSummary || 'TBD'}
+核心卖点：${toArray(input.coreSellingPoints).join(' / ') || 'TBD'}
+使用场景：${input.scenes || 'TBD'}
+目标人群：${input.audience || 'TBD'}
+风格方向：${input.style || 'TBD'}
+已有输入：${String(input.existingInfo || '').trim() || '无'}
+
+规则：
+1. 只能围绕已知商品信息、已确认方向和字段用途来写，不要胡乱想象。
+2. 不要虚构参数、证书、售后政策、口碑、颜色、套装或对比结论。
+3. 输出必须简洁，适合直接回填到表单。
+4. 如果该字段更依赖真实资料而不适合代写，就输出一段“待用户确认”的保守建议，不要硬编。
+
+只输出严格 JSON：
+{
+  "text": "一段可直接回填到输入框的中文"
+}
+  `.trim();
+}
+
 function buildDetailReferenceAssetClassificationPrompt() {
   return `
 You are classifying one ecommerce reference image for downstream detail-page module generation.
@@ -1075,15 +1132,31 @@ Rules:
 9. If it is mainly scenario/lifestyle usage, choose scenes.
 10. If it is mainly close-up details, craftsmanship, material closeups, choose details.
 11. If you are not confident, choose unknown instead of forcing a wrong category.
+12. Also judge whether this reference image is structurally safe to inherit into downstream generation for a different product.
+13. If the image is a typography-heavy poster, a campaign-like KV, a different-product hero poster, a contact-sheet-like board, or a very category-specific board that would likely mislead generation, mark it as risky instead of safe.
+14. If the image can still be useful only as a loose composition hint, mark it as structure_only instead of direct.
+15. If the image looks likely to cause repeated tiles, nine-grid repetition, posterization, or product-category drift when reused, mark compatibilityRisk as high.
+16. If the image contains any obvious headline, number block, label group, slogan, title area, large typography, or designed text layout that a normal viewer would notice quickly, set hasTextOverlay to true.
+17. Product mismatch and text detection are different judgments. Even if the product category is incompatible, if the reference visibly has a designed text area, still set hasTextOverlay to true.
+18. Ignore only tiny incidental packaging print that is not part of the designed layout. If there is a real text block used for selling communication, treat it as text overlay.
 
 Output strict JSON only:
-{
-  "fieldKey": "one item from the list",
-  "summary": "short Chinese summary of what this image appears to contain",
-  "confidence": "high | medium | low"
-}
-  `.trim();
-}
+  {
+    "fieldKey": "one item from the list",
+    "summary": "short Chinese summary of what this image appears to contain",
+    "confidence": "high | medium | low",
+    "structureType": "detail_board | info_board | poster | scene_board | comparison_board | collage | unknown",
+    "inheritanceMode": "direct | structure_only | block",
+    "compatibilityRisk": "low | medium | high",
+    "warning": "short Chinese warning if this image may be risky to inherit, otherwise empty string",
+    "hasTextOverlay": true,
+    "textPosition": "short Chinese summary of where the main text sits, such as 左上标题区 / 右侧竖排信息区 / 中部数字信息区 / 无明显文字区",
+    "textLayout": "short Chinese summary of the text structure, such as 1个主标题+3个短卖点 / 大数字参数+小标签 / 无明显文字排版",
+    "textStyle": "short Chinese summary of typography feeling, such as 粗体大标题 / 参数数字主导 / 极简小字说明 / 无",
+    "textSuggestion": "short Chinese explanation of whether this text area should be inherited, or empty string"
+  }
+    `.trim();
+  }
 
 function toImageDataUrl(value) {
   const text = String(value || '').trim();
@@ -1538,6 +1611,20 @@ function buildDetailReferenceDrivenPrompt({
   const visualKeywords = toArray(input.visualKeywords).slice(0, 6).join(' / ');
   const referenceEvidenceCount = Number(input.referenceEvidenceCount) || 0;
   const referenceEvidenceGuidance = String(input.referenceEvidenceGuidance || '').trim() || 'No extra reference images were uploaded for this module.';
+  const hasReferenceEvidence = referenceEvidenceCount > 0;
+  const textOverlay = input.textOverlay && typeof input.textOverlay === 'object'
+    ? input.textOverlay
+    : {};
+  const moduleVisualFocus = String(input.moduleVisualFocus || '').trim();
+  const moduleCopyAngle = String(input.moduleCopyAngle || '').trim();
+  const moduleUserNote = String(input.moduleUserNote || '').trim();
+  const textOverlayMode = String(textOverlay.mode || '').trim();
+  const textOverlayUserText = String(textOverlay.userText || '').trim();
+  const textOverlayPosition = String(textOverlay.positionHint || '').trim();
+  const textOverlayLayout = String(textOverlay.layoutHint || '').trim();
+  const textOverlayStyle = String(textOverlay.styleHint || '').trim();
+  const textOverlayNote = String(textOverlay.note || '').trim();
+  const referenceHasTextOverlay = Boolean(textOverlay.referenceHasText);
   const factLines = keyFacts.filter(Boolean).join('\n');
   const ruleLines = compositionRules.map((rule, index) => `${index + 1}. ${rule}`).join('\n');
 
@@ -1558,6 +1645,9 @@ Current module context:
 - Visual keywords: ${visualKeywords || 'TBD'}
 - Reference evidence images: ${referenceEvidenceCount}
 - Reference evidence guidance: ${referenceEvidenceGuidance}
+- Module visual focus: ${moduleVisualFocus || 'TBD'}
+- Module copy angle: ${moduleCopyAngle || 'TBD'}
+- Module user note: ${moduleUserNote || 'None'}
 ${factLines}
 
 Global rules:
@@ -1567,7 +1657,35 @@ Global rules:
 4. User-provided facts and instructions define the hard content boundary. Never invent unsupported specs, claims, proof, variants, policies, or reviews.
 5. Controlled AI creativity is allowed only inside those boundaries: composition cleanup, emphasis polish, atmosphere support, and presentation refinement.
 6. When the reference images are strongly structured, follow them closely instead of improvising a new page structure.
-7. ${productRole}
+7. The uploaded product image is the source of truth for what the product really is: category, silhouette, color family, material cues, and authentic visible details. Do not change the product itself.
+8. ${hasReferenceEvidence
+    ? 'Because this module has reference evidence images, treat those evidence images as the dominant source for module composition. Do not let the hero composition or the plain product-photo composition override the module reference structure.'
+    : 'No module reference images were provided, so keep using the hero style baseline while staying conservative about layout invention.'}
+9. ${hasReferenceEvidence
+    ? 'When hero baseline and reference evidence conflict, keep the hero only for style mood and finish level. Follow the reference evidence for module layout, crop rhythm, density, text-image proportion, and board structure.'
+    : 'If there is no module reference evidence, stay close to standard ecommerce module logic and avoid overfitting to the hero composition.'}
+10. ${hasReferenceEvidence
+    ? 'Do not rebuild this module into another hero-like poster just because the product image is visually strong. Keep the module looking like the uploaded reference board type.'
+    : 'Do not accidentally turn this module into another hero poster.'}
+11. ${productRole}
+12. Never output a tiled contact sheet, nine-grid repetition, multi-cell duplicate collage, or repeated near-identical product snapshots unless the reference itself clearly and intentionally requires that exact structure.
+13. If the provided reference evidence is limited or ambiguous, prefer one strong believable module composition over repeated small duplicates of the same product photo.
+14. ${textOverlayMode === 'none'
+    ? 'Do not add any extra overlaid text, title, slogan, number block, or callout into the generated image. Keep this module as pure image composition.'
+    : textOverlayMode === 'manual' && textOverlayUserText
+      ? `Text is allowed for this module. Keep the text placement close to ${textOverlayPosition || (referenceHasTextOverlay ? 'the reference text area' : 'the user-specified text area')}, follow this text structure: ${textOverlayLayout || 'clean ecommerce headline plus short support copy'}, keep the typography feeling as ${textOverlayStyle || 'reference-like ecommerce typography'}, and use this exact Chinese copy without rewriting: ${textOverlayUserText}`
+      : referenceHasTextOverlay
+        ? `The reference image includes text areas. Reuse the text placement around ${textOverlayPosition || 'the reference text area'}, follow this text structure: ${textOverlayLayout || 'reference-like title and support copy'}, and keep the typography feeling as ${textOverlayStyle || 'reference-like'}. If the user did not provide exact copy, generate concise Chinese ecommerce text automatically from the confirmed product direction, module goal, and real selling points.`
+        : `No stable text area was detected from the reference image, but if text is still needed, place it conservatively around ${textOverlayPosition || 'a clean empty area that does not block the product'}, keep the structure as ${textOverlayLayout || 'one short Chinese headline plus one short support line'}, and keep the typography as ${textOverlayStyle || 'clean restrained ecommerce typography'}.`}
+15. ${moduleVisualFocus
+    ? `The final image must visibly deliver this module visual focus instead of drifting back to a generic product board: ${moduleVisualFocus}.`
+    : 'Keep the image aligned with the intended visual focus of this module rather than falling back to a generic product board.'}
+16. ${moduleCopyAngle
+    ? `If text exists, its expression should support this copy angle: ${moduleCopyAngle}.`
+    : 'If text exists, keep it aligned with the module goal and user facts.'}
+17. ${textOverlayNote || moduleUserNote
+    ? `Extra user note: ${[textOverlayNote, moduleUserNote].filter(Boolean).join(' / ')}`
+    : 'No extra user note was provided for this module.'}
 
 Module-specific rules:
 ${ruleLines}
@@ -1892,14 +2010,24 @@ function toDashScopeImageDataUrl(imageBase64) {
 }
 
 function createImageGenerationTask(input = {}) {
+  const referenceImagesBase64 = Array.isArray(input.referenceImagesBase64)
+    ? input.referenceImagesBase64.map((item) => String(item || '').trim()).filter(Boolean)
+    : [];
+  const uniqueReferenceImagesBase64 = [];
+  const seenReferenceImages = new Set();
+
+  referenceImagesBase64.forEach((item) => {
+    if (seenReferenceImages.has(item)) return;
+    seenReferenceImages.add(item);
+    uniqueReferenceImagesBase64.push(item);
+  });
+
   return {
     provider: IMAGE_PROVIDER,
     model: input.model || DASHSCOPE_IMAGE_MODEL,
     prompt: String(input.prompt || '').trim(),
     imageBase64: String(input.imageBase64 || '').trim(),
-    referenceImagesBase64: Array.isArray(input.referenceImagesBase64)
-      ? input.referenceImagesBase64.map((item) => String(item || '').trim()).filter(Boolean)
-      : [],
+    referenceImagesBase64: uniqueReferenceImagesBase64,
     size: input.size || '1024*1024',
     useCase: input.useCase || 'generic',
   };
@@ -2529,7 +2657,7 @@ app.post('/api/generate-detail-hero', async (req, res) => {
       imageBase64: String(productImageBase64).trim(),
     });
     const rawResult = await runImageGenerationTask(task);
-    res.json(normalizeImageGenerationResponse(task, rawResult, { prompt }));
+    res.json(normalizeImageGenerationResponse(task, rawResult, { phase: 'detail_hero' }));
   } catch (err) {
     console.error('[详情页首图生成失败]', err);
     res.status(500).json({ error: '首图生成失败，请稍后重试', detail: err.message });
@@ -2547,6 +2675,10 @@ app.post('/api/generate-detail-module', async (req, res) => {
       summary,
       scenes,
       supplementalInfo,
+      textOverlay,
+      moduleVisualFocus,
+      moduleCopyAngle,
+      moduleUserNote,
     } = req.body || {};
 
     const normalizedModuleKey = String(moduleKey || '').trim();
@@ -2578,6 +2710,10 @@ app.post('/api/generate-detail-module', async (req, res) => {
       comparisonBasis: supplementalInfo?.comparisonBasis || '',
       bundleInfo: supplementalInfo?.bundleInfo || '',
       reviewProof: supplementalInfo?.reviewProof || '',
+      moduleVisualFocus: String(moduleVisualFocus || '').trim(),
+      moduleCopyAngle: String(moduleCopyAngle || '').trim(),
+      moduleUserNote: String(moduleUserNote || '').trim(),
+      textOverlay: textOverlay || {},
       referenceEvidenceCount: Array.isArray(supplementalImageBase64List)
         ? supplementalImageBase64List.length
         : 0,
@@ -2690,8 +2826,8 @@ app.post('/api/generate-detail-module', async (req, res) => {
     });
     const rawResult = await runImageGenerationTask(task);
     res.json(normalizeImageGenerationResponse(task, rawResult, {
-      prompt,
       moduleKey: normalizedModuleKey,
+      phase: 'detail_module',
     }));
   } catch (err) {
     console.error('[detail-module-generation]', err);
@@ -2842,6 +2978,107 @@ app.post('/api/analyze-detail-module-asset', async (req, res) => {
   }
 });
 
+app.post('/api/suggest-detail-module-field', async (req, res) => {
+  try {
+    const {
+      fieldKey,
+      productName,
+      productVisualSummary,
+      coreSellingPoints,
+      scenes,
+      audience,
+      style,
+      existingInfo,
+    } = req.body || {};
+
+    const normalizedFieldKey = String(fieldKey || '').trim();
+    if (!normalizedFieldKey) {
+      return res.status(400).json({ error: '请先指定要补全的字段' });
+    }
+
+    const fallbackText = buildSupplementalSuggestionFallback({
+      fieldKey: normalizedFieldKey,
+      productName,
+      productVisualSummary,
+      coreSellingPoints,
+      scenes,
+      audience,
+      style,
+      existingInfo,
+    });
+
+    if (!DASHSCOPE_API_KEY || DASHSCOPE_API_KEY === 'sk-your-api-key-here') {
+      return res.json({
+        success: true,
+        result: { text: fallbackText },
+        meta: { mode: 'fallback', reason: 'missing_api_key' },
+      });
+    }
+
+    const response = await fetch(`${DASHSCOPE_BASE_URL}/chat/completions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${DASHSCOPE_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: 'qwen-vl-max',
+        temperature: 0.2,
+        messages: [
+          {
+            role: 'user',
+            content: [
+              {
+                type: 'text',
+                text: buildSupplementalSuggestionPrompt({
+                  fieldKey: normalizedFieldKey,
+                  productName,
+                  productVisualSummary,
+                  coreSellingPoints,
+                  scenes,
+                  audience,
+                  style,
+                  existingInfo,
+                }),
+              },
+            ],
+          },
+        ],
+      }),
+    });
+
+    if (!response.ok) {
+      const errText = await response.text();
+      console.error('[detail-module-field-suggestion]', response.status, errText);
+      return res.json({
+        success: true,
+        result: { text: fallbackText },
+        meta: { mode: 'fallback', reason: `api_error_${response.status}` },
+      });
+    }
+
+    const data = await response.json();
+    const choice = data.choices?.[0]?.message?.content;
+    const responseText = Array.isArray(choice)
+      ? choice.map((item) => item?.text || '').join('\n')
+      : String(choice || '');
+    const parsed = extractJsonObject(responseText) || {};
+    const suggestedText = String(parsed.text || '').trim() || fallbackText;
+
+    res.json({
+      success: true,
+      result: { text: suggestedText },
+      meta: { mode: 'model' },
+    });
+  } catch (err) {
+    console.error('[detail-module-field-suggestion]', err);
+    res.status(500).json({
+      error: '字段一键生成失败，请稍后重试',
+      detail: err.message,
+    });
+  }
+});
+
 app.post('/api/classify-detail-reference-assets', async (req, res) => {
   try {
     const imageBase64List = Array.isArray(req.body?.imageBase64List)
@@ -2903,6 +3140,15 @@ app.post('/api/classify-detail-reference-assets', async (req, res) => {
           fieldKey: 'unknown',
           summary: '自动归类失败，默认不自动继承',
           confidence: 'low',
+          structureType: 'unknown',
+          inheritanceMode: 'block',
+          compatibilityRisk: 'high',
+          warning: '当前无法稳定判断这张参考图，先不自动继承到正式生成。',
+          hasTextOverlay: false,
+          textPosition: '',
+          textLayout: '',
+          textStyle: '',
+          textSuggestion: '',
         };
       }
 
@@ -2931,6 +3177,31 @@ app.post('/api/classify-detail-reference-assets', async (req, res) => {
         ].includes(fieldKey) ? fieldKey : 'unknown',
         summary: String(parsed.summary || '').trim() || '已完成归类',
         confidence: String(parsed.confidence || 'low').trim() || 'low',
+        structureType: [
+          'detail_board',
+          'info_board',
+          'poster',
+          'scene_board',
+          'comparison_board',
+          'collage',
+          'unknown',
+        ].includes(String(parsed.structureType || '').trim()) ? String(parsed.structureType || '').trim() : 'unknown',
+        inheritanceMode: [
+          'direct',
+          'structure_only',
+          'block',
+        ].includes(String(parsed.inheritanceMode || '').trim()) ? String(parsed.inheritanceMode || '').trim() : 'direct',
+        compatibilityRisk: [
+          'low',
+          'medium',
+          'high',
+        ].includes(String(parsed.compatibilityRisk || '').trim()) ? String(parsed.compatibilityRisk || '').trim() : 'low',
+        warning: String(parsed.warning || '').trim(),
+        hasTextOverlay: Boolean(parsed.hasTextOverlay),
+        textPosition: String(parsed.textPosition || '').trim(),
+        textLayout: String(parsed.textLayout || '').trim(),
+        textStyle: String(parsed.textStyle || '').trim(),
+        textSuggestion: String(parsed.textSuggestion || '').trim(),
       };
     }));
 

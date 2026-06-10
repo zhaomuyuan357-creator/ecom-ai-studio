@@ -29,27 +29,18 @@ Start the next conversation by reading:
 ## What Was Finished In Recent Rounds
 
 - Added post-hero module planning UI
-  - `required` modules: 8
-  - `optional` modules: 5
-  - required and optional group labels are unified to the current purple style
+  - required modules and optional modules are separated
   - required modules still allow manual toggle
-  - required group note keeps the “建议自动全部勾选” guidance
 
 - Added reference-image classification workflow
   - top-level detail reference upload supports multiple images
   - backend endpoint: `/api/classify-detail-reference-assets`
-  - classification targets:
-    - `paramSpecs`
-    - `variantInfo`
-    - `trustInfo`
-    - `afterSalesInfo`
-    - `comparisonBasis`
-    - `sizeGuideInfo`
-    - `bundleInfo`
-    - `reviewProof`
-    - `scenes`
-    - `details`
-    - `unknown`
+  - classification now includes:
+    - field mapping
+    - compatibility risk
+    - inheritance mode
+    - warning
+    - text-area metadata
   - UI supports manual reassignment by chip/button instead of native select
 
 - Added single-module supplemental workflow
@@ -57,6 +48,7 @@ Start the next conversation by reading:
   - module fields support image upload and auto-recognition
   - module fields support extra reference-image upload
   - global reference images are inherited only into matching module fields, not all modules
+  - supplemental fields now support AI one-click grounded suggestion generation through `/api/suggest-detail-module-field`
 
 - Added module workbench generation flow
   - single-module generation can now run for:
@@ -73,15 +65,31 @@ Start the next conversation by reading:
     - `bundle`
     - `reviews`
 
-- Added generation normalization rules
+- Tightened generation normalization rules
   - user facts define content truth
   - reference images define layout/composition priority
   - approved hero image defines style baseline
   - AI is only allowed controlled extension inside those boundaries
+  - risky or incompatible references can now be filtered before downstream generation
 
-- Added first pass of detail-page assembly UX
-  - “一键整理详情页” entry now exists
-  - current state is still an inline assembly section, not yet the final dedicated整理页
+- Added module text handling controls
+  - modules can now choose:
+    - auto text
+    - manual text
+    - pure image / no text
+  - text settings include:
+    - position hint
+    - user text
+    - note / override
+  - backend prompt now consumes text overlay mode, module visual focus, copy angle, and user note
+
+- Removed customer-facing prompt leakage
+  - hero and module results no longer expose raw generation prompts
+
+- Improved `一键整理详情页`
+  - there is now a first page-level stacked preview area
+  - hero and generated modules can be viewed in detail-page order
+  - modules can still be downloaded individually
 
 ## Important Current Reality
 
@@ -100,23 +108,23 @@ The current product direction is:
 3. classify references
 4. supplement missing real facts
 5. generate modules one by one
-6. then assemble them into a dedicated detail-page整理页
+6. assemble them into a dedicated detail-page arrangement page
 
 ## Known Current Risks
 
 - `public/index.html` still contains legacy duplicate function layers; later definitions often override earlier ones
 - Some user-visible issues may still come from stale local server state
-- The “一键整理详情页” flow is only partially complete
-- Reference-image inheritance has improved, but each module still needs continued tightening so outputs follow reference structure more strongly
+- The arrangement page is improved but still not fully polished
+- Text-area detection and module visual-focus obedience still need real browser validation
 
 ## Recommended Next Step
 
 The next highest-value product move is:
 
-1. keep strengthening module generation normalization
-2. make reference images dominate layout/composition more clearly than hero-image structure
-3. finish the dedicated detail-page整理页
-4. continue reducing legacy duplicate-function risk in `public/index.html`
+1. verify in browser that module generation really follows module visual focus, text mode, and reference structure
+2. continue strengthening reference-image inheritance, especially for detail/craftsmanship modules
+3. keep polishing the dedicated `一键整理详情页` page
+4. continue reducing duplicate-function risk in `public/index.html`
 
 ## Suggested Resume Prompt
 
@@ -127,6 +135,7 @@ The next highest-value product move is:
 1. 基于 D:\ECONY 根目录继续，不要切回旧的 ecom-ai-studio 子目录
 2. 详情页流程已经进入 Step 7：模块规划 + 参考图归类 + 单模块正式生成
 3. 不要跳过当前规划层直接做整套批量详情页
-4. 继续强化“用户资料定事实、参考图定版式、首图定基调、AI受控发挥”这套规则
-5. 优先把“一键整理详情页”做成真正独立的整理页
+4. 继续强化“用户资料定事实、参考图定版式、首图定基调、AI 受控发挥”这套规则
+5. 优先继续完善“一键整理详情页”的独立整理页
+6. 继续验证和增强模块对参考图结构、文字区、视觉重点的遵循
 ```

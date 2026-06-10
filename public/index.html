@@ -1347,6 +1347,10 @@
       gap: 12px;
     }
 
+    .detail-module-workbench-copy.single {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
     .detail-module-workbench-copy label {
       display: block;
       margin-bottom: 6px;
@@ -1428,6 +1432,65 @@
       color: var(--muted);
       font-size: 12px;
       line-height: 1.7;
+    }
+
+    .detail-module-text-config {
+      display: grid;
+      gap: 10px;
+      padding: 12px 13px;
+      border-radius: 16px;
+      border: 1px solid rgba(115, 96, 182, 0.12);
+      background: rgba(246, 243, 255, 0.72);
+    }
+
+    .detail-module-text-config strong {
+      font-size: 13px;
+    }
+
+    .detail-module-text-config p,
+    .detail-module-text-config span {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    .detail-module-text-config-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .detail-module-text-config label {
+      display: grid;
+      gap: 6px;
+    }
+
+    .detail-module-text-config select,
+    .detail-module-text-config input,
+    .detail-module-text-config textarea {
+      width: 100%;
+      border-radius: 14px;
+      border: 1px solid rgba(36, 31, 56, 0.12);
+      background: rgba(255, 255, 255, 0.96);
+      padding: 10px 12px;
+      font: inherit;
+      color: var(--text);
+      outline: none;
+    }
+
+    .detail-module-text-config textarea {
+      min-height: 86px;
+      resize: vertical;
+    }
+
+    .detail-module-ai-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .detail-module-ai-actions .detail-confirm-btn {
+      min-width: 0;
     }
 
     .detail-module-inline-fill {
@@ -2116,6 +2179,27 @@
       grid-template-columns: minmax(0, 1fr) minmax(260px, 0.72fr);
       gap: 16px;
       padding: 0 20px 20px;
+    }
+
+    .detail-assembly-page {
+      margin-top: 18px;
+    }
+
+    .detail-assembly-page-module {
+      display: grid;
+      gap: 12px;
+    }
+
+    .detail-assembly-page-module img {
+      width: 100%;
+      display: block;
+      border-radius: 18px;
+      border: 1px solid rgba(115, 96, 182, 0.12);
+      background: white;
+    }
+
+    .detail-assembly-page-module.locked {
+      opacity: 0.72;
     }
 
     .detail-preview-section-copy {
@@ -3786,6 +3870,7 @@
     let currentDetailModuleSupplementalInfo = {};
     let currentDetailModuleSupplementalImages = {};
     let currentDetailModuleSupplementalReferenceImages = {};
+    let currentDetailModuleTextSettings = {};
     let currentDetailSupplementalAnalyzingKey = "";
     let currentDetailSupplementalPanelOpen = true;
     let currentDetailGeneratedModules = {};
@@ -4779,6 +4864,7 @@
 
     function clearDetailModuleSupplementalInfo() {
       currentDetailModuleSupplementalInfo = {};
+      currentDetailModuleTextSettings = {};
       currentDetailSupplementalPanelOpen = true;
       currentDetailReferenceFocusFieldKey = "";
     }
@@ -4846,6 +4932,160 @@
       return matchedIndexes
         .map((index) => allImages[index])
         .filter(Boolean);
+    }
+
+    function getReferenceClassificationRecord(index) {
+      return (Array.isArray(currentDetailReferenceAssetClassifications)
+        ? currentDetailReferenceAssetClassifications
+        : []
+      ).find((item) => Number(item.index) === Number(index)) || null;
+    }
+
+    function isReferenceClassificationBlocked(record) {
+      if (!record) return false;
+      const inheritanceMode = String(record.inheritanceMode || "").trim();
+      const compatibilityRisk = String(record.compatibilityRisk || "").trim();
+      return inheritanceMode === "block" || compatibilityRisk === "high";
+    }
+
+    function getReferenceClassificationWarning(record) {
+      if (!record) return "";
+      const explicitWarning = String(record.warning || "").trim();
+      if (explicitWarning) return explicitWarning;
+      if (isReferenceClassificationBlocked(record)) {
+        return "这张参考图风格或结构风险较高，默认不自动带入正式生成，避免带偏成海报拼贴或重复九宫格。";
+      }
+      if (String(record.compatibilityRisk || "").trim() === "medium") {
+        return "这张参考图更适合弱参考结构，不适合强继承整张版式。";
+      }
+      return "";
+    }
+
+    function getFilteredGlobalDetailReferenceImages(fieldKey = "") {
+      const allImages = Array.isArray(currentDetailReferenceImageDataUrls)
+        ? currentDetailReferenceImageDataUrls
+        : [];
+      const classifications = Array.isArray(currentDetailReferenceAssetClassifications)
+        ? currentDetailReferenceAssetClassifications
+        : [];
+
+      return classifications
+        .filter((item) => item?.fieldKey === fieldKey)
+        .filter((item) => !isReferenceClassificationBlocked(item))
+        .map((item) => allImages[Number(item.index)])
+        .filter(Boolean);
+    }
+
+    function getModuleReferenceClassificationRecords(moduleKey) {
+      const fieldKeys = getModuleSupplementalImageKeys(moduleKey);
+      const classifications = Array.isArray(currentDetailReferenceAssetClassifications)
+        ? currentDetailReferenceAssetClassifications
+        : [];
+      return classifications.filter((item) => fieldKeys.includes(item?.fieldKey));
+    }
+
+    function getModuleTextReferenceAnalysis(moduleKey) {
+      const records = getModuleReferenceClassificationRecords(moduleKey)
+        .filter((item) => !isReferenceClassificationBlocked(item));
+      const textRecords = records.filter((item) => Boolean(item?.hasTextOverlay));
+      if (!textRecords.length) {
+        return {
+          hasText: false,
+          positionHint: "",
+          layoutHint: "",
+          styleHint: "",
+          suggestion: "",
+          sourceCount: 0,
+        };
+      }
+
+      const primary = textRecords[0] || {};
+      return {
+        hasText: true,
+        positionHint: String(primary.textPosition || "").trim(),
+        layoutHint: String(primary.textLayout || "").trim(),
+        styleHint: String(primary.textStyle || "").trim(),
+        suggestion: String(primary.textSuggestion || "").trim(),
+        sourceCount: textRecords.length,
+      };
+    }
+
+    function getDefaultModuleTextMode(moduleKey) {
+      return getModuleTextReferenceAnalysis(moduleKey).hasText ? "auto" : "none";
+    }
+
+    function getModuleTextSetting(moduleKey) {
+      const saved = currentDetailModuleTextSettings[moduleKey] || {};
+      const analysis = getModuleTextReferenceAnalysis(moduleKey);
+      return {
+        mode: String(saved.mode || getDefaultModuleTextMode(moduleKey)).trim() || "none",
+        userText: String(saved.userText || "").trim(),
+        positionHint: String(saved.positionHint || analysis.positionHint || "").trim(),
+        layoutHint: String(saved.layoutHint || analysis.layoutHint || "").trim(),
+        styleHint: String(saved.styleHint || analysis.styleHint || "").trim(),
+        note: String(saved.note || "").trim(),
+        referenceHasText: analysis.hasText,
+        suggestion: analysis.suggestion,
+      };
+    }
+
+    function setModuleTextSetting(moduleKey, patch = {}) {
+      if (!moduleKey) return;
+      currentDetailModuleTextSettings = {
+        ...currentDetailModuleTextSettings,
+        [moduleKey]: {
+          ...(currentDetailModuleTextSettings[moduleKey] || {}),
+          ...patch,
+        }
+      };
+    }
+
+    function buildModuleTextOverlayPayload(moduleKey) {
+      const setting = getModuleTextSetting(moduleKey);
+      return {
+        mode: setting.mode,
+        userText: setting.userText,
+        positionHint: setting.positionHint,
+        layoutHint: setting.layoutHint,
+        styleHint: setting.styleHint,
+        note: setting.note,
+        referenceHasText: setting.referenceHasText,
+      };
+    }
+
+    function renderModuleTextConfig(moduleKey) {
+      const setting = getModuleTextSetting(moduleKey);
+      return `
+        <div class="detail-module-text-config">
+          <strong>文字处理</strong>
+          <p>${setting.referenceHasText
+            ? `已识别到参考图文字位置：${escapeHtml(setting.positionHint || "参考图文字区")}。${escapeHtml(setting.suggestion || "如不手动填写，系统会按当前商品定位自动生成简短中文文案。")}`
+            : "当前还没稳定识别到参考图文字区，但你仍然可以手动指定加字位置、文案内容，或者明确要求纯图片不加字。"}
+          </p>
+          <div class="detail-module-text-config-grid">
+            <label>
+              <span>是否加字</span>
+              <select data-module-text-mode="${escapeHtml(moduleKey)}">
+                <option value="auto" ${setting.mode === "auto" ? "selected" : ""}>按当前商品自动生成文字</option>
+                <option value="manual" ${setting.mode === "manual" ? "selected" : ""}>我自己填写文字</option>
+                <option value="none" ${setting.mode === "none" ? "selected" : ""}>不加文字，只做图</option>
+              </select>
+            </label>
+            <label>
+              <span>文字位置</span>
+              <input type="text" data-module-text-position="${escapeHtml(moduleKey)}" value="${escapeHtml(setting.positionHint)}" placeholder="例如：左上主标题区，右下短卖点区">
+            </label>
+          </div>
+          <label class="detail-module-text-config-textarea">
+            <span>文字内容</span>
+            <textarea data-module-text-copy="${escapeHtml(moduleKey)}" placeholder="如果你想自己定文案，就在这里填写；留空时系统会按商品方向自动生成。">${escapeHtml(setting.userText)}</textarea>
+          </label>
+          <label class="detail-module-text-config-textarea">
+            <span>备注</span>
+            <textarea data-module-text-note="${escapeHtml(moduleKey)}" placeholder="例如：客户只要纯图片不要文字；或者这里想做数字型参数标题；或者标题别太夸张。">${escapeHtml(setting.note)}</textarea>
+          </label>
+        </div>
+      `;
     }
 
     function getReferenceClassificationFieldOptions() {
@@ -4967,6 +5207,9 @@
         index,
         summary: "由手动改归类后生效",
         confidence: "manual",
+        compatibilityRisk: "low",
+        inheritanceMode: "direct",
+        warning: "",
       };
 
       const rest = existing.filter((item) => Number(item.index) !== index);
@@ -5186,6 +5429,7 @@
             placeholder="${escapeHtml(field.placeholder)}"
           >${escapeHtml(currentDetailModuleSupplementalInfo[field.key] || "")}</textarea>
           <div class="detail-module-inline-fill-actions">
+            <button type="button" class="detail-confirm-btn" data-suggest-supplemental-field="${escapeHtml(field.key)}">AI 一键生成</button>
             <button type="button" class="detail-confirm-btn" data-save-supplemental-field="${escapeHtml(field.key)}">保存这项</button>
           </div>
         </article>
@@ -5251,6 +5495,9 @@
               data-supplemental-key="${escapeHtml(fieldKey)}"
               placeholder="${escapeHtml(field.placeholder || "请补充这项信息")}"
             >${escapeHtml(currentDetailModuleSupplementalInfo[fieldKey] || "")}</textarea>
+            <div class="detail-module-ai-actions">
+              <button type="button" class="detail-confirm-btn" data-suggest-supplemental-field="${escapeHtml(fieldKey)}">AI 一键生成</button>
+            </div>
           </div>
         `;
       }).join("");
@@ -5330,18 +5577,78 @@
           </article>
         `;
       }).join("");
+      const pageFlowHtml = [
+        workbench.heroImageUrl ? `
+          <article class="detail-preview-module detail-assembly-page-module">
+            <div class="detail-preview-module-header">
+              <span class="detail-preview-module-index">01</span>
+              <span class="detail-preview-module-label">首图基线</span>
+            </div>
+            <img src="${escapeHtml(workbench.heroImageUrl)}" alt="首图基线">
+          </article>
+        ` : "",
+        ...modules.map((item) => {
+          const generatedModule = currentDetailGeneratedModules[item.key] || null;
+          if (!generatedModule?.imageUrl) {
+            return `
+              <article class="detail-preview-module detail-assembly-page-module locked">
+                <div class="detail-preview-module-header">
+                  <span class="detail-preview-module-index">${String(item.queueIndex).padStart(2, "0")}</span>
+                  <span class="detail-preview-module-label">${escapeHtml(item.name)}</span>
+                </div>
+                <p>这一模块还没有正式生成，当前只保留在整页顺序里。</p>
+              </article>
+            `;
+          }
+          return `
+            <article class="detail-preview-module detail-assembly-page-module">
+              <div class="detail-preview-module-header">
+                <span class="detail-preview-module-index">${String(item.queueIndex).padStart(2, "0")}</span>
+                <span class="detail-preview-module-label">${escapeHtml(item.name)}</span>
+              </div>
+              <img src="${escapeHtml(generatedModule.imageUrl)}" alt="${escapeHtml(item.name)}">
+              <div class="detail-module-workbench-generate-actions">
+                <button class="detail-confirm-btn" type="button" data-download-module="${escapeHtml(item.key)}">下载这一模块</button>
+              </div>
+            </article>
+          `;
+        })
+      ].join("");
 
       return `
         <section class="detail-module-workbench" id="detail-assembly-board">
           <div class="detail-module-workbench-head">
             <div>
-              <span class="detail-module-plan-kicker">Detail Page Assembly</span>
+              <span class="detail-module-plan-kicker">详情页整理区</span>
               <strong>一键整理详情页</strong>
               <p>这里会把当前已经生成的详情页板块集中整理到一个页面里，方便你统一预览、逐张下载和后续继续补图。</p>
             </div>
             <span class="detail-module-plan-note">已整理 ${generatedCount} / ${modules.length} 块</span>
           </div>
           <div class="detail-module-workbench-list">${itemsHtml}</div>
+          <section class="detail-preview-sheet detail-assembly-page">
+            <article class="detail-preview-module">
+              <div class="detail-preview-module-header">
+                <span class="detail-preview-module-index">整页</span>
+                <span class="detail-preview-module-label">当前整页预览</span>
+              </div>
+              <div class="detail-preview-two-col">
+                <div class="detail-preview-section-copy">
+                  <h3>这一页现在能看什么</h3>
+                  <p>这里会把首图和已生成模块按详情页顺序串起来，方便你从上到下整体看节奏、衔接和完成度，而不是只看零散模块。</p>
+                </div>
+                <div class="detail-preview-plan">
+                  <strong>当前完成度</strong>
+                  <div class="detail-preview-tags">
+                    <span>已生成 ${generatedCount} 块</span>
+                    <span>待补齐 ${Math.max(modules.length - generatedCount, 0)} 块</span>
+                    <span>支持逐块下载</span>
+                  </div>
+                </div>
+              </div>
+            </article>
+            ${pageFlowHtml}
+          </section>
         </section>
       `;
     }
@@ -5389,6 +5696,7 @@
           const inlineQuickFill = item.status === "needs_input" ? renderInlineModuleQuickFill(item) : "";
           const isReferenceFocused = currentDetailReferenceFocusFieldKey && getReferenceClassificationModuleKey(currentDetailReferenceFocusFieldKey) === item.key;
           const linkedReferenceCount = getModuleSupplementalImageBase64List(item.key).length;
+          const moduleTextConfig = item.status === "ready" ? renderModuleTextConfig(item.key) : "";
           const readinessBlock = `
             <div class="detail-module-workbench-readiness">
               <div>
@@ -5413,7 +5721,6 @@
                 </div>
                 <p>${supportsGeneration ? `当前已逐步接入真实板块生成入口，用它来验证单板块正式生成链路，而不是直接整套批量出图。当前会一并带入 ${linkedReferenceCount} 张已归类参考图。` : "这个板块的正式生成入口下一批接入，当前先完成工作台和补资料约束。"}</p>
                 ${generatedModule?.imageUrl ? `<img src="${escapeHtml(generatedModule.imageUrl)}" alt="${escapeHtml(item.name)}生成结果">` : ""}
-                ${generatedModule?.prompt ? `<p>${escapeHtml(generatedModule.prompt)}</p>` : ""}
               </div>
             `
             : `
@@ -5458,6 +5765,7 @@
               <p>${escapeHtml(item.planHint || item.startAction || "待补充")}</p>
             </div>
           </div>
+          ${moduleTextConfig ? `<div class="detail-module-workbench-copy">${moduleTextConfig}</div>` : ""}
           ${readinessBlock}
           ${inlineQuickFill}
           ${generateBlock}
@@ -5741,6 +6049,75 @@
             ...currentDetailModuleSupplementalInfo,
             [key]: field.value.trim()
           };
+        });
+      });
+
+      planner.querySelectorAll("[data-module-text-mode]").forEach((field) => {
+        field.addEventListener("change", () => {
+          const moduleKey = field.dataset.moduleTextMode;
+          if (!moduleKey) return;
+          setModuleTextSetting(moduleKey, { mode: field.value });
+        });
+      });
+
+      planner.querySelectorAll("[data-module-text-position]").forEach((field) => {
+        field.addEventListener("input", () => {
+          const moduleKey = field.dataset.moduleTextPosition;
+          if (!moduleKey) return;
+          setModuleTextSetting(moduleKey, { positionHint: field.value.trim() });
+        });
+      });
+
+      planner.querySelectorAll("[data-module-text-copy]").forEach((field) => {
+        field.addEventListener("input", () => {
+          const moduleKey = field.dataset.moduleTextCopy;
+          if (!moduleKey) return;
+          setModuleTextSetting(moduleKey, { userText: field.value.trim() });
+        });
+      });
+
+      planner.querySelectorAll("[data-module-text-note]").forEach((field) => {
+        field.addEventListener("input", () => {
+          const moduleKey = field.dataset.moduleTextNote;
+          if (!moduleKey) return;
+          setModuleTextSetting(moduleKey, { note: field.value.trim() });
+        });
+      });
+
+      planner.querySelectorAll("[data-suggest-supplemental-field]").forEach((button) => {
+        button.addEventListener("click", async () => {
+          const fieldKey = button.dataset.suggestSupplementalField;
+          if (!fieldKey) return;
+          const originalText = button.textContent;
+          try {
+            button.disabled = true;
+            button.textContent = "生成中...";
+            const data = await postJson("/api/suggest-detail-module-field", {
+              fieldKey,
+              productName: currentDetailAnalysis?.productName || detailProductNameInput.value.trim(),
+              productVisualSummary: currentDetailAnalysis?.productVisualSummary || "",
+              coreSellingPoints: currentDetailAnalysis?.coreSellingPoints || [],
+              scenes: detailScenes.value.trim(),
+              audience: currentDetailAnalysis?.audienceInsight || "",
+              style: currentDetailStyle,
+              existingInfo: currentDetailModuleSupplementalInfo[fieldKey] || ""
+            });
+            const suggestedText = String(data?.result?.text || "").trim();
+            if (!suggestedText) {
+              throw new Error("系统这次没有生成可用内容");
+            }
+            currentDetailModuleSupplementalInfo = {
+              ...currentDetailModuleSupplementalInfo,
+              [fieldKey]: suggestedText
+            };
+            updateDetailModulePlanner();
+            showToast("这项资料已按当前商品方向生成");
+          } catch (error) {
+            showToast(error.message || "一键生成失败");
+          } finally {
+            button.disabled = false;
+            button.textContent = originalText;
+          }
         });
       });
 
@@ -6143,6 +6520,10 @@
           scenes: detailScenes.value.trim(),
           summary: currentDetailAnalysis,
           supplementalInfo: currentDetailModuleSupplementalInfo,
+          moduleVisualFocus: (currentDetailModuleWorkbench?.modules || []).find((item) => item.key === moduleKey)?.visualFocus || "",
+          moduleCopyAngle: (currentDetailModuleWorkbench?.modules || []).find((item) => item.key === moduleKey)?.copyAngle || "",
+          moduleUserNote: getModuleTextSetting(moduleKey).note || "",
+          textOverlay: buildModuleTextOverlayPayload(moduleKey),
           supplementalImageBase64List
         });
 
@@ -6154,8 +6535,7 @@
         currentDetailGeneratedModules = {
           ...currentDetailGeneratedModules,
           [moduleKey]: {
-            imageUrl,
-            prompt: String(data?.meta?.prompt || "").trim()
+            imageUrl
           }
         };
         updateDetailModulePlanner();
@@ -6264,7 +6644,7 @@
         ...getSupplementalRecognitionImages(key),
         ...getSupplementalReferenceImages(key)
       ]));
-      const globalReferenceDataUrls = fieldKeys.flatMap((key) => getGlobalDetailReferenceImages(key));
+      const globalReferenceDataUrls = fieldKeys.flatMap((key) => getFilteredGlobalDetailReferenceImages(key));
 
       return [
         ...scopedImageDataUrls,
@@ -6494,7 +6874,7 @@
         <div class="detail-preview-stage">
           <div class="detail-preview-summary">
             <section class="detail-preview-card detail-preview-brief">
-              <div class="detail-preview-kicker">Detail Page System Preview</div>
+              <div class="detail-preview-kicker">详情页系统预览</div>
               <div class="detail-preview-title">
                 <strong>${safeProductName} \u8be6\u60c5\u9875\u751f\u6210\u65b9\u6848</strong>
                 <span>${safeSourceText}</span>
@@ -6530,8 +6910,8 @@
               <div class="detail-preview-hero-copy">
                 <div>
                   <div class="detail-preview-module-header">
-                    <span class="detail-preview-module-index">Module 01</span>
-                    <span class="detail-preview-module-label">Hero / \u9996\u5c4f\u786e\u8ba4</span>
+                    <span class="detail-preview-module-index">模块 01</span>
+                    <span class="detail-preview-module-label">首屏确认</span>
                   </div>
                   <h3>${safeProductName}</h3>
                   <p>\u9996\u5c4f\u5148\u660e\u786e\u4ea7\u54c1\u4e3b\u89c6\u89c9\u3001\u98ce\u683c\u8c03\u6027\u548c\u5e73\u53f0\u9002\u914d\u65b9\u5411\uff0c\u8ba9\u8be6\u60c5\u9875\u540e\u7eed\u6a21\u5757\u90fd\u56f4\u7ed5\u540c\u4e00\u5957\u7535\u5546\u8868\u8fbe\u7ee7\u7eed\u5c55\u5f00\u3002</p>
@@ -6718,7 +7098,6 @@
       const heroHeadline = escapeHtml(summary.heroDirection?.headline || "首图方向已确认");
       const heroFocus = escapeHtml(summary.heroDirection?.visualFocus || "商品主体 + 第一卖点");
       const styleText = escapeHtml(currentDetailStyle);
-      const promptBody = escapeHtml(promptText || summary.imagePromptDraft || "当前未返回首图提示词。");
       const sellingPoints = splitDetailText(detailSellingPoints.value.trim(), ["核心卖点待补充"]).slice(0, 3);
       const heroPointsHtml = sellingPoints.map((point) => `<div>${escapeHtml(point)}</div>`).join("");
       const visualKeywords = (summary.visualKeywords || [])
@@ -6771,8 +7150,8 @@
               <div class="detail-preview-hero-copy">
                 <div>
                   <div class="detail-preview-module-header">
-                    <span class="detail-preview-module-index">Module 01</span>
-                    <span class="detail-preview-module-label">Hero / 首图结果</span>
+                    <span class="detail-preview-module-index">模块 01</span>
+                    <span class="detail-preview-module-label">首图结果</span>
                   </div>
                   <h3>${productName}</h3>
                   <p>这张图已经从第 5 步的方案摘要进入了第 6 步实际出图。当前重点是先确认它能不能作为后续详情页内容的第一屏基线。</p>
@@ -6787,13 +7166,13 @@
 
             <article class="detail-preview-module">
               <div class="detail-preview-module-header">
-                <span class="detail-preview-module-index">Prompt</span>
+                <span class="detail-preview-module-index">风格</span>
                 <span class="detail-preview-module-label">本轮生图说明</span>
               </div>
               <div class="detail-preview-two-col">
                 <div class="detail-preview-section-copy">
                   <h3>这轮首图是按什么方向生成的</h3>
-                  <p>${promptBody}</p>
+                  <p>后续详情页模块会继承这张首图的整体气质、精致度、色彩基调和电商呈现方式，但不会把内部英文提示词或技术描述直接展示给客户。</p>
                 </div>
                 <div class="detail-preview-plan">
                   <strong>视觉关键词</strong>
@@ -6806,7 +7185,7 @@
 
             <article class="detail-preview-module">
               <div class="detail-preview-module-header">
-                <span class="detail-preview-module-index">Next</span>
+                <span class="detail-preview-module-index">下一步</span>
                 <span class="detail-preview-module-label">首图确认动作</span>
               </div>
               <div class="detail-confirm-bar">
@@ -7081,8 +7460,7 @@
         currentDetailGeneratedModules = {
           ...currentDetailGeneratedModules,
           [moduleKey]: {
-            imageUrl,
-            prompt: String(data?.meta?.prompt || "").trim()
+            imageUrl
           }
         };
         updateDetailModulePlanner();
@@ -7220,7 +7598,7 @@
           throw new Error("接口未返回首图结果");
         }
 
-        setDetailHeroResult(imgUrl, data.meta?.prompt || currentDetailAnalysis.imagePromptDraft || "");
+        setDetailHeroResult(imgUrl, "");
         showToast("第 6 步首图生成完成");
       } catch (error) {
         setResultError(error.message || "首图生成失败");
