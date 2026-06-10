@@ -1045,6 +1045,46 @@ function buildSupplementalImagePrompt(fieldKey) {
   `.trim();
 }
 
+function buildDetailReferenceAssetClassificationPrompt() {
+  return `
+You are classifying one ecommerce reference image for downstream detail-page module generation.
+Do not generate copy. Do not invent facts. Only judge what this image is mainly for.
+
+Choose exactly one primary fieldKey from this list:
+- paramSpecs
+- variantInfo
+- trustInfo
+- afterSalesInfo
+- comparisonBasis
+- sizeGuideInfo
+- bundleInfo
+- reviewProof
+- scenes
+- details
+- unknown
+
+Rules:
+1. If the image is mainly a parameter board, spec table, dimensions, materials, or structured product facts, choose paramSpecs.
+2. If it is mainly colors, versions, package combinations, choose variantInfo.
+3. If it is mainly certificates, brand proof, testing proof, authority badges, choose trustInfo.
+4. If it is mainly shipping, return, warranty, customer-service policy, choose afterSalesInfo.
+5. If it is mainly before/after, product comparison, upgrade comparison, choose comparisonBasis.
+6. If it is mainly size chart or fitting guide, choose sizeGuideInfo.
+7. If it is mainly bundle recommendation or product combo, choose bundleInfo.
+8. If it is mainly user reviews, buyer feedback, testimonials, choose reviewProof.
+9. If it is mainly scenario/lifestyle usage, choose scenes.
+10. If it is mainly close-up details, craftsmanship, material closeups, choose details.
+11. If you are not confident, choose unknown instead of forcing a wrong category.
+
+Output strict JSON only:
+{
+  "fieldKey": "one item from the list",
+  "summary": "short Chinese summary of what this image appears to contain",
+  "confidence": "high | medium | low"
+}
+  `.trim();
+}
+
 function toImageDataUrl(value) {
   const text = String(value || '').trim();
   if (!text) return '';
@@ -1354,6 +1394,488 @@ function buildDetailAfterSalesPrompt(input = {}) {
 6. 风格继续沿用当前详情页基线，但语气更稳定、更让人安心。`.trim();
 }
 
+function buildDetailDemoPrompt(input = {}) {
+  const sellingPoints = toArray(input.coreSellingPoints).slice(0, 4).join(' / ');
+  const scenes = String(input.scenes || '').trim();
+  const visualKeywords = toArray(input.visualKeywords).slice(0, 6).join(' / ');
+
+  return `
+You are generating one ecommerce detail-page module image only: the "feature demo / usage demonstration" module.
+Keep the uploaded product real and visually consistent.
+
+Current module context:
+- Module: Feature Demo
+- Product name: ${input.productName || 'TBD'}
+- Style baseline: ${input.style || 'High-conversion ecommerce'}
+- Hero headline baseline: ${input.heroHeadline || 'TBD'}
+- Product visual summary: ${input.productVisualSummary || 'TBD'}
+- Core selling points: ${sellingPoints || 'TBD'}
+- Usage scene: ${scenes || 'TBD'}
+- Visual keywords: ${visualKeywords || 'TBD'}
+
+Generation rules:
+1. This module should explain how the product works, what action it supports, or what result the user gets.
+2. Base the message only on provided selling points and scenes. Never invent extra functions.
+3. Use clear ecommerce-style visual storytelling: step cues, action cues, before/after cues, or highlighted function zones.
+4. Do not turn it into a generic lifestyle poster. It must still feel like a detail-page module.
+5. Keep the product shape, color, and structure consistent with the uploaded product image.
+  `.trim();
+}
+
+function buildDetailComparisonPrompt(input = {}) {
+  const comparisonBasis = String(input.comparisonBasis || '').trim();
+  const visualKeywords = toArray(input.visualKeywords).slice(0, 6).join(' / ');
+
+  return `
+You are generating one ecommerce detail-page module image only: the "comparison" module.
+Do not fabricate competitors, claims, or numeric advantages.
+
+Current module context:
+- Module: Comparison
+- Product name: ${input.productName || 'TBD'}
+- Style baseline: ${input.style || 'High-conversion ecommerce'}
+- Hero headline baseline: ${input.heroHeadline || 'TBD'}
+- Product visual summary: ${input.productVisualSummary || 'TBD'}
+- Comparison basis: ${comparisonBasis || 'TBD'}
+- Visual keywords: ${visualKeywords || 'TBD'}
+
+Generation rules:
+1. Only compare along dimensions the user actually provided.
+2. Never invent benchmark numbers, competitor brands, ratings, or fake side-by-side test results.
+3. Use a readable comparison-board layout with clear hierarchy.
+4. Keep the tone practical and conversion-oriented rather than aggressive hype.
+5. The product itself must stay visually real and consistent.
+  `.trim();
+}
+
+function buildDetailSizeGuidePrompt(input = {}) {
+  const sizeGuideInfo = String(input.sizeGuideInfo || '').trim();
+  const variantInfo = String(input.variantInfo || '').trim();
+  const visualKeywords = toArray(input.visualKeywords).slice(0, 6).join(' / ');
+
+  return `
+You are generating one ecommerce detail-page module image only: the "size guide / buying guide" module.
+Do not invent measurements or fit advice.
+
+Current module context:
+- Module: Size Guide
+- Product name: ${input.productName || 'TBD'}
+- Style baseline: ${input.style || 'High-conversion ecommerce'}
+- Product visual summary: ${input.productVisualSummary || 'TBD'}
+- Size guide facts: ${sizeGuideInfo || 'TBD'}
+- Variant facts: ${variantInfo || 'TBD'}
+- Visual keywords: ${visualKeywords || 'TBD'}
+
+Generation rules:
+1. Organize real size, fit, measurement, or selection advice already provided by the user.
+2. Never fabricate dimensions, body data, weight suggestions, or fit guarantees.
+3. The final image should feel like a structured buying guide inside an ecommerce detail page.
+4. Make it readable first, stylish second.
+5. Keep the product visually consistent and use it only as support, not as a fake model shoot.
+  `.trim();
+}
+
+function buildDetailBundlePrompt(input = {}) {
+  const bundleInfo = String(input.bundleInfo || '').trim();
+  const scenes = String(input.scenes || '').trim();
+  const visualKeywords = toArray(input.visualKeywords).slice(0, 6).join(' / ');
+
+  return `
+You are generating one ecommerce detail-page module image only: the "bundle / pairing recommendation" module.
+Do not invent extra products or package contents that the user did not provide.
+
+Current module context:
+- Module: Bundle / Pairing
+- Product name: ${input.productName || 'TBD'}
+- Style baseline: ${input.style || 'High-conversion ecommerce'}
+- Product visual summary: ${input.productVisualSummary || 'TBD'}
+- Bundle facts: ${bundleInfo || 'TBD'}
+- Usage scene: ${scenes || 'TBD'}
+- Visual keywords: ${visualKeywords || 'TBD'}
+
+Generation rules:
+1. Only present pairing, set, or bundle relationships explicitly supported by the user input.
+2. Never fabricate SKUs, quantities, or included items.
+3. Use a clear grouped layout suitable for add-on purchase guidance.
+4. Keep the tone practical and ecommerce-native.
+5. Maintain visual consistency with the confirmed hero baseline.
+  `.trim();
+}
+
+function buildDetailReviewsPrompt(input = {}) {
+  const reviewProof = String(input.reviewProof || '').trim();
+  const visualKeywords = toArray(input.visualKeywords).slice(0, 6).join(' / ');
+
+  return `
+You are generating one ecommerce detail-page module image only: the "reviews / buyer proof" module.
+Do not invent customer quotes, ratings, screenshots, or feedback.
+
+Current module context:
+- Module: Reviews / Social Proof
+- Product name: ${input.productName || 'TBD'}
+- Style baseline: ${input.style || 'High-conversion ecommerce'}
+- Product visual summary: ${input.productVisualSummary || 'TBD'}
+- Review proof: ${reviewProof || 'TBD'}
+- Visual keywords: ${visualKeywords || 'TBD'}
+
+Generation rules:
+1. Only build this module from real review proof provided by the user.
+2. Never fabricate stars, comments, usernames, timestamps, chat records, or praise.
+3. The layout may resemble a curated proof board or buyer-feedback module, but it must stay credible and restrained.
+4. Keep the product image real and secondary to the proof content.
+5. Preserve the vertical ecommerce style already established by the hero image.
+  `.trim();
+}
+
+function buildDetailReferenceDrivenPrompt({
+  moduleName = 'Detail Module',
+  moduleGoal = '',
+  keyFacts = [],
+  compositionRules = [],
+  productRole = 'Keep the product visible as a supporting but credible anchor.',
+  input = {},
+}) {
+  const visualKeywords = toArray(input.visualKeywords).slice(0, 6).join(' / ');
+  const referenceEvidenceCount = Number(input.referenceEvidenceCount) || 0;
+  const referenceEvidenceGuidance = String(input.referenceEvidenceGuidance || '').trim() || 'No extra reference images were uploaded for this module.';
+  const factLines = keyFacts.filter(Boolean).join('\n');
+  const ruleLines = compositionRules.map((rule, index) => `${index + 1}. ${rule}`).join('\n');
+
+  return `
+You are generating one ecommerce detail-page module image only: the "${moduleName}" module.
+
+Current module context:
+- Module: ${moduleName}
+- Module goal: ${moduleGoal || 'TBD'}
+- Product name: ${input.productName || 'TBD'}
+- Style baseline from hero: ${input.style || 'High-conversion ecommerce'}
+- Hero headline baseline: ${input.heroHeadline || 'TBD'}
+- Hero visual focus: ${input.heroVisualFocus || 'TBD'}
+- Product visual summary: ${input.productVisualSummary || 'TBD'}
+- Audience insight: ${input.audienceInsight || 'TBD'}
+- Usage scene: ${input.scenes || 'TBD'}
+- Emotional hook: ${input.emotionalHook || 'TBD'}
+- Visual keywords: ${visualKeywords || 'TBD'}
+- Reference evidence images: ${referenceEvidenceCount}
+- Reference evidence guidance: ${referenceEvidenceGuidance}
+${factLines}
+
+Global rules:
+1. The confirmed hero image defines the overall tone, polish level, atmosphere, and ecommerce visual baseline.
+2. If reference images are provided, they have higher priority than the hero image for layout structure, information hierarchy, cropping logic, board rhythm, and text-image balance.
+3. In short: hero image controls style mood, reference images control composition, user facts control content truth.
+4. User-provided facts and instructions define the hard content boundary. Never invent unsupported specs, claims, proof, variants, policies, or reviews.
+5. Controlled AI creativity is allowed only inside those boundaries: composition cleanup, emphasis polish, atmosphere support, and presentation refinement.
+6. When the reference images are strongly structured, follow them closely instead of improvising a new page structure.
+7. ${productRole}
+
+Module-specific rules:
+${ruleLines}
+  `.trim();
+}
+
+function buildNormalizedDetailSellingPointsPrompt(input = {}) {
+  const sellingPoints = toArray(input.coreSellingPoints).slice(0, 4).join(' / ');
+  return buildDetailReferenceDrivenPrompt({
+    moduleName: 'Core Selling Points',
+    moduleGoal: 'Convert the strongest product reasons into a readable selling-point board after the hero image.',
+    keyFacts: [
+      `- Core selling points: ${sellingPoints || 'TBD'}`,
+    ],
+    compositionRules: [
+      'This is not another hero poster; it is a downstream selling-point module.',
+      'Prefer 2 to 3 strongest selling points with clear hierarchy instead of overcrowding the page.',
+      'Use reference images to strongly control card structure, icon rhythm, text grouping, emphasis order, and how much product versus text is shown.',
+      'Keep the product commercially real and aligned with the hero baseline.',
+    ],
+    productRole: 'Keep the product visible and credible, but let the selling-point structure lead the page.',
+    input,
+  });
+}
+
+function buildNormalizedDetailDetailsPrompt(input = {}) {
+  const sellingPoints = toArray(input.coreSellingPoints).slice(0, 4).join(' / ');
+  return buildDetailReferenceDrivenPrompt({
+    moduleName: 'Details / Craftsmanship',
+    moduleGoal: 'Prove quality through real-looking detail evidence and close-up structure.',
+    keyFacts: [
+      `- Core selling points: ${sellingPoints || 'TBD'}`,
+    ],
+    compositionRules: [
+      'Prioritize texture, seams, joints, materials, edges, reflections, and structure clues over generic atmosphere.',
+      'Use reference images to strongly control close-up rhythm, crop style, evidence layout, scale of detail areas, and proof-board feeling.',
+      'AI may choose which authentic-looking details to emphasize, but it must stay consistent with the real product.',
+      'Do not turn this into abstract art or a generic branding poster.',
+    ],
+    productRole: 'The product can be cropped, zoomed, or partially shown, but every visible detail must still feel like the real uploaded product.',
+    input,
+  });
+}
+
+function buildNormalizedDetailParamsPrompt(input = {}) {
+  return buildDetailReferenceDrivenPrompt({
+    moduleName: 'Product Parameters / Specs',
+    moduleGoal: 'Turn real specs into a structured and highly readable parameter board.',
+    keyFacts: [
+      `- Parameter facts: ${String(input.paramSpecs || '').trim() || 'TBD'}`,
+      `- Variant facts: ${String(input.variantInfo || '').trim() || 'TBD'}`,
+      `- Size guide facts: ${String(input.sizeGuideInfo || '').trim() || 'TBD'}`,
+    ],
+    compositionRules: [
+      'Never invent any numbers, materials, sizes, certifications, testing claims, or product variants.',
+      'If the references look like pure information boards, prioritize that board structure over keeping a large product visual.',
+      'The product may be minimized, reduced to a small support visual, or omitted entirely if the reference direction is clearly table-first and the user intent is information-first.',
+      'Keep text blocks aligned, readable, and useful for rational purchase decisions.',
+      'Do not force a left-side product cutout unless the references themselves clearly use that structure.',
+    ],
+    productRole: 'Treat the product as optional support rather than a mandatory large visual; let the reference-board logic decide its weight.',
+    input,
+  });
+}
+
+function buildNormalizedDetailScenesPrompt(input = {}) {
+  const sellingPoints = toArray(input.coreSellingPoints).slice(0, 4).join(' / ');
+  return buildDetailReferenceDrivenPrompt({
+    moduleName: 'Scene / Usage Context',
+    moduleGoal: 'Show where and how the product fits into a believable usage scenario.',
+    keyFacts: [
+      `- Core selling points: ${sellingPoints || 'TBD'}`,
+      `- Usage scene: ${String(input.scenes || '').trim() || 'TBD'}`,
+    ],
+    compositionRules: [
+      'Never invent a new usage scenario that conflicts with the user input.',
+      'Reference images should strongly control storytelling density, environment framing, shot distance, and how much of the scene versus product is shown.',
+      'Human presence or props may assist, but the product must remain the narrative anchor.',
+      'Keep it like a detail-page usage module, not a broad campaign poster.',
+    ],
+    productRole: 'The product remains the scene anchor while the environment and action cues provide controlled support.',
+    input,
+  });
+}
+
+function buildNormalizedDetailVariantsPrompt(input = {}) {
+  return buildDetailReferenceDrivenPrompt({
+    moduleName: 'Variants / Colors / Versions',
+    moduleGoal: 'Clarify real version, color, or option differences for easier selection.',
+    keyFacts: [
+      `- Variant facts: ${String(input.variantInfo || '').trim() || 'TBD'}`,
+      `- Size guide facts: ${String(input.sizeGuideInfo || '').trim() || 'TBD'}`,
+    ],
+    compositionRules: [
+      'Never invent new colors, versions, bundles, or SKUs.',
+      'Use reference images to strongly control side-by-side rhythm, option labeling, comparison structure, and board proportions.',
+      'Make differences readable at a glance instead of hiding them in decoration.',
+      'Keep the product visually consistent and commercially real.',
+    ],
+    productRole: 'The product should remain visible enough to compare options, but the comparison structure should dominate.',
+    input,
+  });
+}
+
+function buildNormalizedDetailTrustPrompt(input = {}) {
+  return buildDetailReferenceDrivenPrompt({
+    moduleName: 'Trust / Brand Assurance / Qualification',
+    moduleGoal: 'Turn real trust evidence into a credible assurance board.',
+    keyFacts: [
+      `- Trust facts: ${String(input.trustInfo || '').trim() || 'TBD'}`,
+    ],
+    compositionRules: [
+      'Never invent certificates, institutions, badges, patents, awards, or endorsements.',
+      'If reference images are uploaded, treat them as the main reference for evidence hierarchy, certificate grouping, trust-board composition, and how dominant the proof should be relative to the product.',
+      'If evidence is incomplete, simplify or omit it instead of filling gaps with imagination.',
+      'Keep the tone formal, restrained, and confidence-building.',
+    ],
+    productRole: 'The product can be secondary or lightly exposed; the trust evidence should lead the module.',
+    input,
+  });
+}
+
+function buildNormalizedDetailAfterSalesPrompt(input = {}) {
+  return buildDetailReferenceDrivenPrompt({
+    moduleName: 'After-sales / Service Policy',
+    moduleGoal: 'Present real service policy clearly enough to reduce buyer hesitation.',
+    keyFacts: [
+      `- After-sales facts: ${String(input.afterSalesInfo || '').trim() || 'TBD'}`,
+    ],
+    compositionRules: [
+      'Never invent refund windows, repair terms, shipping rules, or service promises.',
+      'Use reference images to strongly guide card layout, checklist grouping, density, and policy-board structure when present.',
+      'Prioritize readability and policy clarity over decoration.',
+      'Keep this as a calm closing reassurance module rather than a hype poster.',
+    ],
+    productRole: 'The product may appear lightly, but the service policy structure should dominate.',
+    input,
+  });
+}
+
+function buildNormalizedDetailDemoPrompt(input = {}) {
+  const sellingPoints = toArray(input.coreSellingPoints).slice(0, 4).join(' / ');
+  return buildDetailReferenceDrivenPrompt({
+    moduleName: 'Feature Demo / Usage Demonstration',
+    moduleGoal: 'Explain how the product works or what result it delivers.',
+    keyFacts: [
+      `- Core selling points: ${sellingPoints || 'TBD'}`,
+      `- Usage scene: ${String(input.scenes || '').trim() || 'TBD'}`,
+    ],
+    compositionRules: [
+      'Never invent extra functions or unsupported use cases.',
+      'Use reference images to strongly control step rhythm, demonstration sequence, function-zone emphasis, and frame division.',
+      'Allowed imagination is limited to presentation flow, action cues, and explanatory polish.',
+      'Keep the result inside a real ecommerce module style, not a generic lifestyle poster.',
+    ],
+    productRole: 'The product should stay central enough to explain operation or result clearly.',
+    input,
+  });
+}
+
+function buildNormalizedDetailComparisonPrompt(input = {}) {
+  return buildDetailReferenceDrivenPrompt({
+    moduleName: 'Comparison',
+    moduleGoal: 'Clarify real comparison dimensions without exaggeration.',
+    keyFacts: [
+      `- Comparison basis: ${String(input.comparisonBasis || '').trim() || 'TBD'}`,
+    ],
+    compositionRules: [
+      'Never invent competitor brands, scores, test data, or benchmark numbers.',
+      'Use reference images to strongly determine comparison-table rhythm, hierarchy, and page proportions.',
+      'Keep the tone practical and conversion-oriented rather than aggressive hype.',
+      'Make the contrasted dimensions obvious at first glance.',
+    ],
+    productRole: 'The product may be one side of the comparison, but the comparison logic itself should lead the layout.',
+    input,
+  });
+}
+
+function buildNormalizedDetailSizeGuidePrompt(input = {}) {
+  return buildDetailReferenceDrivenPrompt({
+    moduleName: 'Size Guide / Buying Guide',
+    moduleGoal: 'Organize real fit or size information into an easy buying guide.',
+    keyFacts: [
+      `- Size guide facts: ${String(input.sizeGuideInfo || '').trim() || 'TBD'}`,
+      `- Variant facts: ${String(input.variantInfo || '').trim() || 'TBD'}`,
+    ],
+    compositionRules: [
+      'Never invent measurements, fit guarantees, body data, or size recommendations.',
+      'If the reference is strongly table-first, let the table dominate and reduce the product visual weight.',
+      'Make the information readable first and stylish second.',
+      'Keep the result as an ecommerce buying guide rather than a soft branding page.',
+    ],
+    productRole: 'The product should be support-only unless the reference clearly gives it larger weight.',
+    input,
+  });
+}
+
+function buildNormalizedDetailBundlePrompt(input = {}) {
+  return buildDetailReferenceDrivenPrompt({
+    moduleName: 'Bundle / Pairing Recommendation',
+    moduleGoal: 'Present real bundle or pairing relationships clearly.',
+    keyFacts: [
+      `- Bundle facts: ${String(input.bundleInfo || '').trim() || 'TBD'}`,
+      `- Usage scene: ${String(input.scenes || '').trim() || 'TBD'}`,
+    ],
+    compositionRules: [
+      'Never invent package contents, quantities, or companion products.',
+      'Reference images should strongly guide grouped layout, pairing rhythm, dominance hierarchy, and add-on presentation logic.',
+      'Keep the message practical and ecommerce-native.',
+      'Let the combination structure be clearer than decorative mood.',
+    ],
+    productRole: 'The main product should stay recognizable, while the pairing relationship becomes the main reading task.',
+    input,
+  });
+}
+
+function buildNormalizedDetailReviewsPrompt(input = {}) {
+  return buildDetailReferenceDrivenPrompt({
+    moduleName: 'Reviews / Buyer Proof',
+    moduleGoal: 'Turn real review material into restrained social proof.',
+    keyFacts: [
+      `- Review proof: ${String(input.reviewProof || '').trim() || 'TBD'}`,
+    ],
+    compositionRules: [
+      'Never invent stars, comments, usernames, timestamps, chat logs, or praise.',
+      'Reference images should strongly guide proof-card rhythm, screenshot density, testimonial structure, and how much product presence is retained.',
+      'Keep the tone credible and restrained rather than noisy social hype.',
+      'The result should feel like curated buyer proof inside a real ecommerce detail page.',
+    ],
+    productRole: 'The product can be secondary while the proof content leads the module.',
+    input,
+  });
+}
+
+function buildDetailParamsPrompt(input = {}) {
+  const paramSpecs = String(input.paramSpecs || '').trim();
+  const variantInfo = String(input.variantInfo || '').trim();
+  const sizeGuideInfo = String(input.sizeGuideInfo || '').trim();
+  const visualKeywords = toArray(input.visualKeywords).slice(0, 6).join(' / ');
+  const referenceEvidenceCount = Number(input.referenceEvidenceCount) || 0;
+  const referenceEvidenceGuidance = String(input.referenceEvidenceGuidance || '').trim() || 'No extra evidence images were uploaded for this module.';
+
+  return `
+You are generating one ecommerce detail-page module image only: the "product parameters / specs" module.
+Do not redesign the whole page. Do not replace or alter the uploaded product itself.
+
+Current module context:
+- Module: Product Parameters
+- Product name: ${input.productName || 'TBD'}
+- Style baseline: ${input.style || 'High-conversion ecommerce'}
+- Hero headline baseline: ${input.heroHeadline || 'TBD'}
+- Hero visual focus: ${input.heroVisualFocus || 'TBD'}
+- Product visual summary: ${input.productVisualSummary || 'TBD'}
+- Parameter facts: ${paramSpecs || 'TBD'}
+- Variant facts: ${variantInfo || 'TBD'}
+- Size guide facts: ${sizeGuideInfo || 'TBD'}
+- Visual keywords: ${visualKeywords || 'TBD'}
+- Reference evidence images: ${referenceEvidenceCount}
+- Reference evidence guidance: ${referenceEvidenceGuidance}
+
+Generation rules:
+1. This module must organize real specs, sizes, materials, capacities, dimensions, fit notes, or configuration facts already provided by the user.
+2. Never invent any numbers, materials, sizes, certifications, testing claims, or product variants.
+3. Keep the product as the real hero product from the uploaded product image. Do not change its color, structure, or category.
+4. The final composition should feel like a readable parameter board, spec table, or structured info panel inside an ecommerce detail page, not a vague marketing poster.
+5. If reference evidence images are uploaded, treat them as the primary layout reference for information hierarchy, grouping, table rhythm, badge order, and emphasis.
+6. Only use facts that are visible in the provided text or evidence images. If something is unclear, omit or generalize it instead of making it up.
+7. If variant or size-guide information exists, it can appear lightly as supporting info, but the main focus is still the parameter/spec presentation.
+8. Preserve the current vertical ecommerce style language established by the confirmed hero image.
+9. Make text blocks readable, aligned, and useful for a shopper making a rational purchase decision.
+  `.trim();
+}
+
+function buildDetailTrustPrompt(input = {}) {
+  const trustInfo = String(input.trustInfo || '').trim();
+  const visualKeywords = toArray(input.visualKeywords).slice(0, 6).join(' / ');
+  const referenceEvidenceCount = Number(input.referenceEvidenceCount) || 0;
+  const referenceEvidenceGuidance = String(input.referenceEvidenceGuidance || '').trim() || 'No extra evidence images were uploaded for this module.';
+
+  return `
+You are generating one ecommerce detail-page module image only: the "trust / brand assurance / qualification" module.
+Do not redesign the whole page. Do not fabricate authority.
+
+Current module context:
+- Module: Trust / Brand Assurance
+- Product name: ${input.productName || 'TBD'}
+- Style baseline: ${input.style || 'High-conversion ecommerce'}
+- Hero headline baseline: ${input.heroHeadline || 'TBD'}
+- Hero visual focus: ${input.heroVisualFocus || 'TBD'}
+- Product visual summary: ${input.productVisualSummary || 'TBD'}
+- Trust facts: ${trustInfo || 'TBD'}
+- Visual keywords: ${visualKeywords || 'TBD'}
+- Reference evidence images: ${referenceEvidenceCount}
+- Reference evidence guidance: ${referenceEvidenceGuidance}
+
+Generation rules:
+1. This module can only be built from trust facts actually provided by the user, including brand info, certifications, testing notes, authorization proof, guarantee terms, or visible badges.
+2. Never invent certificates, institutions, test data, awards, logos, seals, patents, or endorsements.
+3. Keep the uploaded product visually consistent and secondary to the trust evidence.
+4. The final image should feel like a credible assurance board inside an ecommerce detail page, not a fake certificate wall or generic hype poster.
+5. If reference evidence images are uploaded, treat them as the primary reference for evidence hierarchy, certificate placement, authority badge grouping, logo rhythm, and trust-board structure.
+6. If some evidence is unreadable or incomplete, simplify or omit it instead of fabricating missing details.
+7. Keep the composition formal, restrained, and confidence-building while staying aligned with the confirmed hero-image visual baseline.
+8. Use real-looking information architecture: grouped proof points, trust badges, summarized testing snippets, authorization cues, and brand assurance blocks when supported by the material.
+9. Make the trust evidence clear enough that a shopper immediately understands why this product is credible.
+  `.trim();
+}
+
 function ensureImageProviderReady() {
   if (IMAGE_PROVIDER !== 'dashscope') {
     throw new Error(`暂不支持的生图供应商: ${IMAGE_PROVIDER}`);
@@ -1375,6 +1897,9 @@ function createImageGenerationTask(input = {}) {
     model: input.model || DASHSCOPE_IMAGE_MODEL,
     prompt: String(input.prompt || '').trim(),
     imageBase64: String(input.imageBase64 || '').trim(),
+    referenceImagesBase64: Array.isArray(input.referenceImagesBase64)
+      ? input.referenceImagesBase64.map((item) => String(item || '').trim()).filter(Boolean)
+      : [],
     size: input.size || '1024*1024',
     useCase: input.useCase || 'generic',
   };
@@ -1510,7 +2035,12 @@ async function generateSceneImageResult(body = {}) {
 }
 
 async function runDashScopeImageTask(task) {
-  const imageDataUrl = toDashScopeImageDataUrl(task.imageBase64);
+  const imageDataUrls = [
+    toDashScopeImageDataUrl(task.imageBase64),
+    ...(Array.isArray(task.referenceImagesBase64)
+      ? task.referenceImagesBase64.map((item) => toDashScopeImageDataUrl(item))
+      : []),
+  ];
 
   const generateResponse = await fetch('https://dashscope.aliyuncs.com/api/v1/services/aigc/image2image/image-synthesis', {
     method: 'POST',
@@ -1523,7 +2053,7 @@ async function runDashScopeImageTask(task) {
       model: task.model,
       input: {
         prompt: task.prompt,
-        images: [imageDataUrl],
+        images: imageDataUrls,
       },
       parameters: {
         n: 1,
@@ -1726,7 +2256,14 @@ app.post('/api/analyze-detail-page', async (req, res) => {
       productColorHint,
       productImageBase64,
       referenceScreenshotBase64,
+      referenceScreenshotBase64List,
     } = req.body || {};
+
+    const normalizedReferenceScreenshotBase64List = (
+      Array.isArray(referenceScreenshotBase64List) ? referenceScreenshotBase64List : [referenceScreenshotBase64]
+    )
+      .map((item) => String(item || '').trim())
+      .filter(Boolean);
 
     if (!String(productName || '').trim()) {
       return res.status(400).json({ error: '请先填写产品名称' });
@@ -1745,7 +2282,7 @@ app.post('/api/analyze-detail-page', async (req, res) => {
       style,
       readResult,
       hasProductImage: Boolean(productImageBase64),
-      hasReferenceScreenshot: Boolean(referenceScreenshotBase64),
+      hasReferenceScreenshot: normalizedReferenceScreenshotBase64List.length > 0,
       revisionFeedback,
       revisionTags,
       revisionRound,
@@ -1786,7 +2323,7 @@ app.post('/api/analyze-detail-page', async (req, res) => {
           revisionTags,
           revisionRound,
           hasProductImage: Boolean(productImageBase64),
-          hasReferenceScreenshot: Boolean(referenceScreenshotBase64),
+          hasReferenceScreenshot: normalizedReferenceScreenshotBase64List.length > 0,
         }),
       },
     ];
@@ -1800,14 +2337,17 @@ app.post('/api/analyze-detail-page', async (req, res) => {
       });
     }
 
-    if (referenceScreenshotBase64) {
-      content.unshift({
-        type: 'image_url',
-        image_url: {
-          url: toImageDataUrl(referenceScreenshotBase64),
-        },
+    normalizedReferenceScreenshotBase64List
+      .slice()
+      .reverse()
+      .forEach((imageBase64) => {
+        content.unshift({
+          type: 'image_url',
+          image_url: {
+            url: toImageDataUrl(imageBase64),
+          },
+        });
       });
-    }
 
     const response = await fetch(`${DASHSCOPE_BASE_URL}/chat/completions`, {
       method: 'POST',
@@ -2001,6 +2541,7 @@ app.post('/api/generate-detail-module', async (req, res) => {
     const {
       moduleKey,
       productImageBase64,
+      supplementalImageBase64List,
       productName,
       style,
       summary,
@@ -2021,6 +2562,7 @@ app.post('/api/generate-detail-module', async (req, res) => {
       productName,
       style,
       scenes,
+      sellingPoints: Array.isArray(summary.coreSellingPoints) ? summary.coreSellingPoints.join(' ') : '',
       coreSellingPoints: summary.coreSellingPoints || [],
       visualKeywords: summary.visualKeywords || [],
       heroHeadline: summary.heroDirection?.headline || '',
@@ -2033,54 +2575,118 @@ app.post('/api/generate-detail-module', async (req, res) => {
       trustInfo: supplementalInfo?.trustInfo || '',
       afterSalesInfo: supplementalInfo?.afterSalesInfo || '',
       sizeGuideInfo: supplementalInfo?.sizeGuideInfo || '',
+      comparisonBasis: supplementalInfo?.comparisonBasis || '',
+      bundleInfo: supplementalInfo?.bundleInfo || '',
+      reviewProof: supplementalInfo?.reviewProof || '',
+      referenceEvidenceCount: Array.isArray(supplementalImageBase64List)
+        ? supplementalImageBase64List.length
+        : 0,
+      referenceEvidenceGuidance: normalizedModuleKey === 'params'
+        ? 'Use uploaded reference images as the dominant source for parameter-board layout, table rhythm, hierarchy, and whether the product should be minimized or omitted. Do not force a large product visual if the references are information-board first.'
+        : normalizedModuleKey === 'trust'
+          ? 'Use uploaded reference images as the dominant source for certificate hierarchy, trust-board composition, evidence grouping, and formal layout.'
+          : normalizedModuleKey === 'details'
+            ? 'Use uploaded reference images as the dominant source for close-up framing, crop rhythm, evidence layout, and how much detail proof should fill the page. If the reference is mostly close-up proof, do not drift back to a generic product shot.'
+            : normalizedModuleKey === 'selling-points'
+              ? 'Use uploaded reference images as the dominant source for selling-point board structure, text-image balance, card rhythm, and emphasis order. Avoid rebuilding a hero-like poster layout.'
+              : normalizedModuleKey === 'scenes'
+                ? 'Use uploaded reference images as the dominant source for scene composition density, environment framing, and product-to-environment balance.'
+                : normalizedModuleKey === 'variants'
+                  ? 'Use uploaded reference images as the dominant source for side-by-side option layout, selection hierarchy, and version comparison structure.'
+                  : normalizedModuleKey === 'after-sales'
+                    ? 'Use uploaded reference images as the dominant source for policy-card grouping, checklist rhythm, and clean reassurance-board structure.'
+                    : normalizedModuleKey === 'comparison'
+                      ? 'Use uploaded reference images as the dominant source for comparison-table hierarchy, row grouping, and proof-board readability.'
+                      : normalizedModuleKey === 'size-guide'
+                        ? 'Use uploaded reference images as the dominant source for size-table layout, fit-guide rhythm, and whether the module should be mostly informational.'
+                        : normalizedModuleKey === 'bundle'
+                          ? 'Use uploaded reference images as the dominant source for grouping bundles, pairing cards, and add-on purchase structure.'
+                          : normalizedModuleKey === 'reviews'
+                            ? 'Use uploaded reference images as the dominant source for proof-card density, review-board hierarchy, and restrained social-proof structure.'
+                            : normalizedModuleKey === 'demo'
+                              ? 'Use uploaded reference images as the dominant source for feature-demo sequence, step framing, and action explanation structure.'
+                              : 'Use uploaded reference images as the dominant source for layout and structure, without inventing new facts.',
     };
 
     let prompt = '';
     let useCase = '';
     if (normalizedModuleKey === 'selling-points') {
-      prompt = buildDetailSellingPointsPrompt(promptInput);
+      prompt = buildNormalizedDetailSellingPointsPrompt(promptInput);
       useCase = 'detail_selling_points';
     } else if (normalizedModuleKey === 'details') {
-      prompt = buildDetailDetailsPrompt(promptInput);
+      prompt = buildNormalizedDetailDetailsPrompt(promptInput);
       useCase = 'detail_details';
     } else if (normalizedModuleKey === 'params') {
       if (!String(promptInput.paramSpecs || '').trim()) {
         return res.status(400).json({ error: '产品参数板块必须先补充规格/参数信息，再进入正式生成' });
       }
-      prompt = buildDetailParamsPrompt(promptInput);
+      prompt = buildNormalizedDetailParamsPrompt(promptInput);
       useCase = 'detail_params';
     } else if (normalizedModuleKey === 'scenes') {
       if (!String(promptInput.scenes || '').trim()) {
         return res.status(400).json({ error: '场景使用图需要先补充明确的使用场景，再进入正式生成' });
       }
-      prompt = buildDetailScenesPrompt(promptInput);
+      prompt = buildNormalizedDetailScenesPrompt(promptInput);
       useCase = 'detail_scenes';
     } else if (normalizedModuleKey === 'variants') {
       if (!String(promptInput.variantInfo || '').trim()) {
         return res.status(400).json({ error: '款式/颜色分类模块需要先补充变体信息，再进入正式生成' });
       }
-      prompt = buildDetailVariantsPrompt(promptInput);
+      prompt = buildNormalizedDetailVariantsPrompt(promptInput);
       useCase = 'detail_variants';
     } else if (normalizedModuleKey === 'trust') {
       if (!String(promptInput.trustInfo || '').trim()) {
         return res.status(400).json({ error: '资质/品牌保障模块需要先补充品牌或资质信息，再进入正式生成' });
       }
-      prompt = buildDetailTrustPrompt(promptInput);
+      prompt = buildNormalizedDetailTrustPrompt(promptInput);
       useCase = 'detail_trust';
     } else if (normalizedModuleKey === 'after-sales') {
       if (!String(promptInput.afterSalesInfo || '').trim()) {
         return res.status(400).json({ error: '售后说明模块需要先补充售后政策，再进入正式生成' });
       }
-      prompt = buildDetailAfterSalesPrompt(promptInput);
+      prompt = buildNormalizedDetailAfterSalesPrompt(promptInput);
       useCase = 'detail_after_sales';
+    } else if (normalizedModuleKey === 'demo') {
+      if (!String(promptInput.sellingPoints || '').trim()) {
+        return res.status(400).json({ error: '功能演示模块需要先补充核心卖点，再进入正式生成' });
+      }
+      prompt = buildNormalizedDetailDemoPrompt(promptInput);
+      useCase = 'detail_demo';
+    } else if (normalizedModuleKey === 'comparison') {
+      if (!String(promptInput.comparisonBasis || '').trim()) {
+        return res.status(400).json({ error: '对比模块需要先补充对比依据，再进入正式生成' });
+      }
+      prompt = buildNormalizedDetailComparisonPrompt(promptInput);
+      useCase = 'detail_comparison';
+    } else if (normalizedModuleKey === 'size-guide') {
+      if (!String(promptInput.sizeGuideInfo || '').trim()) {
+        return res.status(400).json({ error: '尺码指南模块需要先补充尺码或选购依据，再进入正式生成' });
+      }
+      prompt = buildNormalizedDetailSizeGuidePrompt(promptInput);
+      useCase = 'detail_size_guide';
+    } else if (normalizedModuleKey === 'bundle') {
+      if (!String(promptInput.bundleInfo || '').trim()) {
+        return res.status(400).json({ error: '搭配/套餐模块需要先补充搭配信息，再进入正式生成' });
+      }
+      prompt = buildNormalizedDetailBundlePrompt(promptInput);
+      useCase = 'detail_bundle';
+    } else if (normalizedModuleKey === 'reviews') {
+      if (!String(promptInput.reviewProof || '').trim()) {
+        return res.status(400).json({ error: '评价口碑模块需要先补充真实评价素材，再进入正式生成' });
+      }
+      prompt = buildNormalizedDetailReviewsPrompt(promptInput);
+      useCase = 'detail_reviews';
     } else {
-      return res.status(400).json({ error: '当前只接入了核心卖点、细节图和产品参数板块的正式生成' });
+      return res.status(400).json({ error: '当前这个详情页板块还没有接入正式生成链路' });
     }
 
     const task = createImageGenerationTask({
       useCase,
       prompt,
       imageBase64: String(productImageBase64).trim(),
+      referenceImagesBase64: Array.isArray(supplementalImageBase64List)
+        ? supplementalImageBase64List
+        : [],
     });
     const rawResult = await runImageGenerationTask(task);
     res.json(normalizeImageGenerationResponse(task, rawResult, {
@@ -2231,6 +2837,112 @@ app.post('/api/analyze-detail-module-asset', async (req, res) => {
     console.error('[detail-module-asset-recognition]', err);
     res.status(500).json({
       error: '图片识别失败，请稍后重试',
+      detail: err.message,
+    });
+  }
+});
+
+app.post('/api/classify-detail-reference-assets', async (req, res) => {
+  try {
+    const imageBase64List = Array.isArray(req.body?.imageBase64List)
+      ? req.body.imageBase64List.map((item) => String(item || '').trim()).filter(Boolean)
+      : [];
+
+    if (!imageBase64List.length) {
+      return res.status(400).json({ error: '请先上传要归类的参考图' });
+    }
+
+    if (!DASHSCOPE_API_KEY || DASHSCOPE_API_KEY === 'sk-your-api-key-here') {
+      return res.json({
+        success: true,
+        result: imageBase64List.map((_, index) => ({
+          index,
+          fieldKey: 'unknown',
+          summary: '当前环境未开启自动归类，暂不自动继承到具体板块',
+          confidence: 'low',
+        })),
+        meta: { mode: 'fallback', reason: 'missing_api_key' },
+      });
+    }
+
+    const results = await Promise.all(imageBase64List.map(async (imageBase64, index) => {
+      const response = await fetch(`${DASHSCOPE_BASE_URL}/chat/completions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${DASHSCOPE_API_KEY}`,
+        },
+        body: JSON.stringify({
+          model: 'qwen-vl-max',
+          temperature: 0.1,
+          messages: [
+            {
+              role: 'user',
+              content: [
+                {
+                  type: 'image_url',
+                  image_url: {
+                    url: toImageDataUrl(imageBase64),
+                  },
+                },
+                {
+                  type: 'text',
+                  text: buildDetailReferenceAssetClassificationPrompt(),
+                },
+              ],
+            },
+          ],
+        }),
+      });
+
+      if (!response.ok) {
+        const errText = await response.text();
+        console.error('[detail-reference-asset-classification]', response.status, errText);
+        return {
+          index,
+          fieldKey: 'unknown',
+          summary: '自动归类失败，默认不自动继承',
+          confidence: 'low',
+        };
+      }
+
+      const data = await response.json();
+      const choice = data.choices?.[0]?.message?.content;
+      const responseText = Array.isArray(choice)
+        ? choice.map((item) => item?.text || '').join('\n')
+        : String(choice || '');
+      const parsed = extractJsonObject(responseText) || {};
+      const fieldKey = String(parsed.fieldKey || 'unknown').trim();
+
+      return {
+        index,
+        fieldKey: [
+          'paramSpecs',
+          'variantInfo',
+          'trustInfo',
+          'afterSalesInfo',
+          'comparisonBasis',
+          'sizeGuideInfo',
+          'bundleInfo',
+          'reviewProof',
+          'scenes',
+          'details',
+          'unknown',
+        ].includes(fieldKey) ? fieldKey : 'unknown',
+        summary: String(parsed.summary || '').trim() || '已完成归类',
+        confidence: String(parsed.confidence || 'low').trim() || 'low',
+      };
+    }));
+
+    res.json({
+      success: true,
+      result: results,
+      meta: { mode: 'model' },
+    });
+  } catch (err) {
+    console.error('[detail-reference-asset-classification]', err);
+    res.status(500).json({
+      error: '参考图自动归类失败，请稍后重试',
       detail: err.message,
     });
   }

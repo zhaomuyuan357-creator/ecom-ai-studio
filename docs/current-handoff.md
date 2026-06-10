@@ -6,6 +6,7 @@ Start the next conversation by reading:
 
 - `AGENTS.md`
 - `CONTEXT.md`
+- `PROGRESS.md`
 - `docs/current-handoff.md`
 - `docs/detail-page-generation-step-plan.md`
 - `docs/detail-page-generation-step-05-confirmation-panel.md`
@@ -14,106 +15,118 @@ Start the next conversation by reading:
 ## Current Product Stage
 
 - Project: `Ecom AI Studio`
-- Current focus: detail-page generation workflow
-- Current accepted boundary: Step 6 is now running end-to-end
-- Visual direction must stay in the current e-commerce vertical style
+- Active workspace in use: `D:\ECONY`
+- Active preview should be checked through: `http://localhost:3000/`
+- Current focus: Step 7 detail-page module planning and single-module generation refinement
+- Visual direction must stay in the current light, premium, ecommerce-vertical style
 
 ## Current Accepted Progress
 
-- Step 5 is accepted
-  - The summary confirmation area is live
-  - The `这版还要修改` revision flow is accepted
-  - Revision feedback can be resubmitted for another summary round
-
-- Step 6 is now connected
-  - After Step 5 is approved, the flow can enter first-image generation
-  - The app now generates only the hero image first, not the whole detail-page set
-  - Hero generation is based on:
-    - uploaded product image
-    - approved summary direction
-    - approved hero prompt draft
+- Step 5 summary confirmation is live and accepted
+- Step 6 hero generation is live and accepted as the only first-generation image step
+- After hero approval, the flow now enters a real Step 7 planning/workbench layer instead of jumping straight to full detail-page batch generation
 
 ## What Was Finished In Recent Rounds
 
-- Added a Step 5 revision flow in `public/index.html`
-- Added revision payload support in `server.js`
-  - `revisionFeedback`
-  - `revisionTags`
-  - `revisionRound`
-- Added structured revision output in the summary result
-  - user feedback
-  - system auto-categories
-  - applied changes
+- Added post-hero module planning UI
+  - `required` modules: 8
+  - `optional` modules: 5
+  - required and optional group labels are unified to the current purple style
+  - required modules still allow manual toggle
+  - required group note keeps the “建议自动全部勾选” guidance
 
-- Connected Step 6 hero generation
-  - new endpoint: `/api/generate-detail-hero`
-  - Step 5 approved state now unlocks Step 6 hero generation
-  - hero result page now includes three actions:
-    - `这张可以继续`
-    - `这张还要重做`
-    - `回到摘要微调`
+- Added reference-image classification workflow
+  - top-level detail reference upload supports multiple images
+  - backend endpoint: `/api/classify-detail-reference-assets`
+  - classification targets:
+    - `paramSpecs`
+    - `variantInfo`
+    - `trustInfo`
+    - `afterSalesInfo`
+    - `comparisonBasis`
+    - `sizeGuideInfo`
+    - `bundleInfo`
+    - `reviewProof`
+    - `scenes`
+    - `details`
+    - `unknown`
+  - UI supports manual reassignment by chip/button instead of native select
 
-- Started image-generation abstraction cleanup
-  - image generation now goes through a unified task shape in `server.js`
-  - server-side image results are normalized into a unified response format
-  - front end now reads generated images through a shared helper instead of provider-specific fields
-  - scene-mode requests now also go through the shared front-end request helper
-  - the scene image path can now accept the normalized `imageBase64`-style input shape
-  - scene generation regression was rechecked and can return normalized image URLs again
+- Added single-module supplemental workflow
+  - module fields support text supplement
+  - module fields support image upload and auto-recognition
+  - module fields support extra reference-image upload
+  - global reference images are inherited only into matching module fields, not all modules
+
+- Added module workbench generation flow
+  - single-module generation can now run for:
+    - `selling-points`
+    - `details`
+    - `params`
+    - `scenes`
+    - `variants`
+    - `trust`
+    - `after-sales`
+    - `demo`
+    - `comparison`
+    - `size-guide`
+    - `bundle`
+    - `reviews`
+
+- Added generation normalization rules
+  - user facts define content truth
+  - reference images define layout/composition priority
+  - approved hero image defines style baseline
+  - AI is only allowed controlled extension inside those boundaries
+
+- Added first pass of detail-page assembly UX
+  - “一键整理详情页” entry now exists
+  - current state is still an inline assembly section, not yet the final dedicated整理页
+
+## Important Current Reality
+
+- If the page is opened as `file:///D:/ECONY/public/index.html`, API calls will not reflect the real backend workflow
+- The app must be validated through `http://localhost:3000/`
+- The user may still use `file://` for screenshots and rough visual comments, so always verify whether a reported issue is from static preview or real server mode
 
 ## Important Current Boundary
 
-Do not expand into full Step 7 yet.
+Do not collapse the current Step 7 planning/workbench layer into direct full-page batch generation.
 
-The specific follow-up detail-page modules after `这张可以继续` are intentionally not finalized.
-That part must wait until the user provides more accurate module names and wording.
+The current product direction is:
 
-In plain language:
+1. confirm hero
+2. plan modules
+3. classify references
+4. supplement missing real facts
+5. generate modules one by one
+6. then assemble them into a dedicated detail-page整理页
 
-- Step 6 hero generation is done enough to validate flow
-- Step 7 module expansion is not ready to be named or presented as final
+## Known Current Risks
 
-## Outstanding Product TODO
-
-When the user later provides concrete module names, continue with:
-
-- expanding the post-approval hint area after `这张可以继续`
-- clearly listing which detail-page modules come next
-- using the user-provided business wording instead of guessed labels
-
-## Important Reality Check
-
-- If the page is opened as `file:///.../public/index.html`, API calls will fail with `Failed to fetch`
-- The app must be opened through the local server:
-  - `http://localhost:3000/`
-
-## Known Current Risk
-
-- The tool environment may not keep the local Node server alive reliably in the background
-- If code has changed but behavior looks old, the local server may need to be restarted
+- `public/index.html` still contains legacy duplicate function layers; later definitions often override earlier ones
+- Some user-visible issues may still come from stale local server state
+- The “一键整理详情页” flow is only partially complete
+- Reference-image inheritance has improved, but each module still needs continued tightening so outputs follow reference structure more strongly
 
 ## Recommended Next Step
 
-The next safe product move is:
+The next highest-value product move is:
 
-1. Keep Step 6 stable
-2. Wait for the user to provide exact names for the next detail-page modules
-3. Then design the post-hero continuation area for Step 7
-
-## Technical Cleanup Status
-
-- `detail hero` and `scene image` are being converged onto the same request/response shape
-- scene-mode front end is no longer keeping a separate manual fetch branch
-- scene-mode now uses `/api/generate-scene-image` as the cleaner primary entry point
-- future cleanup can continue removing the remaining legacy scene aliases
+1. keep strengthening module generation normalization
+2. make reference images dominate layout/composition more clearly than hero-image structure
+3. finish the dedicated detail-page整理页
+4. continue reducing legacy duplicate-function risk in `public/index.html`
 
 ## Suggested Resume Prompt
 
 ```text
-先读 AGENTS.md、CONTEXT.md、docs/current-handoff.md、docs/detail-page-generation-step-plan.md、docs/detail-page-generation-step-05-confirmation-panel.md、docs/detail-page-generation-step-06-hero-generation.md，然后继续当前项目。
+先读 AGENTS.md、CONTEXT.md、PROGRESS.md、docs/current-handoff.md、docs/detail-page-generation-step-plan.md、docs/detail-page-generation-step-05-confirmation-panel.md、docs/detail-page-generation-step-06-hero-generation.md，然后继续当前项目。
+
 当前重点：
-1. 保持现有电商垂类方向和视觉风格
-2. 第 5 步和第 6 步已经跑通
-3. 不要提前扩展整套详情页模块
-4. 等我提供更准确的模块名称后，再补“这张可以继续”后面的后续提示区
+1. 基于 D:\ECONY 根目录继续，不要切回旧的 ecom-ai-studio 子目录
+2. 详情页流程已经进入 Step 7：模块规划 + 参考图归类 + 单模块正式生成
+3. 不要跳过当前规划层直接做整套批量详情页
+4. 继续强化“用户资料定事实、参考图定版式、首图定基调、AI受控发挥”这套规则
+5. 优先把“一键整理详情页”做成真正独立的整理页
 ```

@@ -1276,6 +1276,7 @@
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 14px;
+      align-items: start;
     }
 
     .detail-module-workbench-card {
@@ -1285,6 +1286,8 @@
       border-radius: 22px;
       background: rgba(255, 255, 255, 0.9);
       border: 1px solid rgba(115, 96, 182, 0.1);
+      align-content: start;
+      align-self: start;
     }
 
     .detail-module-workbench-card.locked {
@@ -1400,6 +1403,14 @@
       flex-wrap: wrap;
     }
 
+    .detail-module-workbench-generate-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: flex-end;
+    }
+
     .detail-module-workbench-generate-head strong {
       font-size: 13px;
     }
@@ -1419,6 +1430,58 @@
       line-height: 1.7;
     }
 
+    .detail-module-inline-fill {
+      display: grid;
+      gap: 12px;
+      padding: 14px 15px;
+      border-radius: 18px;
+      background: rgba(248, 246, 255, 0.96);
+      border: 1px solid rgba(115, 96, 182, 0.12);
+    }
+
+    .detail-module-inline-fill strong {
+      font-size: 14px;
+      letter-spacing: -0.01em;
+    }
+
+    .detail-module-inline-fill-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .detail-module-inline-field {
+      display: grid;
+      gap: 8px;
+    }
+
+    .detail-module-inline-field label {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .detail-module-inline-field textarea {
+      min-height: 88px;
+      resize: vertical;
+      border-radius: 16px;
+      border: 1px solid rgba(115, 96, 182, 0.12);
+      background: rgba(255, 255, 255, 0.98);
+      padding: 12px 14px;
+      font: inherit;
+      color: var(--text);
+      line-height: 1.65;
+    }
+
+    .detail-module-inline-field .detail-module-supplemental-upload {
+      margin-top: 2px;
+    }
+
+    .detail-module-inline-fill-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
     .detail-module-supplemental-panel {
       display: grid;
       gap: 16px;
@@ -1426,6 +1489,121 @@
       border-radius: 22px;
       background: rgba(255, 255, 255, 0.92);
       border: 1px solid rgba(115, 96, 182, 0.1);
+    }
+
+    .detail-module-supplemental-summary {
+      display: grid;
+      gap: 14px;
+      padding: 18px;
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid rgba(115, 96, 182, 0.12);
+      position: sticky;
+      top: 16px;
+      z-index: 2;
+    }
+
+    .detail-module-supplemental-summary-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+
+    .detail-module-supplemental-summary-head strong {
+      font-size: 16px;
+      letter-spacing: -0.02em;
+    }
+
+    .detail-module-supplemental-summary-head p {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.7;
+      max-width: 760px;
+    }
+
+    .detail-module-supplemental-summary-tags {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .detail-reference-classification-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .detail-reference-classification-card {
+      display: grid;
+      gap: 10px;
+      padding: 14px;
+      border-radius: 18px;
+      background: rgba(248, 246, 255, 0.96);
+      border: 1px solid rgba(115, 96, 182, 0.12);
+    }
+
+    .detail-reference-classification-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .detail-reference-classification-head strong {
+      font-size: 13px;
+    }
+
+    .detail-reference-classification-preview {
+      width: 100%;
+      max-height: 160px;
+      object-fit: cover;
+      border-radius: 14px;
+      border: 1px solid rgba(115, 96, 182, 0.08);
+      background: rgba(255, 255, 255, 0.95);
+    }
+
+    .detail-reference-classification-options {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .detail-reference-classification-option {
+      border: 1px solid rgba(115, 96, 182, 0.12);
+      background: rgba(255, 255, 255, 0.98);
+      color: var(--text);
+      border-radius: 999px;
+      padding: 8px 14px;
+      font: inherit;
+      font-size: 12px;
+      cursor: pointer;
+      transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease, color 0.18s ease;
+    }
+
+    .detail-reference-classification-option:hover {
+      transform: translateY(-1px);
+      border-color: rgba(115, 96, 182, 0.28);
+    }
+
+    .detail-reference-classification-option.active {
+      background: linear-gradient(135deg, #8f5bff 0%, #b179ff 100%);
+      border-color: transparent;
+      color: #fff;
+    }
+
+    .detail-reference-classification-card p {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    .detail-module-supplemental-item.reference-linked,
+    .detail-module-workbench-card.reference-linked {
+      border-color: rgba(143, 91, 255, 0.34);
+      box-shadow: 0 0 0 3px rgba(143, 91, 255, 0.08);
     }
 
     .detail-module-supplemental-head strong {
@@ -1520,6 +1698,13 @@
       gap: 12px;
       align-items: center;
       flex-wrap: wrap;
+    }
+
+    .detail-module-inline-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
     }
 
     .detail-module-supplemental-actions p {
@@ -3071,7 +3256,7 @@
 <body>
   <input type="file" id="file-input" accept="image/*" hidden>
   <input type="file" id="detail-product-input" accept="image/*" hidden>
-  <input type="file" id="detail-reference-input" accept="image/*" hidden>
+  <input type="file" id="detail-reference-input" accept="image/*" multiple hidden>
 
   <header class="top-bar">
     <div class="brand">
@@ -3579,7 +3764,7 @@
 
     let activeFile = null;
     let activeDetailProductFile = null;
-    let activeDetailReferenceFile = null;
+    let activeDetailReferenceFiles = [];
     let currentResultUrl = "";
     let isGenerating = false;
     let currentDetailItem = null;
@@ -3587,6 +3772,8 @@
     let currentDetailStyle = "高端奢感";
     let currentResultKind = "scene";
     let currentDetailPreviewUrls = [];
+    let currentDetailReferenceImageDataUrls = [];
+    let currentDetailReferenceAssetClassifications = [];
     let currentDetailReadResult = null;
     let currentDetailAnalysis = null;
     let currentDetailAnalysisMeta = null;
@@ -3598,8 +3785,12 @@
     let currentDetailModuleStageState = "idle";
     let currentDetailModuleSupplementalInfo = {};
     let currentDetailModuleSupplementalImages = {};
+    let currentDetailModuleSupplementalReferenceImages = {};
     let currentDetailSupplementalAnalyzingKey = "";
+    let currentDetailSupplementalPanelOpen = true;
     let currentDetailGeneratedModules = {};
+    let currentDetailReferenceFocusFieldKey = "";
+    let currentDetailAssemblyOpen = false;
     let currentDetailModuleGeneratingKey = "";
     let currentDetailApproval = "pending";
     let currentDetailRevisionDraft = {
@@ -3683,6 +3874,72 @@
       return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
     }
 
+    function normalizeFileList(filesOrFile) {
+      if (!filesOrFile) return [];
+      if (Array.isArray(filesOrFile)) return filesOrFile.filter(Boolean);
+      if (typeof FileList !== "undefined" && filesOrFile instanceof FileList) return Array.from(filesOrFile).filter(Boolean);
+      return [filesOrFile].filter(Boolean);
+    }
+
+    function formatFileListSummary(files, emptyLabel = "未选择文件") {
+      const normalized = normalizeFileList(files);
+      if (!normalized.length) return emptyLabel;
+      if (normalized.length === 1) {
+        return `${normalized[0].name} · ${formatBytes(normalized[0].size)}`;
+      }
+      const totalBytes = normalized.reduce((sum, file) => sum + Number(file.size || 0), 0);
+      return `已选择 ${normalized.length} 张图片 · ${formatBytes(totalBytes)}`;
+    }
+
+    async function filesToDataUrls(files) {
+      const list = normalizeFileList(files);
+      const results = [];
+      for (const file of list) {
+        const dataUrl = await fileToDataUrl(file);
+        if (dataUrl) results.push(dataUrl);
+      }
+      return results;
+    }
+
+    function mergeUniqueFiles(existingFiles, incomingFiles) {
+      const merged = [];
+      const seen = new Set();
+
+      [...normalizeFileList(existingFiles), ...normalizeFileList(incomingFiles)].forEach((file) => {
+        const signature = `${file?.name || ""}::${file?.size || 0}::${file?.lastModified || 0}`;
+        if (!file || seen.has(signature)) return;
+        seen.add(signature);
+        merged.push(file);
+      });
+
+      return merged;
+    }
+
+    async function classifyDetailReferenceAssets(dataUrls) {
+      const normalizedDataUrls = Array.isArray(dataUrls) ? dataUrls.filter(Boolean) : [];
+      if (!normalizedDataUrls.length) {
+        currentDetailReferenceAssetClassifications = [];
+        return;
+      }
+
+      try {
+        const imageBase64List = normalizedDataUrls
+          .map((dataUrl) => String(dataUrl || "").split(",")[1])
+          .filter(Boolean);
+
+        const data = await postJson("/api/classify-detail-reference-assets", {
+          imageBase64List
+        });
+
+        currentDetailReferenceAssetClassifications = Array.isArray(data?.result)
+          ? data.result
+          : [];
+      } catch (error) {
+        currentDetailReferenceAssetClassifications = [];
+        showToast(error.message || "参考图自动归类失败，当前先不自动继承到各板块");
+      }
+    }
+
     function getDefaultDetailRevisionTags() {
       return [
         "首图方向不对",
@@ -3725,7 +3982,7 @@
       btnRegenerate.disabled = false;
     }
 
-    function setDetailUploadState(kind, file) {
+    function setDetailUploadStateLegacy(kind, file) {
       const isProduct = kind === "product";
       const box = isProduct ? detailProductBox : detailReferenceBox;
       const nameEl = isProduct ? detailProductName : detailReferenceName;
@@ -3743,6 +4000,37 @@
       nameEl.textContent = `${file.name} · ${formatBytes(file.size)}`;
     }
 
+    function setDetailUploadState(kind, filesOrFile) {
+      const isProduct = kind === "product";
+      const box = isProduct ? detailProductBox : detailReferenceBox;
+      const nameEl = isProduct ? detailProductName : detailReferenceName;
+      const files = normalizeFileList(filesOrFile);
+
+      if (isProduct) activeDetailProductFile = files[0] || null;
+      else activeDetailReferenceFiles = files;
+
+      if (!files.length) {
+        box.classList.remove("has-file");
+        nameEl.textContent = "未选择文件";
+        return;
+      }
+
+      box.classList.add("has-file");
+      nameEl.textContent = formatFileListSummary(files);
+    }
+
+    async function handleDetailReferenceUpload(incomingFiles) {
+      const mergedFiles = mergeUniqueFiles(activeDetailReferenceFiles, incomingFiles);
+      if (!mergedFiles.length) return;
+
+      resetDetailResultForNewAsset("reference");
+      setDetailUploadState("reference", mergedFiles);
+      currentDetailReferenceImageDataUrls = await filesToDataUrls(mergedFiles);
+      await classifyDetailReferenceAssets(currentDetailReferenceImageDataUrls);
+      updateDetailModulePlanner();
+      showToast(`参考图已载入 ${mergedFiles.length} 张，并已完成归类`);
+    }
+
     function resetDetailResultForNewAsset(kind) {
       if (currentMode !== "detail") return;
 
@@ -3755,6 +4043,10 @@
       currentDetailHeroPrompt = "";
       currentDetailHeroApproval = "pending";
       currentDetailModulePlan = null;
+      if (kind === "reference") {
+        currentDetailReferenceImageDataUrls = [];
+        currentDetailReferenceAssetClassifications = [];
+      }
       clearDetailModuleWorkbench();
       clearDetailModuleSupplementalInfo();
       clearDetailModuleSupplementalImages();
@@ -3817,6 +4109,10 @@
       return null;
     }
 
+    function getPrimaryDetailReferenceFile() {
+      return normalizeFileList(activeDetailReferenceFiles)[0] || null;
+    }
+
     function canRegenerateCurrentMode() {
       if (currentMode === "scene") {
         return Boolean(activeFile && promptInput.value.trim());
@@ -3844,21 +4140,26 @@
     function updateResultActions() {
       const { download, regenerate } = getActionButtons();
       if (!download || !regenerate) return;
+      const actionBar = resultPanel.querySelector(".result-actions");
       if (currentMode === "scene") {
+        if (actionBar) actionBar.style.display = "flex";
         download.textContent = "下载图片";
         regenerate.textContent = "重新生成";
         if (!isGenerating) regenerate.disabled = !canRegenerateCurrentMode();
       } else if (currentDetailHeroImageUrl) {
-        download.textContent = "下载首图";
+        if (actionBar) actionBar.style.display = "none";
+        download.textContent = "一键整理详情页";
         regenerate.textContent = "重新生成首图";
         if (!isGenerating) regenerate.disabled = !canGenerateDetailHero();
         download.disabled = false;
       } else if (canGenerateDetailHero()) {
+        if (actionBar) actionBar.style.display = "flex";
         download.textContent = "导出摘要";
         regenerate.textContent = "开始生成首图";
         if (!isGenerating) regenerate.disabled = false;
         download.disabled = true;
       } else {
+        if (actionBar) actionBar.style.display = "flex";
         download.textContent = "导出摘要";
         regenerate.textContent = "重新整理摘要";
         if (!isGenerating) regenerate.disabled = !canRegenerateCurrentMode();
@@ -4473,20 +4774,32 @@
     function clearDetailModuleWorkbench() {
       currentDetailModuleWorkbench = null;
       currentDetailModuleStageState = "idle";
+      currentDetailAssemblyOpen = false;
     }
 
     function clearDetailModuleSupplementalInfo() {
       currentDetailModuleSupplementalInfo = {};
+      currentDetailSupplementalPanelOpen = true;
+      currentDetailReferenceFocusFieldKey = "";
     }
 
     function clearDetailModuleSupplementalImages() {
       currentDetailModuleSupplementalImages = {};
       currentDetailSupplementalAnalyzingKey = "";
+      currentDetailSupplementalPanelOpen = true;
+    }
+
+    function clearDetailModuleSupplementalImages() {
+      currentDetailModuleSupplementalImages = {};
+      currentDetailModuleSupplementalReferenceImages = {};
+      currentDetailSupplementalAnalyzingKey = "";
+      currentDetailSupplementalPanelOpen = true;
     }
 
     function clearDetailGeneratedModules() {
       currentDetailGeneratedModules = {};
       currentDetailModuleGeneratingKey = "";
+      currentDetailAssemblyOpen = false;
     }
 
     function mergeSupplementalRecognizedText(fieldKey, recognizedText) {
@@ -4504,6 +4817,186 @@
       };
     }
 
+    function getSupplementalRecognitionImages(fieldKey) {
+      return Array.isArray(currentDetailModuleSupplementalImages[fieldKey])
+        ? currentDetailModuleSupplementalImages[fieldKey]
+        : [];
+    }
+
+    function getSupplementalReferenceImages(fieldKey) {
+      return Array.isArray(currentDetailModuleSupplementalReferenceImages[fieldKey])
+        ? currentDetailModuleSupplementalReferenceImages[fieldKey]
+        : [];
+    }
+
+    function getGlobalDetailReferenceImages(fieldKey = "") {
+      const allImages = Array.isArray(currentDetailReferenceImageDataUrls)
+        ? currentDetailReferenceImageDataUrls
+        : [];
+      if (!fieldKey) return allImages;
+
+      const matchedIndexes = (Array.isArray(currentDetailReferenceAssetClassifications)
+        ? currentDetailReferenceAssetClassifications
+        : []
+      )
+        .filter((item) => item?.fieldKey === fieldKey)
+        .map((item) => Number(item.index))
+        .filter((index) => Number.isInteger(index) && index >= 0);
+
+      return matchedIndexes
+        .map((index) => allImages[index])
+        .filter(Boolean);
+    }
+
+    function getReferenceClassificationFieldOptions() {
+      return [
+        { key: "unknown", label: "暂不自动继承" },
+        { key: "paramSpecs", label: "归到参数/规格" },
+        { key: "variantInfo", label: "归到款式/颜色" },
+        { key: "trustInfo", label: "归到资质/品牌" },
+        { key: "afterSalesInfo", label: "归到售后政策" },
+        { key: "comparisonBasis", label: "归到对比依据" },
+        { key: "sizeGuideInfo", label: "归到尺码指南" },
+        { key: "bundleInfo", label: "归到搭配/套餐" },
+        { key: "reviewProof", label: "归到评价口碑" },
+        { key: "scenes", label: "归到场景使用" },
+        { key: "details", label: "归到细节做工" }
+      ];
+    }
+
+    function getReferenceClassificationLabel(fieldKey) {
+      return getReferenceClassificationFieldOptions().find((item) => item.key === fieldKey)?.label || fieldKey || "暂不自动继承";
+    }
+
+    function getReferenceClassificationTargetId(fieldKey) {
+      return fieldKey ? `detail-reference-target-${fieldKey}` : "";
+    }
+
+    function getReferenceClassificationModuleKey(fieldKey) {
+      switch (fieldKey) {
+        case "paramSpecs":
+        case "sizeGuideInfo":
+          return "params";
+        case "variantInfo":
+          return "variants";
+        case "trustInfo":
+          return "trust";
+        case "afterSalesInfo":
+          return "after-sales";
+        case "comparisonBasis":
+          return "comparison";
+        case "bundleInfo":
+          return "bundle";
+        case "reviewProof":
+          return "reviews";
+        case "scenes":
+          return "scenes";
+        case "details":
+          return "details";
+        default:
+          return "";
+      }
+    }
+
+    function getReferenceClassificationModuleTargetId(fieldKey) {
+      const moduleKey = getReferenceClassificationModuleKey(fieldKey);
+      return moduleKey ? `detail-module-card-${moduleKey}` : "";
+    }
+
+    function renderReferenceClassificationWorkbench() {
+      const images = getGlobalDetailReferenceImages();
+      const classifications = Array.isArray(currentDetailReferenceAssetClassifications)
+        ? currentDetailReferenceAssetClassifications
+        : [];
+      if (!images.length) return "";
+
+      const cards = images.map((imageUrl, index) => {
+        const matched = classifications.find((item) => Number(item.index) === index) || {
+          index,
+          fieldKey: "unknown",
+          summary: "这张图还没有明确归类，当前不会自动继承到具体板块。",
+          confidence: "low"
+        };
+        const effectiveSummary = matched.fieldKey === "unknown"
+          ? (matched.summary || "这张图当前不会自动继承到具体板块。你可以手动指定到参数、资质、款式等板块。")
+          : (matched.summary || "已完成归类。");
+        const options = getReferenceClassificationFieldOptions()
+          .map((item) => `
+            <button
+              type="button"
+              class="detail-reference-classification-option ${item.key === matched.fieldKey ? "active" : ""}"
+              data-reference-classification-choice="${escapeHtml(item.key)}"
+              data-reference-classification-index="${index}"
+            >${escapeHtml(item.label)}</button>
+          `)
+          .join("");
+
+        return `
+          <article class="detail-reference-classification-card">
+            <div class="detail-reference-classification-head">
+              <strong>参考图 ${index + 1}</strong>
+              <span class="detail-module-tag">${escapeHtml(getReferenceClassificationLabel(matched.fieldKey))}</span>
+            </div>
+            <img class="detail-reference-classification-preview" src="${escapeHtml(imageUrl)}" alt="参考图 ${index + 1}">
+            <div class="detail-reference-classification-options">${options}</div>
+            <p>${escapeHtml(effectiveSummary)} 置信度：${escapeHtml(matched.confidence || "low")}</p>
+          </article>
+        `;
+      }).join("");
+
+      return `
+        <section class="detail-module-supplemental-summary">
+          <div class="detail-module-supplemental-summary-head">
+            <div>
+              <strong>前面参考图归类结果</strong>
+              <p>系统会先把前面上传的参考图按板块归类，再决定继承给谁。这里可以直接手动改，改完立即生效；归成“暂不自动继承”的图不会乱带到后面板块。</p>
+            </div>
+          </div>
+          <div class="detail-reference-classification-list">${cards}</div>
+        </section>
+      `;
+    }
+
+    function applyReferenceClassification(index, nextFieldKey) {
+      if (!Number.isInteger(index) || index < 0) return;
+
+      const existing = Array.isArray(currentDetailReferenceAssetClassifications)
+        ? currentDetailReferenceAssetClassifications
+        : [];
+      const previous = existing.find((item) => Number(item.index) === index) || {
+        index,
+        summary: "由手动改归类后生效",
+        confidence: "manual",
+      };
+
+      const rest = existing.filter((item) => Number(item.index) !== index);
+      currentDetailReferenceAssetClassifications = [
+        ...rest,
+        {
+          ...previous,
+          index,
+          fieldKey: nextFieldKey,
+          summary: `已手动改为${getReferenceClassificationLabel(nextFieldKey)}`,
+          confidence: "manual",
+        }
+      ].sort((a, b) => Number(a.index) - Number(b.index));
+
+      currentDetailSupplementalPanelOpen = true;
+      currentDetailReferenceFocusFieldKey = nextFieldKey;
+      updateDetailModulePlanner();
+
+      if (nextFieldKey && nextFieldKey !== "unknown") {
+        requestAnimationFrame(() => {
+          const target = document.getElementById(getReferenceClassificationTargetId(nextFieldKey))
+            || document.getElementById(getReferenceClassificationModuleTargetId(nextFieldKey));
+          if (!target) return;
+          target.scrollIntoView({ behavior: "smooth", block: "center" });
+        });
+      }
+
+      showToast(`参考图 ${index + 1} 已改为：${getReferenceClassificationLabel(nextFieldKey)}`);
+    }
+
     function collectMissingSupplementalFields(workbench = currentDetailModuleWorkbench) {
       const fields = new Map();
       (workbench?.modules || []).forEach((module) => {
@@ -4518,6 +5011,33 @@
         });
       });
       return Array.from(fields.values());
+    }
+
+    function renderDetailModuleSupplementalSummary(workbench = currentDetailModuleWorkbench) {
+      const fields = collectMissingSupplementalFields(workbench);
+      const referenceClassificationWorkbench = renderReferenceClassificationWorkbench();
+      if (!fields.length) return referenceClassificationWorkbench;
+
+      const fieldTags = fields
+        .map((field) => `<span class="detail-module-tag warn">${escapeHtml(field.label)}</span>`)
+        .join("");
+
+      return `
+        ${referenceClassificationWorkbench}
+        <section class="detail-module-supplemental-summary">
+          <div class="detail-module-supplemental-summary-head">
+            <div>
+              <strong>先补资料，再继续生成</strong>
+              <p>当前还有 ${fields.length} 项关键信息没补齐。先在资料台里补完，再一键重新检查，避免用户先点生成又回头找表单。</p>
+            </div>
+            <div class="detail-module-inline-actions">
+              <button type="button" class="detail-confirm-btn" data-toggle-supplemental-panel="true">${currentDetailSupplementalPanelOpen ? "收起资料台" : "展开资料台"}</button>
+              <button type="button" class="detail-confirm-btn primary" data-scroll-supplemental="true">去补资料</button>
+            </div>
+          </div>
+          <div class="detail-module-supplemental-summary-tags">${fieldTags}</div>
+        </section>
+      `;
     }
 
     function renderDetailModuleSupplementalPanel(workbench = currentDetailModuleWorkbench) {
@@ -4545,23 +5065,205 @@
             data-supplemental-key="${escapeHtml(field.key)}"
             placeholder="${escapeHtml(field.placeholder)}"
           >${escapeHtml(currentDetailModuleSupplementalInfo[field.key] || "")}</textarea>
+          <div class="detail-module-inline-fill-actions">
+            <button type="button" class="detail-confirm-btn" data-save-supplemental-field="${escapeHtml(field.key)}">保存这项</button>
+          </div>
         </article>
           `;
         })()}
       `).join("");
 
       return `
-        <section class="detail-module-supplemental-panel">
+        <section class="detail-module-supplemental-panel" id="detail-module-supplemental-panel">
           <div class="detail-module-supplemental-head">
             <strong>先把这些板块资料补齐</strong>
-            <p>首图已经锁定了视觉基线，但像参数、售后、资质、评价这类板块不能靠 AI 自己脑补。你可以先在这里把缺的资料补进去，再重新判断哪些板块可以正式生成。</p>
+            <p>首图已经锁定了视觉基线，但像参数、售后、资质、评价这类板块不能靠 AI 自己脑补。先在这里补资料，点一次保存并重新检查，系统就会立刻刷新哪些板块能正式生成。</p>
           </div>
+          ${currentDetailSupplementalPanelOpen ? `
           <div class="detail-module-supplemental-grid">${itemsHtml}</div>
           <div class="detail-module-supplemental-actions">
-            <p>补完后点击下面按钮，系统会按新资料重新检查 Step 07 工作台状态。</p>
-            <button type="button" class="detail-confirm-btn primary" id="detail-supplemental-refresh-btn">重新检查板块可生成状态</button>
+            <p>资料填完后不需要再找别的入口，直接在这里保存并重新检查即可。</p>
+            <div class="detail-module-inline-actions">
+              <button type="button" class="detail-confirm-btn" data-toggle-supplemental-panel="true">收起资料台</button>
+              <button type="button" class="detail-confirm-btn primary" id="detail-supplemental-refresh-btn">保存资料并重新检查</button>
+            </div>
           </div>
+          ` : `
+          <div class="detail-module-supplemental-actions">
+            <p>资料台已收起，需要时可再次展开继续填写。</p>
+            <div class="detail-module-inline-actions">
+              <button type="button" class="detail-confirm-btn primary" data-toggle-supplemental-panel="true">展开资料台继续填写</button>
+            </div>
+          </div>
+          `}
         </section>
+      `;
+    }
+
+    function renderInlineModuleQuickFill(item) {
+      const missingKeys = Array.isArray(item?.missingRequiredInputs) ? item.missingRequiredInputs : [];
+      if (!missingKeys.length) return "";
+
+      const fieldsHtml = missingKeys.map((fieldKey) => {
+        const field = DETAIL_SUPPLEMENTAL_FIELD_COPY[fieldKey] || {
+          label: fieldKey,
+          placeholder: "请补充这项信息"
+        };
+        const previewUrl = currentDetailModuleSupplementalImages[fieldKey] || "";
+        const isAnalyzing = currentDetailSupplementalAnalyzingKey === fieldKey;
+        const fileId = `detail-inline-supplemental-file-${item.key}-${fieldKey}`;
+
+        return `
+          <div class="detail-module-inline-field">
+            <label for="detail-inline-supplemental-${escapeHtml(item.key)}-${escapeHtml(fieldKey)}">${escapeHtml(field.label)}</label>
+            <div class="detail-module-supplemental-upload">
+              <input
+                type="file"
+                accept="image/*"
+                id="${escapeHtml(fileId)}"
+                data-supplemental-file="${escapeHtml(fieldKey)}"
+                hidden
+              >
+              <button
+                type="button"
+                data-supplemental-upload-btn="${escapeHtml(fieldKey)}"
+                data-supplemental-upload-target="${escapeHtml(fileId)}"
+              >${isAnalyzing ? "识别中..." : "上传图片并自动识别"}</button>
+              <span>${previewUrl ? "已上传识别图，可重新上传替换" : "也可以直接手填；参数、资质、评价截图都支持识别"}</span>
+            </div>
+            <textarea
+              id="detail-inline-supplemental-${escapeHtml(item.key)}-${escapeHtml(fieldKey)}"
+              data-supplemental-key="${escapeHtml(fieldKey)}"
+              placeholder="${escapeHtml(field.placeholder || "请补充这项信息")}"
+            >${escapeHtml(currentDetailModuleSupplementalInfo[fieldKey] || "")}</textarea>
+          </div>
+        `;
+      }).join("");
+
+      return `
+        <div class="detail-module-inline-fill">
+          <strong>先补这块需要的资料</strong>
+          <div class="detail-module-inline-fill-grid">${fieldsHtml}</div>
+          <div class="detail-module-inline-fill-actions">
+            <button type="button" class="detail-confirm-btn" data-inline-refresh-module="${escapeHtml(item.key)}">保存并重新检查</button>
+            <button type="button" class="detail-confirm-btn primary" data-inline-generate-module="${escapeHtml(item.key)}">保存并直接生成图片</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderDetailModuleSupplementalPanel(workbench = currentDetailModuleWorkbench) {
+      const fields = collectMissingSupplementalFields(workbench);
+      if (!fields.length) return "";
+
+      const itemsHtml = fields.map((field) => {
+        const recognitionImages = getSupplementalRecognitionImages(field.key);
+        const referenceImages = getSupplementalReferenceImages(field.key);
+        const globalReferenceImages = getGlobalDetailReferenceImages(field.key);
+        const previewUrl = recognitionImages[0] || referenceImages[0] || globalReferenceImages[0] || "";
+        const isAnalyzing = currentDetailSupplementalAnalyzingKey === field.key;
+
+        return `
+        <article
+          class="detail-module-supplemental-item ${globalReferenceImages.length ? "reference-linked" : ""}"
+          id="${escapeHtml(getReferenceClassificationTargetId(field.key))}"
+        >
+          <div>
+            <label for="detail-supplemental-${escapeHtml(field.key)}">${escapeHtml(field.label)}</label>
+            <p>${escapeHtml(field.description || "请先补充这项信息，再继续生成对应板块。")}</p>
+          </div>
+          <div class="detail-module-supplemental-upload">
+            <input type="file" accept="image/*" multiple id="detail-supplemental-file-${escapeHtml(field.key)}" data-supplemental-file="${escapeHtml(field.key)}" hidden>
+            <input type="file" accept="image/*" multiple id="detail-supplemental-reference-file-${escapeHtml(field.key)}" data-supplemental-reference-file="${escapeHtml(field.key)}" hidden>
+            <button type="button" data-supplemental-upload-btn="${escapeHtml(field.key)}">${isAnalyzing ? "识别中..." : "上传图片并自动识别"}</button>
+            <button type="button" data-supplemental-reference-upload-btn="${escapeHtml(field.key)}">${globalReferenceImages.length ? `若有补充参考图请再上传（已继承 ${globalReferenceImages.length} 张）` : "若有参考图请上传"}</button>
+            <span>${previewUrl ? `已识别 ${recognitionImages.length} 张资料图 / 本字段 ${referenceImages.length} 张参考图 / 前面已继承 ${globalReferenceImages.length} 张全局参考图` : "支持多张上传；识别图用于提取真实信息，参考图用于借排版和信息结构。"}</span>
+          </div>
+          ${previewUrl ? `<img class="detail-module-supplemental-preview" src="${escapeHtml(previewUrl)}" alt="${escapeHtml(field.label)}预览">` : ""}
+          <textarea
+            id="detail-supplemental-${escapeHtml(field.key)}"
+            data-supplemental-key="${escapeHtml(field.key)}"
+            placeholder="${escapeHtml(field.placeholder)}"
+          >${escapeHtml(currentDetailModuleSupplementalInfo[field.key] || "")}</textarea>
+          <div class="detail-module-inline-fill-actions">
+            <button type="button" class="detail-confirm-btn" data-save-supplemental-field="${escapeHtml(field.key)}">保存这项</button>
+          </div>
+        </article>
+      `;
+      }).join("");
+
+      return `
+        <section class="detail-module-supplemental-panel" id="detail-module-supplemental-panel">
+          <div class="detail-module-supplemental-head">
+            <strong>先把这些板块资料补齐</strong>
+            <p>识别图负责读出真实参数、资质和售后信息；参考图负责把你想要的排版、证据层级和信息结构带进后面的模块生成里。当前只会继承已被自动归类到本板块的参考图，避免一张参数图误带到所有板块。</p>
+          </div>
+          ${currentDetailSupplementalPanelOpen ? `
+          <div class="detail-module-supplemental-grid">${itemsHtml}</div>
+          <div class="detail-module-supplemental-actions">
+            <p>如果前面已经上传过整套参考图，后面的模块会自动继续沿用；这里只需要补充模块专属的资料图或排版参考图。</p>
+            <div class="detail-module-inline-actions">
+              <button type="button" class="detail-confirm-btn" data-toggle-supplemental-panel="true">收起资料台</button>
+              <button type="button" class="detail-confirm-btn primary" id="detail-supplemental-refresh-btn">保存资料并重新检查</button>
+            </div>
+          </div>
+          ` : `
+          <div class="detail-module-supplemental-actions">
+            <p>资料台已收起，需要时可再次展开继续填写。</p>
+            <div class="detail-module-inline-actions">
+              <button type="button" class="detail-confirm-btn primary" data-toggle-supplemental-panel="true">展开资料台继续填写</button>
+            </div>
+          </div>
+          `}
+        </section>
+      `;
+    }
+
+    function renderInlineModuleQuickFill(item) {
+      const missingKeys = Array.isArray(item?.missingRequiredInputs) ? item.missingRequiredInputs : [];
+      if (!missingKeys.length) return "";
+
+      const fieldsHtml = missingKeys.map((fieldKey) => {
+        const field = DETAIL_SUPPLEMENTAL_FIELD_COPY[fieldKey] || {
+          label: fieldKey,
+          placeholder: "请补充这项信息"
+        };
+        const recognitionImages = getSupplementalRecognitionImages(fieldKey);
+        const referenceImages = getSupplementalReferenceImages(fieldKey);
+        const globalReferenceImages = getGlobalDetailReferenceImages(fieldKey);
+        const previewUrl = recognitionImages[0] || referenceImages[0] || globalReferenceImages[0] || "";
+        const isAnalyzing = currentDetailSupplementalAnalyzingKey === fieldKey;
+        const recognitionFileId = `detail-inline-supplemental-file-${item.key}-${fieldKey}`;
+        const referenceFileId = `detail-inline-supplemental-reference-file-${item.key}-${fieldKey}`;
+
+        return `
+          <div class="detail-module-inline-field">
+            <label for="detail-inline-supplemental-${escapeHtml(item.key)}-${escapeHtml(fieldKey)}">${escapeHtml(field.label)}</label>
+            <div class="detail-module-supplemental-upload">
+              <input type="file" accept="image/*" multiple id="${escapeHtml(recognitionFileId)}" data-supplemental-file="${escapeHtml(fieldKey)}" hidden>
+              <input type="file" accept="image/*" multiple id="${escapeHtml(referenceFileId)}" data-supplemental-reference-file="${escapeHtml(fieldKey)}" hidden>
+              <button type="button" data-supplemental-upload-btn="${escapeHtml(fieldKey)}" data-supplemental-upload-target="${escapeHtml(recognitionFileId)}">${isAnalyzing ? "识别中..." : "上传图片并自动识别"}</button>
+              <button type="button" data-supplemental-reference-upload-btn="${escapeHtml(fieldKey)}" data-supplemental-reference-upload-target="${escapeHtml(referenceFileId)}">${globalReferenceImages.length ? `若有补充参考图请再上传（已继承 ${globalReferenceImages.length} 张）` : "若有参考图请上传"}</button>
+              <span>${previewUrl ? `已识别 ${recognitionImages.length} 张资料图 / 本字段 ${referenceImages.length} 张参考图 / 前面已继承 ${globalReferenceImages.length} 张全局参考图` : "支持多张上传；识别图读信息，参考图借排版。"}</span>
+            </div>
+            <textarea
+              id="detail-inline-supplemental-${escapeHtml(item.key)}-${escapeHtml(fieldKey)}"
+              data-supplemental-key="${escapeHtml(fieldKey)}"
+              placeholder="${escapeHtml(field.placeholder || "请补充这项信息")}"
+            >${escapeHtml(currentDetailModuleSupplementalInfo[fieldKey] || "")}</textarea>
+          </div>
+        `;
+      }).join("");
+
+      return `
+        <div class="detail-module-inline-fill">
+          <strong>先补这块需要的资料</strong>
+          <div class="detail-module-inline-fill-grid">${fieldsHtml}</div>
+          <div class="detail-module-inline-fill-actions">
+            <button type="button" class="detail-confirm-btn" data-inline-refresh-module="${escapeHtml(item.key)}">保存并重新检查</button>
+            <button type="button" class="detail-confirm-btn primary" data-inline-generate-module="${escapeHtml(item.key)}">保存并直接生成图片</button>
+          </div>
+        </div>
       `;
     }
 
@@ -4590,6 +5292,60 @@
       return (currentDetailModulePlan?.optional || []).filter((item) => item.selected).length;
     }
 
+    function renderDetailAssemblySection(workbench = currentDetailModuleWorkbench) {
+      if (!workbench) return "";
+
+      const modules = Array.isArray(workbench.modules) ? workbench.modules : [];
+      const generatedCount = Object.values(currentDetailGeneratedModules).filter((item) => item?.imageUrl).length;
+      const itemsHtml = modules.map((item) => {
+        const generatedModule = currentDetailGeneratedModules[item.key] || null;
+        return `
+          <article class="detail-module-workbench-card ${generatedModule?.imageUrl ? "" : "locked"}">
+            <div class="detail-module-workbench-card-top">
+              <div class="detail-module-workbench-card-title">
+                <span class="detail-module-workbench-index">0${item.queueIndex}</span>
+                <strong>${escapeHtml(item.name)}</strong>
+              </div>
+              <div class="detail-module-workbench-badges">
+                <span class="detail-module-tag ${generatedModule?.imageUrl ? "active" : "inactive"}">${generatedModule?.imageUrl ? "已整理" : "待生成"}</span>
+              </div>
+            </div>
+            <div class="detail-module-workbench-copy">
+              <div>
+                <label>整理状态</label>
+                <p>${escapeHtml(generatedModule?.imageUrl ? "这块已经进入详情页整理页，可直接下载原图。" : "这块还没有正式生成结果，整理页里会先保留占位。")}</p>
+              </div>
+            </div>
+            ${generatedModule?.imageUrl ? `
+              <div class="detail-module-workbench-generate">
+                <div class="detail-module-workbench-generate-head">
+                  <strong>已整理结果</strong>
+                  <div class="detail-module-workbench-generate-actions">
+                    <button class="detail-confirm-btn" type="button" data-download-module="${escapeHtml(item.key)}">下载原图</button>
+                  </div>
+                </div>
+                <img src="${escapeHtml(generatedModule.imageUrl)}" alt="${escapeHtml(item.name)}整理结果">
+              </div>
+            ` : ""}
+          </article>
+        `;
+      }).join("");
+
+      return `
+        <section class="detail-module-workbench" id="detail-assembly-board">
+          <div class="detail-module-workbench-head">
+            <div>
+              <span class="detail-module-plan-kicker">Detail Page Assembly</span>
+              <strong>一键整理详情页</strong>
+              <p>这里会把当前已经生成的详情页板块集中整理到一个页面里，方便你统一预览、逐张下载和后续继续补图。</p>
+            </div>
+            <span class="detail-module-plan-note">已整理 ${generatedCount} / ${modules.length} 块</span>
+          </div>
+          <div class="detail-module-workbench-list">${itemsHtml}</div>
+        </section>
+      `;
+    }
+
     function renderDetailModuleStage() {
       if (currentDetailModuleStageState === "loading") {
         return `
@@ -4609,6 +5365,7 @@
 
       const workbench = currentDetailModuleWorkbench;
       const nextModule = workbench.nextRecommendedModule;
+      const supplementalSummary = renderDetailModuleSupplementalSummary(workbench);
       const supplementalPanel = renderDetailModuleSupplementalPanel(workbench);
       const heroPreview = workbench.heroImageUrl
         ? `<div class="detail-module-workbench-hero"><img src="${escapeHtml(workbench.heroImageUrl)}" alt="已确认首图预览"></div>`
@@ -4627,8 +5384,11 @@
             .map((badge) => `<span class="detail-module-tag">${escapeHtml(badge.label)}</span>`)
             .join("");
           const generatedModule = currentDetailGeneratedModules[item.key] || null;
-          const supportsGeneration = ["selling-points", "details", "params", "scenes", "variants", "trust", "after-sales"].includes(item.key) && item.status === "ready";
+          const supportsGeneration = ["selling-points", "details", "params", "scenes", "variants", "trust", "after-sales", "demo", "comparison", "size-guide", "bundle", "reviews"].includes(item.key) && item.status === "ready";
           const isGenerating = currentDetailModuleGeneratingKey === item.key;
+          const inlineQuickFill = item.status === "needs_input" ? renderInlineModuleQuickFill(item) : "";
+          const isReferenceFocused = currentDetailReferenceFocusFieldKey && getReferenceClassificationModuleKey(currentDetailReferenceFocusFieldKey) === item.key;
+          const linkedReferenceCount = getModuleSupplementalImageBase64List(item.key).length;
           const readinessBlock = `
             <div class="detail-module-workbench-readiness">
               <div>
@@ -4644,18 +5404,32 @@
               <div class="detail-module-workbench-generate">
                 <div class="detail-module-workbench-generate-head">
                   <strong>正式生成入口</strong>
-                  ${supportsGeneration
-                    ? `<button class="detail-confirm-btn primary" type="button" data-generate-module="${escapeHtml(item.key)}">${isGenerating ? "生成中..." : (generatedModule ? "重新生成这一块" : "开始生成这一块")}</button>`
-                    : `<span class="detail-module-tag">下一批接入</span>`}
+                  <div class="detail-module-workbench-generate-actions">
+                    ${generatedModule?.imageUrl ? `<button class="detail-confirm-btn" type="button" data-download-module="${escapeHtml(item.key)}">下载原图</button>` : ""}
+                    ${supportsGeneration
+                      ? `<button class="detail-confirm-btn primary" type="button" data-generate-module="${escapeHtml(item.key)}">${isGenerating ? "生成中..." : (generatedModule ? "重新生成" : "生成图片")}</button>`
+                      : `<span class="detail-module-tag">下一步再接入</span>`}
+                  </div>
                 </div>
-                <p>${supportsGeneration ? "当前已逐步接入真实板块生成入口，用它来验证单板块正式生成链路，而不是直接整套批量出图。" : "这个板块的正式生成入口下一批接入，当前先完成工作台和补资料约束。"}</p>
+                <p>${supportsGeneration ? `当前已逐步接入真实板块生成入口，用它来验证单板块正式生成链路，而不是直接整套批量出图。当前会一并带入 ${linkedReferenceCount} 张已归类参考图。` : "这个板块的正式生成入口下一批接入，当前先完成工作台和补资料约束。"}</p>
                 ${generatedModule?.imageUrl ? `<img src="${escapeHtml(generatedModule.imageUrl)}" alt="${escapeHtml(item.name)}生成结果">` : ""}
                 ${generatedModule?.prompt ? `<p>${escapeHtml(generatedModule.prompt)}</p>` : ""}
               </div>
             `
-            : "";
+            : `
+              <div class="detail-module-workbench-generate">
+                <div class="detail-module-workbench-generate-head">
+                  <strong>下一步动作</strong>
+                  ${item.status === "needs_input" ? `<button class="detail-confirm-btn primary" type="button" data-scroll-supplemental="true">去补资料</button>` : ""}
+                </div>
+                <p>${item.status === "needs_input" ? "这个板块先不要直接生图，先把下面的资料补齐，再保存并重新检查。" : "当前先沿用首图或等待后续生成入口接入。"}</p>
+              </div>
+            `;
           return `
-        <article class="detail-module-workbench-card ${item.lockedWithHero ? "locked" : ""}">
+        <article
+          class="detail-module-workbench-card ${item.lockedWithHero ? "locked" : ""} ${isReferenceFocused ? "reference-linked" : ""}"
+          id="detail-module-card-${escapeHtml(item.key)}"
+        >
           <div class="detail-module-workbench-card-top">
             <div class="detail-module-workbench-card-title">
               <span class="detail-module-workbench-index">0${item.queueIndex}</span>
@@ -4685,6 +5459,7 @@
             </div>
           </div>
           ${readinessBlock}
+          ${inlineQuickFill}
           ${generateBlock}
         </article>
           `;
@@ -4726,8 +5501,14 @@
               </article>
             </div>
 
-            <div class="detail-module-workbench-list">${moduleCards}</div>
+            ${supplementalSummary}
             ${supplementalPanel}
+            <div class="detail-module-workbench-list">${moduleCards}</div>
+            <div class="detail-module-planner-actions">
+              <p>当你已经开始陆续生成详情页板块后，可以把当前结果集中整理到一个页面里，后面统一下载会更快。</p>
+              <button type="button" class="detail-confirm-btn primary" id="detail-assembly-open-btn">${currentDetailAssemblyOpen ? "刷新详情页整理区" : "一键整理详情页"}</button>
+            </div>
+            ${currentDetailAssemblyOpen ? renderDetailAssemblySection(workbench) : ""}
           </section>
         </div>
       `;
@@ -4833,6 +5614,85 @@
       bindDetailModuleSupplementalActions();
     }
 
+    async function refreshDetailModuleWorkbench(options = {}) {
+      if (isGenerating) return false;
+
+      if (!currentDetailAnalysis) {
+        if (options.showErrorToast !== false) {
+          showToast("请先完成第 5 步方案摘要");
+        }
+        return false;
+      }
+
+      if (currentDetailHeroApproval !== "approved") {
+        if (options.showErrorToast !== false) {
+          showToast("请先确认这张首图可以继续，再进入详情页板块工作台");
+        }
+        return false;
+      }
+
+      if (!currentDetailModulePlan) {
+        currentDetailModulePlan = buildDetailModulePlan(currentDetailAnalysis || {});
+      }
+
+      const selectedModules = getSelectedDetailModules();
+      if (!selectedModules.length) {
+        if (options.showErrorToast !== false) {
+          showToast("请先勾选本次要进入生成的详情页板块");
+        }
+        return false;
+      }
+
+      isGenerating = true;
+      btnDetailGenerate.disabled = true;
+
+      if (!options.preserveWorkbench) {
+        currentDetailModuleStageState = "loading";
+        currentDetailModuleWorkbench = null;
+        updateDetailModulePlanner();
+      }
+
+      try {
+        const data = await postJson("/api/prepare-detail-modules", {
+          productName: currentDetailAnalysis.productName || detailProductNameInput.value.trim(),
+          style: currentDetailStyle,
+          summary: currentDetailAnalysis,
+          selectedModules,
+          heroImageUrl: currentDetailHeroImageUrl,
+          sellingPoints: detailSellingPoints.value.trim(),
+          scenes: detailScenes.value.trim(),
+          audience: detailAudience.value.trim(),
+          extra: detailExtra.value.trim(),
+          readResult: getEffectiveDetailReadResult(),
+          hasProductImage: Boolean(activeDetailProductFile),
+          supplementalInfo: currentDetailModuleSupplementalInfo
+        });
+
+        currentDetailModuleWorkbench = data.result || null;
+        currentDetailSupplementalPanelOpen = Boolean(data.result?.needsInputCount);
+        currentDetailModuleStageState = "ready";
+        updateDetailModulePlanner();
+
+        if (options.successMessage) {
+          showToast(options.successMessage);
+        } else if (options.showSuccessToast !== false) {
+          showToast(data.result?.stageSummary || "已进入详情页板块工作台");
+        }
+        return true;
+      } catch (error) {
+        clearDetailModuleWorkbench();
+        updateDetailModulePlanner();
+        if (options.showErrorToast !== false) {
+          showToast(error.message || "进入详情页板块工作台失败");
+        }
+        return false;
+      } finally {
+        isGenerating = false;
+        btnDetailGenerate.disabled = false;
+        updateResultActions();
+      }
+    }
+
     function bindDetailModulePlannerActions() {
       const planner = document.getElementById("detail-module-planner");
       if (!planner) return;
@@ -4869,7 +5729,7 @@
       }
     }
 
-    function bindDetailModuleSupplementalActions() {
+    function bindDetailModuleSupplementalActionsLegacy() {
       const planner = document.getElementById("detail-module-planner");
       if (!planner) return;
 
@@ -4887,7 +5747,12 @@
       planner.querySelectorAll("[data-supplemental-upload-btn]").forEach((button) => {
         button.addEventListener("click", () => {
           const key = button.dataset.supplementalUploadBtn;
-          const fileInput = key ? document.getElementById(`detail-supplemental-file-${key}`) : null;
+          const targetId = button.dataset.supplementalUploadTarget;
+          const fileInput = targetId
+            ? document.getElementById(targetId)
+            : key
+              ? document.getElementById(`detail-supplemental-file-${key}`)
+              : null;
           if (!fileInput) return;
           fileInput.value = "";
           fileInput.click();
@@ -4915,6 +5780,262 @@
           const key = button.dataset.generateModule;
           if (!key) return;
           await handleDetailModuleGenerate(key);
+        });
+      });
+
+      planner.querySelectorAll("[data-download-module]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const key = button.dataset.downloadModule;
+          if (!key) return;
+          downloadDetailGeneratedModule(key);
+        });
+      });
+
+      planner.querySelectorAll("[data-inline-refresh-module]").forEach((button) => {
+        button.addEventListener("click", async () => {
+          const key = button.dataset.inlineRefreshModule;
+          if (!key) return;
+          await handleInlineModuleSubmit(key, false);
+        });
+      });
+
+      planner.querySelectorAll("[data-inline-generate-module]").forEach((button) => {
+        button.addEventListener("click", async () => {
+          const key = button.dataset.inlineGenerateModule;
+          if (!key) return;
+          await handleInlineModuleSubmit(key, true);
+        });
+      });
+
+      planner.querySelectorAll("[data-save-supplemental-field]").forEach((button) => {
+        button.addEventListener("click", async () => {
+          const key = button.dataset.saveSupplementalField;
+          if (!key) return;
+          if (!String(currentDetailModuleSupplementalInfo[key] || "").trim()) {
+            showToast("请先填写这项信息再保存");
+            return;
+          }
+          await refreshDetailModuleWorkbench({
+            preserveWorkbench: true,
+            successMessage: `${DETAIL_SUPPLEMENTAL_FIELD_COPY[key]?.label || key} 已保存并重新检查`
+          });
+        });
+      });
+
+      planner.querySelectorAll("[data-scroll-supplemental]").forEach((button) => {
+        button.addEventListener("click", () => {
+          if (!currentDetailSupplementalPanelOpen) {
+            currentDetailSupplementalPanelOpen = true;
+            updateDetailModulePlanner();
+          }
+          const panel = document.getElementById("detail-module-supplemental-panel");
+          if (!panel) return;
+          panel.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+      });
+
+      planner.querySelectorAll("[data-toggle-supplemental-panel]").forEach((button) => {
+        button.addEventListener("click", () => {
+          currentDetailSupplementalPanelOpen = !currentDetailSupplementalPanelOpen;
+          updateDetailModulePlanner();
+        });
+      });
+
+      planner.querySelectorAll("[data-reference-classification-choice]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const index = Number(button.dataset.referenceClassificationIndex);
+          const nextFieldKey = String(button.dataset.referenceClassificationChoice || "unknown").trim() || "unknown";
+          applyReferenceClassification(index, nextFieldKey);
+        });
+      });
+
+      const refreshBtn = document.getElementById("detail-supplemental-refresh-btn");
+      if (refreshBtn) {
+        refreshBtn.addEventListener("click", handleDetailModuleStart);
+      }
+
+      const assemblyBtn = document.getElementById("detail-assembly-open-btn");
+      if (assemblyBtn) {
+        assemblyBtn.addEventListener("click", () => {
+          currentDetailAssemblyOpen = true;
+          updateDetailModulePlanner();
+          requestAnimationFrame(() => {
+            document.getElementById("detail-assembly-board")?.scrollIntoView({ behavior: "smooth", block: "start" });
+          });
+        });
+      }
+    }
+
+    async function recognizeSupplementalFiles(fieldKey, files) {
+      const normalizedFiles = normalizeFileList(files);
+      if (!fieldKey || !normalizedFiles.length) return;
+
+      currentDetailSupplementalAnalyzingKey = fieldKey;
+      updateDetailModulePlanner();
+
+      try {
+        const recognitionDataUrls = await filesToDataUrls(normalizedFiles);
+        currentDetailModuleSupplementalImages = {
+          ...currentDetailModuleSupplementalImages,
+          [fieldKey]: recognitionDataUrls
+        };
+        updateDetailModulePlanner();
+
+        for (let index = 0; index < normalizedFiles.length; index += 1) {
+          await handleDetailSupplementalImageRecognize(fieldKey, normalizedFiles[index], recognitionDataUrls[index] || "");
+        }
+      } finally {
+        currentDetailSupplementalAnalyzingKey = "";
+        updateDetailModulePlanner();
+      }
+    }
+
+    function bindDetailModuleSupplementalActions() {
+      const planner = document.getElementById("detail-module-planner");
+      if (!planner) return;
+
+      if (!planner.dataset.referenceClassificationBound) {
+        planner.addEventListener("click", (event) => {
+          const button = event.target.closest("[data-reference-classification-choice]");
+          if (!button) return;
+          event.preventDefault();
+          event.stopPropagation();
+          const index = Number(button.dataset.referenceClassificationIndex);
+          const nextFieldKey = String(button.dataset.referenceClassificationChoice || "unknown").trim() || "unknown";
+          applyReferenceClassification(index, nextFieldKey);
+        });
+        planner.dataset.referenceClassificationBound = "true";
+      }
+
+      planner.querySelectorAll("[data-supplemental-key]").forEach((field) => {
+        field.addEventListener("input", () => {
+          const key = field.dataset.supplementalKey;
+          if (!key) return;
+          currentDetailModuleSupplementalInfo = {
+            ...currentDetailModuleSupplementalInfo,
+            [key]: field.value.trim()
+          };
+        });
+      });
+
+      planner.querySelectorAll("[data-supplemental-upload-btn]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const key = button.dataset.supplementalUploadBtn;
+          const targetId = button.dataset.supplementalUploadTarget;
+          const fileInput = targetId
+            ? document.getElementById(targetId)
+            : key
+              ? document.getElementById(`detail-supplemental-file-${key}`)
+              : null;
+          if (!fileInput) return;
+          fileInput.value = "";
+          fileInput.click();
+        });
+      });
+
+      planner.querySelectorAll("[data-supplemental-reference-upload-btn]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const key = button.dataset.supplementalReferenceUploadBtn;
+          const targetId = button.dataset.supplementalReferenceUploadTarget;
+          const fileInput = targetId
+            ? document.getElementById(targetId)
+            : key
+              ? document.getElementById(`detail-supplemental-reference-file-${key}`)
+              : null;
+          if (!fileInput) return;
+          fileInput.value = "";
+          fileInput.click();
+        });
+      });
+
+      planner.querySelectorAll("[data-supplemental-file]").forEach((input) => {
+        input.addEventListener("change", async () => {
+          const key = input.dataset.supplementalFile;
+          const files = normalizeFileList(input.files);
+          if (!key || !files.length) return;
+          await recognizeSupplementalFiles(key, files);
+          showToast(`已识别 ${files.length} 张资料图`);
+        });
+      });
+
+      planner.querySelectorAll("[data-supplemental-reference-file]").forEach((input) => {
+        input.addEventListener("change", async () => {
+          const key = input.dataset.supplementalReferenceFile;
+          const files = normalizeFileList(input.files);
+          if (!key || !files.length) return;
+          const dataUrls = await filesToDataUrls(files);
+          currentDetailModuleSupplementalReferenceImages = {
+            ...currentDetailModuleSupplementalReferenceImages,
+            [key]: dataUrls
+          };
+          updateDetailModulePlanner();
+          showToast(`已补充 ${files.length} 张参考排版图`);
+        });
+      });
+
+      planner.querySelectorAll("[data-generate-module]").forEach((button) => {
+        button.addEventListener("click", async () => {
+          const key = button.dataset.generateModule;
+          if (!key) return;
+          await handleDetailModuleGenerate(key);
+        });
+      });
+
+      planner.querySelectorAll("[data-download-module]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const key = button.dataset.downloadModule;
+          if (!key) return;
+          downloadDetailGeneratedModule(key);
+        });
+      });
+
+      planner.querySelectorAll("[data-inline-refresh-module]").forEach((button) => {
+        button.addEventListener("click", async () => {
+          const key = button.dataset.inlineRefreshModule;
+          if (!key) return;
+          await handleInlineModuleSubmit(key, false);
+        });
+      });
+
+      planner.querySelectorAll("[data-inline-generate-module]").forEach((button) => {
+        button.addEventListener("click", async () => {
+          const key = button.dataset.inlineGenerateModule;
+          if (!key) return;
+          await handleInlineModuleSubmit(key, true);
+        });
+      });
+
+      planner.querySelectorAll("[data-save-supplemental-field]").forEach((button) => {
+        button.addEventListener("click", async () => {
+          const key = button.dataset.saveSupplementalField;
+          if (!key) return;
+          if (!String(currentDetailModuleSupplementalInfo[key] || "").trim()) {
+            showToast("请先填写这项信息再保存");
+            return;
+          }
+          await refreshDetailModuleWorkbench({
+            preserveWorkbench: true,
+            successMessage: `${DETAIL_SUPPLEMENTAL_FIELD_COPY[key]?.label || key} 已保存并重新检查`
+          });
+        });
+      });
+
+      planner.querySelectorAll("[data-scroll-supplemental]").forEach((button) => {
+        button.addEventListener("click", () => {
+          if (!currentDetailSupplementalPanelOpen) {
+            currentDetailSupplementalPanelOpen = true;
+            updateDetailModulePlanner();
+          }
+          const panel = document.getElementById("detail-module-supplemental-panel");
+          if (!panel) return;
+          panel.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+      });
+
+      planner.querySelectorAll("[data-toggle-supplemental-panel]").forEach((button) => {
+        button.addEventListener("click", () => {
+          currentDetailSupplementalPanelOpen = !currentDetailSupplementalPanelOpen;
+          updateDetailModulePlanner();
         });
       });
 
@@ -4958,11 +6079,42 @@
       }
     }
 
+    async function handleInlineModuleSubmit(moduleKey, generateAfter = false) {
+      const currentModule = (currentDetailModuleWorkbench?.modules || []).find((item) => item.key === moduleKey);
+      if (!currentModule) {
+        showToast("请先进入详情页板块工作台");
+        return;
+      }
+
+      const missingKeys = Array.isArray(currentModule.missingRequiredInputs) ? currentModule.missingRequiredInputs : [];
+      const unresolvedKeys = missingKeys.filter((key) => !String(currentDetailModuleSupplementalInfo[key] || "").trim());
+      if (unresolvedKeys.length) {
+        showToast(`请先补齐：${unresolvedKeys.map((key) => DETAIL_SUPPLEMENTAL_FIELD_COPY[key]?.label || key).join("、")}`);
+        return;
+      }
+
+      const refreshed = await refreshDetailModuleWorkbench({
+        showSuccessToast: !generateAfter,
+        successMessage: generateAfter ? "" : "资料已保存，已重新检查当前板块状态"
+      });
+      if (!refreshed) return;
+
+      if (!generateAfter) return;
+
+      const refreshedModule = (currentDetailModuleWorkbench?.modules || []).find((item) => item.key === moduleKey);
+      if (!refreshedModule || refreshedModule.status !== "ready") {
+        showToast("资料已保存，但这块暂时还不能正式生成");
+        return;
+      }
+
+      await handleDetailModuleGenerate(moduleKey);
+    }
+
     async function handleDetailModuleGenerate(moduleKey) {
       if (isGenerating || currentDetailModuleGeneratingKey) return;
 
-      if (!["selling-points", "details", "params", "scenes", "variants", "trust", "after-sales"].includes(moduleKey)) {
-        showToast("当前先接入核心卖点和细节图板块的正式生成");
+      if (!["selling-points", "details", "params", "scenes", "variants", "trust", "after-sales", "demo", "comparison", "size-guide", "bundle", "reviews"].includes(moduleKey)) {
+        showToast("当前这个板块的正式生成入口还没接好");
         return;
       }
 
@@ -4982,6 +6134,7 @@
       try {
         const productImageDataUrl = await fileToDataUrl(activeDetailProductFile);
         const productImageBase64 = String(productImageDataUrl || "").split(",")[1];
+        const supplementalImageBase64List = getModuleSupplementalImageBase64List(moduleKey);
         const data = await postJson("/api/generate-detail-module", {
           moduleKey,
           productImageBase64,
@@ -4989,7 +6142,8 @@
           style: currentDetailStyle,
           scenes: detailScenes.value.trim(),
           summary: currentDetailAnalysis,
-          supplementalInfo: currentDetailModuleSupplementalInfo
+          supplementalInfo: currentDetailModuleSupplementalInfo,
+          supplementalImageBase64List
         });
 
         const imageUrl = getFirstGeneratedImage(data);
@@ -5005,7 +6159,7 @@
           }
         };
         updateDetailModulePlanner();
-        showToast(moduleKey === "selling-points" ? "核心卖点板块已生成首版" : "细节图板块已生成首版");
+        showToast(`${(currentDetailModuleWorkbench?.modules || []).find((item) => item.key === moduleKey)?.name || moduleKey} 已生成`);
       } catch (error) {
         showToast(error.message || "板块生成失败");
       } finally {
@@ -5028,6 +6182,96 @@
         reader.onerror = () => reject(new Error("读取参考截图失败"));
         reader.readAsDataURL(file);
       });
+    }
+
+    function downloadImageUrl(url, filename) {
+      if (!url) {
+        showToast("当前没有可下载的图片");
+        return;
+      }
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = filename;
+      link.target = "_blank";
+      link.rel = "noopener";
+      link.style.display = "none";
+      document.body.appendChild(link);
+
+      try {
+        link.click();
+        showToast("图片已开始下载");
+      } catch (error) {
+        window.open(url, "_blank", "noopener");
+        showToast("下载被拦截，已为你打开预览");
+      } finally {
+        requestAnimationFrame(() => link.remove());
+      }
+    }
+
+    function downloadDetailGeneratedModule(moduleKey) {
+      const generatedModule = currentDetailGeneratedModules[moduleKey];
+      if (!generatedModule?.imageUrl) {
+        showToast("这块还没有可下载的生成结果");
+        return;
+      }
+
+      downloadImageUrl(generatedModule.imageUrl, `detail-module-${moduleKey}-${Date.now()}.png`);
+    }
+
+    function getModuleSupplementalImageKeys(moduleKey) {
+      switch (moduleKey) {
+        case "selling-points":
+          return ["details", "scenes", "comparisonBasis"];
+        case "details":
+          return ["details"];
+        case "params":
+          return ["paramSpecs", "variantInfo", "sizeGuideInfo"];
+        case "scenes":
+          return ["scenes"];
+        case "size-guide":
+          return ["sizeGuideInfo", "variantInfo"];
+        case "trust":
+          return ["trustInfo"];
+        case "after-sales":
+          return ["afterSalesInfo"];
+        case "variants":
+          return ["variantInfo", "sizeGuideInfo"];
+        case "comparison":
+          return ["comparisonBasis", "paramSpecs"];
+        case "bundle":
+          return ["bundleInfo", "variantInfo"];
+        case "reviews":
+          return ["reviewProof"];
+        case "demo":
+          return ["details", "scenes"];
+        default:
+          return [];
+      }
+    }
+
+    function getModuleSupplementalImageBase64List(moduleKey) {
+      return getModuleSupplementalImageKeys(moduleKey)
+        .map((key) => String(currentDetailModuleSupplementalImages[key] || ""))
+        .filter(Boolean)
+        .map((dataUrl) => String(dataUrl).split(",")[1])
+        .filter(Boolean);
+    }
+
+    function getModuleSupplementalImageBase64List(moduleKey) {
+      const fieldKeys = getModuleSupplementalImageKeys(moduleKey);
+      const scopedImageDataUrls = fieldKeys.flatMap((key) => ([
+        ...getSupplementalRecognitionImages(key),
+        ...getSupplementalReferenceImages(key)
+      ]));
+      const globalReferenceDataUrls = fieldKeys.flatMap((key) => getGlobalDetailReferenceImages(key));
+
+      return [
+        ...scopedImageDataUrls,
+        ...globalReferenceDataUrls
+      ]
+        .map((dataUrl) => String(dataUrl || "").split(",")[1])
+        .filter(Boolean);
     }
 
     async function postJson(url, body) {
@@ -5195,8 +6439,9 @@
 
       const productName = payload.productName || "\u672a\u547d\u540d\u5546\u54c1";
       const sellingPointText = payload.sellingPoints || "\u5356\u70b9\u5f85\u8865\u5145";
-      const previewImage = activeDetailReferenceFile
-        ? buildDetailPreviewUrl(activeDetailReferenceFile)
+      const primaryReferenceFile = getPrimaryDetailReferenceFile();
+      const previewImage = primaryReferenceFile
+        ? buildDetailPreviewUrl(primaryReferenceFile)
         : (activeDetailProductFile ? buildDetailPreviewUrl(activeDetailProductFile) : "");
       const heroImage = activeDetailProductFile
         ? buildDetailPreviewUrl(activeDetailProductFile)
@@ -5575,6 +6820,10 @@
                   <button class="detail-confirm-btn" type="button" id="detail-hero-regenerate-btn">这张还要重做</button>
                   <button class="detail-confirm-btn" type="button" id="detail-hero-back-btn">回到摘要微调</button>
                 </div>
+                <div class="detail-confirm-actions">
+                  <button class="detail-confirm-btn" type="button" id="detail-hero-download-btn">下载原图</button>
+                  <button class="detail-confirm-btn" type="button" id="detail-hero-regenerate-secondary-btn">重新生成首图</button>
+                </div>
               </div>
             </article>
           </section>
@@ -5674,7 +6923,9 @@
     function bindDetailHeroActions() {
       const approveBtn = document.getElementById("detail-hero-approve-btn");
       const regenerateBtn = document.getElementById("detail-hero-regenerate-btn");
+      const regenerateSecondaryBtn = document.getElementById("detail-hero-regenerate-secondary-btn");
       const backBtn = document.getElementById("detail-hero-back-btn");
+      const downloadBtn = document.getElementById("detail-hero-download-btn");
 
       if (approveBtn) {
         approveBtn.addEventListener("click", () => {
@@ -5685,6 +6936,13 @@
 
       if (regenerateBtn) {
         regenerateBtn.addEventListener("click", () => {
+          setDetailHeroApprovalState("pending");
+          handleDetailHeroGenerate();
+        });
+      }
+
+      if (regenerateSecondaryBtn) {
+        regenerateSecondaryBtn.addEventListener("click", () => {
           setDetailHeroApprovalState("pending");
           handleDetailHeroGenerate();
         });
@@ -5708,9 +6966,15 @@
           showToast("已回到第 5 步摘要，可以继续微调方案");
         });
       }
+
+      if (downloadBtn) {
+        downloadBtn.addEventListener("click", () => {
+          downloadImageUrl(currentDetailHeroImageUrl, `detail-hero-${Date.now()}.png`);
+        });
+      }
     }
 
-    async function handleDetailModuleStart() {
+    async function handleDetailModuleStartLegacy() {
       if (isGenerating) return;
 
       if (!currentDetailAnalysis) {
@@ -5756,6 +7020,7 @@
         });
 
         currentDetailModuleWorkbench = data.result || null;
+        currentDetailSupplementalPanelOpen = Boolean(data.result?.needsInputCount);
         currentDetailModuleStageState = "ready";
         updateDetailModulePlanner();
         showToast(data.result?.stageSummary || "已进入详情页板块工作台");
@@ -5770,7 +7035,11 @@
       }
     }
 
-    async function handleDetailModuleGenerate(moduleKey) {
+    async function handleDetailModuleStart() {
+      await refreshDetailModuleWorkbench();
+    }
+
+    async function handleDetailModuleGenerateLegacy(moduleKey) {
       if (isGenerating || currentDetailModuleGeneratingKey) return;
 
       if (!["selling-points", "details", "params", "scenes", "variants", "trust", "after-sales"].includes(moduleKey)) {
@@ -5877,7 +7146,9 @@
       try {
         const productImageBase64 = await fileToDataUrl(activeDetailProductFile);
         const productColorHint = await extractImageColorHint(activeDetailProductFile);
-        const referenceScreenshotBase64 = await fileToDataUrl(activeDetailReferenceFile);
+        const referenceScreenshotBase64List = (await filesToDataUrls(activeDetailReferenceFiles))
+          .map((dataUrl) => String(dataUrl || "").split(",")[1])
+          .filter(Boolean);
         const data = await postJson("/api/analyze-detail-page", {
           productName,
           sellingPoints,
@@ -5892,7 +7163,7 @@
           revisionRound: revisionFeedback || revisionTags.length ? currentDetailRevisionRound + 1 : currentDetailRevisionRound,
           productColorHint,
           productImageBase64: productImageBase64 || undefined,
-          referenceScreenshotBase64: referenceScreenshotBase64 || undefined,
+          referenceScreenshotBase64List,
         });
 
         setDetailAnalysisResult(data.result, data.meta || {});
@@ -6144,7 +7415,14 @@
     }
 
     $("#btn-upload").addEventListener("click", () => fileInput.click());
-    $("#btn-reference").addEventListener("click", () => fileInput.click());
+    $("#btn-reference").addEventListener("click", () => {
+      if (currentMode === "detail") {
+        detailReferenceInput.value = "";
+        detailReferenceInput.click();
+        return;
+      }
+      fileInput.click();
+    });
     detailProductBox.addEventListener("click", () => {
       detailProductInput.value = "";
       detailProductInput.click();
@@ -6191,12 +7469,10 @@
       }
     });
 
-    detailReferenceInput.addEventListener("change", () => {
-      if (detailReferenceInput.files?.[0]) {
-        setDetailUploadState("reference", detailReferenceInput.files[0]);
-        resetDetailResultForNewAsset("reference");
-        showToast("参考截图已载入");
-      }
+    detailReferenceInput.addEventListener("change", async () => {
+      const files = normalizeFileList(detailReferenceInput.files);
+      if (!files.length) return;
+      await handleDetailReferenceUpload(files);
     });
 
     btnGenerate.addEventListener("click", handleGenerate);
@@ -6204,6 +7480,14 @@
     btnDetailGenerate.addEventListener("click", handleDetailGenerate);
     btnRegenerate.addEventListener("click", handleGenerate);
     btnDownload.addEventListener("click", () => {
+      if (currentMode === "detail" && currentDetailHeroImageUrl) {
+        currentDetailAssemblyOpen = true;
+        updateDetailModulePlanner();
+        requestAnimationFrame(() => {
+          document.getElementById("detail-assembly-board")?.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+        return;
+      }
       if (!currentResultUrl) return;
       const a = document.createElement("a");
       a.href = currentResultUrl;

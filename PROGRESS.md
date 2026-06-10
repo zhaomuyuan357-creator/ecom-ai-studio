@@ -5,206 +5,158 @@
 If you are starting a new conversation, read these files first:
 
 - `AGENTS.md`
+- `CONTEXT.md`
 - `PROGRESS.md`
-- `PRD.md`
-- `01-discovery/target-audience.md`
+- `docs/current-handoff.md`
+- `docs/detail-page-generation-step-plan.md`
+- `docs/detail-page-generation-step-05-confirmation-panel.md`
+- `docs/detail-page-generation-step-06-hero-generation.md`
 
-Suggested handoff prompt for the next chat:
+Suggested resume prompt:
 
 ```text
-请先阅读 AGENTS.md、PROGRESS.md、PRD.md、01-discovery/target-audience.md，然后继续当前项目。
-当前重点：继续打磨详情页生成工作流，并准备后端 MVP 的接口设计。
+请先阅读 AGENTS.md、CONTEXT.md、PROGRESS.md、docs/current-handoff.md、docs/detail-page-generation-step-plan.md、docs/detail-page-generation-step-05-confirmation-panel.md、docs/detail-page-generation-step-06-hero-generation.md，然后继续当前项目。
+当前重点：继续打磨 Step 7 详情页模块工作台、参考图归类、单模块正式生成，以及“一键整理详情页”的独立整理页。
 ```
 
 ---
 
 ## Project Snapshot
 
-- Project: `ecom-ai-studio`
-- Workspace: `D:\ECONY\ecom-ai-studio`
-- Current preview: `http://localhost:3000/`
-- Product direction: vertical AI tool for e-commerce sellers
-- Core users: Taobao / Douyin / 1688 small sellers, small operator teams, non-designers
-- Core value: turn white-background product images into scene images and eventually full detail pages
+- Project: `Ecom AI Studio`
+- Active workspace: `D:\ECONY`
+- Active preview target: `http://localhost:3000/`
+- Product direction: vertical AI workflow for ecommerce sellers
+- Core promise: from white-background product image to scene image and structured detail-page materials
 
 ---
 
 ## Current Stage
 
-The project is in the front-end validation phase.
+The product is no longer only validating Step 5 and Step 6.
 
-We are using a polished local demo to verify:
+The active stage is:
 
-- product positioning
-- workflow feel
-- page structure
-- gallery case presentation
-- detail-page generation interaction
+- Step 7 detail-page module planning
+- reference-image classification
+- supplemental fact collection
+- single-module real generation
+- early detail-page assembly workflow
 
-The back end is not the current bottleneck yet. The next best move is still to refine the detail-page workflow one more round, then define and connect a minimal back-end MVP.
+This is still a front-end-led workflow validation phase, but backend generation endpoints are now partially real for module-level output.
 
 ---
 
 ## What Has Been Completed
 
-### 1. Product and research foundation
+### 1. Step 5 summary confirmation
 
-- Discovery and PRD have been written
-- Target audience is clearly defined
-- Product scope is focused on e-commerce vertical use cases instead of generic AI image generation
+- summary confirmation area is live
+- revision loop is live
+- revision payload includes structured feedback fields
 
-### 2. Front-end redesign
+### 2. Step 6 hero generation
 
-- The original page was rebuilt into a lighter glassmorphism direction inspired by the reference site
-- The site now feels closer to a creator workflow product instead of a generic dashboard
-- Current main route is the local static/Express preview at `localhost:3000`
+- `/api/generate-detail-hero` is live
+- summary approval unlocks hero generation
+- hero result now supports:
+  - `这张可以继续`
+  - `这张还要重做`
+  - `回到摘要微调`
+- hero-only generation remains the accepted first visual checkpoint
 
-### 3. Core homepage structure
+### 3. Step 7 planning layer
 
-- Hero section
-- Create zone
-- Inspiration gallery
-- Gallery detail modal
-- Floating dock / navigation
+- after hero approval, the flow enters a module planning layer instead of full-batch detail-page generation
+- planning layer is now split into:
+  - 8 required modules
+  - 5 optional modules
+- required/optional visual labels follow the current purple style
+- required modules still allow manual toggle
 
-### 4. Dual-mode workflow
+### 4. Reference-image classification
 
-The create area now supports:
+- top-level detail reference input supports multiple images
+- backend classification endpoint exists:
+  - `/api/classify-detail-reference-assets`
+- current classification keys:
+  - `paramSpecs`
+  - `variantInfo`
+  - `trustInfo`
+  - `afterSalesInfo`
+  - `comparisonBasis`
+  - `sizeGuideInfo`
+  - `bundleInfo`
+  - `reviewProof`
+  - `scenes`
+  - `details`
+  - `unknown`
+- UI supports manual reassignment by chip/button
+- inheritance is now scoped by matching module field instead of global inheritance to every module
 
-- `场景图生成`
-- `详情页生成`
+### 5. Supplemental info and image recognition
 
-Scene mode:
+- module supplemental text fields are live
+- module-level image upload and auto-recognition are live
+- module-level extra reference-image upload is live
+- global reference-image inheritance into module generation is partially connected and improving
 
-- upload product image
-- write scene prompt
-- call `/api/generate-scene-fusion`
-- render result
+### 6. Real module generation endpoints
 
-Detail mode:
+The system can now generate these module types through `/api/generate-detail-module`:
 
-- upload product image
-- optional reference image
-- competitor URL
-- product name
-- selling points
-- scenes
-- audience
-- style selection
-- extra notes
+- `selling-points`
+- `details`
+- `params`
+- `scenes`
+- `variants`
+- `trust`
+- `after-sales`
+- `demo`
+- `comparison`
+- `size-guide`
+- `bundle`
+- `reviews`
 
-### 5. Gallery has been retargeted to e-commerce use cases
+### 7. Generation normalization rules
 
-The gallery is no longer generic inspiration content. It now includes e-commerce-relevant categories and real examples such as:
+Recent rounds moved module generation onto a stricter rule set:
 
-- holiday lighting scenes
-- home/lifestyle product scenes
-- beauty product scene
-- clothing detail-page case
-- LED poster case
-- used-car detail-page case
+- user facts define content truth
+- reference images should dominate layout/composition
+- hero image should define style baseline
+- AI is only allowed controlled extension inside those boundaries
 
-### 6. Gallery detail modal
+This shift is especially important for:
 
-Clicking a gallery card opens a modal with:
+- parameter boards
+- detail/craftsmanship modules
+- trust/certificate layouts
+- table-first and proof-first reference boards
 
-- original image
-- generated image
-- prompt
-- apply prompt
-- copy prompt
-- share
+### 8. Assembly workflow
 
-### 7. Detail-page demo result flow
-
-The detail-page mode currently simulates a proposal flow with:
-
-- `首图确认`
-- `卖点模块`
-- `整套详情页方案`
-
-Buttons and states have been cleaned up so that:
-
-- regenerate respects the current mode
-- result placeholders switch by mode
-- download text changes by mode
-
-### 8. Project memory / agent setup
-
-These repo-level context files were added:
-
-- `AGENTS.md`
-- `docs/agents/issue-tracker.md`
-- `docs/agents/triage-labels.md`
-- `docs/agents/domain.md`
-
-This means future chats can re-enter the project from repo files instead of long conversation history.
+- a first-pass “一键整理详情页” entry now exists
+- current implementation is still an inline assembly section
+- it is not yet the final dedicated整理页 the user wants
 
 ---
 
 ## Current UX Notes
 
-What is working well:
+What is working better now:
 
-- overall visual direction is approved by the user
-- gallery direction feels right
-- e-commerce positioning is clearer
-- dual-mode front-end now exists and is demoable
+- the workflow feels more like real ecommerce production instead of generic AI generation
+- hero approval now meaningfully gates later steps
+- module planning and reference classification are visible to the user
+- module generation is moving toward structure-following output instead of freeform output
 
 What is still rough:
 
-- `详情页生成` result area is still a proposal demo, not yet a convincing long-page visual system
-- `下载首图` was patched with a more robust browser fallback, but should be rechecked in the in-app browser
-- some earlier text content and legacy encoding history may still exist in old parts of the file
-
----
-
-## Next Recommended Steps
-
-### Priority 1: make detail-page mode feel real
-
-Upgrade the current 3-card detail result into a more realistic long-form e-commerce structure preview, such as:
-
-- first screen / hero visual
-- selling-point module
-- material/detail closeups
-- size/spec module
-- scene usage module
-- comparison / proof module
-- CTA ending block
-
-### Priority 2: strengthen workflow feeling
-
-The interaction should feel like:
-
-- upload product
-- choose style
-- confirm first screen
-- generate full detail-page set
-
-This is still front-end work, but it is the most valuable pre-backend refinement.
-
-### Priority 3: design backend MVP
-
-After one more round of front-end validation, define the minimal backend:
-
-- scene generation endpoint
-- detail-page generation endpoint
-- job status endpoint
-- history / result storage
-
----
-
-## Backend Timing
-
-Backend work should begin soon, but not before the detail-page front-end flow is stable enough to avoid immediate rework.
-
-Recommended sequence:
-
-1. finish one more round of detail-page front-end polish
-2. write backend API contract
-3. implement minimal backend MVP
-4. connect front-end to real endpoints
+- some module outputs still over-borrow from hero composition instead of following reference structure strongly enough
+- `public/index.html` still has legacy duplicate functions and layered history
+- “一键整理详情页” is not yet a true dedicated results page
+- users may still test through `file://`, which hides real API behavior
 
 ---
 
@@ -212,38 +164,48 @@ Recommended sequence:
 
 - `public/index.html`
 - `server.js`
-- `PRD.md`
-- `01-discovery/target-audience.md`
 - `AGENTS.md`
-- `docs/agents/issue-tracker.md`
-- `docs/agents/triage-labels.md`
-- `docs/agents/domain.md`
+- `CONTEXT.md`
+- `PROGRESS.md`
+- `docs/current-handoff.md`
+- `docs/detail-page-generation-step-plan.md`
+- `docs/detail-page-generation-step-05-confirmation-panel.md`
+- `docs/detail-page-generation-step-06-hero-generation.md`
 
 ---
 
 ## Open Risks
 
-- If backend is started too early, the detail-page interaction may need to be redone
-- The current detail-page result is still presentational rather than production-grade
-- The in-app browser may behave differently for download flows than a normal browser
-- There may still be old text encoding artifacts in some earlier content
+- stale local server state may make behavior look older than current code
+- duplicate function layers in `public/index.html` can still cause confusing overrides
+- reference inheritance needs continued verification module by module
+- assembly page is not yet in final product shape
+
+---
+
+## Recommended Next Steps
+
+### Priority 1
+
+Make each module follow the reference structure more strictly while still preserving hero-image style baseline.
+
+### Priority 2
+
+Finish the dedicated “一键整理详情页” results page so users can gather generated modules in one place and download them efficiently.
+
+### Priority 3
+
+Continue cleaning legacy duplicate logic in `public/index.html` so future edits stop fighting historical layers.
 
 ---
 
 ## Working Agreement For The Next Chat
 
-Unless the user says otherwise:
+Unless the user redirects otherwise:
 
-- preserve the current visual direction
-- keep learning from the reference site
-- keep the content focused on e-commerce vertical use cases
-- prioritize front-end workflow clarity over premature backend complexity
-- treat user-provided images and prompts as gallery case inputs
-
----
-
-## Immediate TODO
-
-The best next task is:
-
-`继续优化详情页生成结果区，把它从 3 张提案卡片升级成更像真实电商详情页的长图模块预览。`
+- continue working in `D:\ECONY`
+- preserve the current ecommerce-vertical style
+- do not skip the module-planning/workbench layer
+- do not allow AI to invent hard facts
+- treat reference images as stronger than hero composition for layout decisions
+- treat hero image as stronger than reference images for style baseline only
