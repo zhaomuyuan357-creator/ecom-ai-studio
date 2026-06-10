@@ -8,6 +8,7 @@ Start the next conversation by reading:
 - `CONTEXT.md`
 - `PROGRESS.md`
 - `docs/current-handoff.md`
+- `docs/detail-page-upgrade-optimization-plan.md`
 - `docs/detail-page-generation-step-plan.md`
 - `docs/detail-page-generation-step-05-confirmation-panel.md`
 - `docs/detail-page-generation-step-06-hero-generation.md`
@@ -91,6 +92,19 @@ Start the next conversation by reading:
   - hero and generated modules can be viewed in detail-page order
   - modules can still be downloaded individually
 
+- Added staged upgrade governance
+  - a new document now exists:
+    - `docs/detail-page-upgrade-optimization-plan.md`
+  - this document reorganizes the project into 7 upgrade phases:
+    - critical broken links
+    - state/layout stability
+    - visual-style strengthening
+    - module quality strengthening
+    - smart prompt optimization
+    - boss mode
+    - model decoupling
+  - from now on, upgrade work should follow that phase order and require acceptance between phases
+
 ## Important Current Reality
 
 - If the page is opened as `file:///D:/ECONY/public/index.html`, API calls will not reflect the real backend workflow
@@ -121,10 +135,10 @@ The current product direction is:
 
 The next highest-value product move is:
 
-1. verify in browser that module generation really follows module visual focus, text mode, and reference structure
-2. continue strengthening reference-image inheritance, especially for detail/craftsmanship modules
-3. keep polishing the dedicated `一键整理详情页` page
-4. continue reducing duplicate-function risk in `public/index.html`
+1. start from stage 1 in `docs/detail-page-upgrade-optimization-plan.md`
+2. repair all critical broken links before moving on
+3. then verify in browser that module generation follows module visual focus, text mode, and reference structure
+4. only after that continue the next upgrade phase
 
 ## Suggested Resume Prompt
 
@@ -136,6 +150,8 @@ The next highest-value product move is:
 2. 详情页流程已经进入 Step 7：模块规划 + 参考图归类 + 单模块正式生成
 3. 不要跳过当前规划层直接做整套批量详情页
 4. 继续强化“用户资料定事实、参考图定版式、首图定基调、AI 受控发挥”这套规则
-5. 优先继续完善“一键整理详情页”的独立整理页
-6. 继续验证和增强模块对参考图结构、文字区、视觉重点的遵循
+5. 先阅读 docs/detail-page-upgrade-optimization-plan.md，并按阶段顺序推进
+6. 当前必须从第 1 阶段开始：先修断路，再做后面的质量和升级
+7. 优先继续完善“一键整理详情页”的独立整理页
+8. 继续验证和增强模块对参考图结构、文字区、视觉重点的遵循
 ```

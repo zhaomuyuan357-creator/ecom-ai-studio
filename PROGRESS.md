@@ -8,6 +8,7 @@ If you are starting a new conversation, read these files first:
 - `CONTEXT.md`
 - `PROGRESS.md`
 - `docs/current-handoff.md`
+- `docs/detail-page-upgrade-optimization-plan.md`
 - `docs/detail-page-generation-step-plan.md`
 - `docs/detail-page-generation-step-05-confirmation-panel.md`
 - `docs/detail-page-generation-step-06-hero-generation.md`
@@ -156,6 +157,20 @@ This tightening is especially important for:
 - users can preview current completion state and download modules one by one
 - this is closer to an independent arrangement page, but still needs polish and full browser verification
 
+### 11. Upgrade governance document
+
+- a new staged upgrade plan now exists:
+  - `docs/detail-page-upgrade-optimization-plan.md`
+- this document reorganizes current issues into:
+  - critical broken links
+  - state/layout stability
+  - visual-style strengthening
+  - module quality strengthening
+  - smart prompt optimization
+  - boss mode
+  - model decoupling
+- the project should now follow that staged acceptance order instead of mixing all fixes together
+
 ---
 
 ## Current UX Notes
@@ -174,6 +189,7 @@ What is still rough:
 - some module outputs may still over-borrow from hero composition if prompt control is not strong enough in real runs
 - `public/index.html` still contains legacy duplicate functions and layered history
 - the arrangement page still needs visual polish and download/overview refinement
+- the newly listed upgrade issues still need to be solved phase by phase under the new plan
 
 ---
 
@@ -205,6 +221,13 @@ What is still rough:
 
 ### Priority 1
 
+Start following `docs/detail-page-upgrade-optimization-plan.md`, beginning from the first stage:
+
+- fix critical broken links
+- confirm every required button and module generation entry is really connected
+
+### Priority 2
+
 Verify in the browser that each module truly follows:
 
 - module visual focus
@@ -212,13 +235,9 @@ Verify in the browser that each module truly follows:
 - reference structure
 - pure-image override
 
-### Priority 2
-
-Polish the dedicated `一键整理详情页` page so users can review the whole arranged detail page more comfortably and download with less friction.
-
 ### Priority 3
 
-Continue reducing legacy duplicate-function risk in `public/index.html` without destabilizing the accepted workflow.
+Polish the dedicated `一键整理详情页` page so users can review the whole arranged detail page more comfortably and download with less friction.
 
 ---
 

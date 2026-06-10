@@ -20,6 +20,7 @@ When continuing this repo, read these files first:
 - `CONTEXT.md`
 - `PROGRESS.md`
 - `docs/current-handoff.md`
+- `docs/detail-page-upgrade-optimization-plan.md`
 - `docs/detail-page-generation-step-plan.md`
 - `docs/detail-page-generation-step-05-confirmation-panel.md`
 - `docs/detail-page-generation-step-06-hero-generation.md`
@@ -89,6 +90,7 @@ Do not skip the module-planning layer and jump straight to full-batch detail-pag
 
 ## Current highest-value next steps
 
+- Align the new staged upgrade plan in `docs/detail-page-upgrade-optimization-plan.md` and follow it phase by phase
 - Verify in browser that module generation truly follows module visual focus, text mode, and reference structure
 - Keep strengthening per-module reference inheritance, especially for detail/craftsmanship modules
 - Improve spacing, alignment, and mobile presentation inside the Step 7 workbench
