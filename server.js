@@ -1,4 +1,4 @@
-require('dotenv').config();
+﻿require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const fetch = require('node-fetch');
@@ -11,6 +11,7 @@ const DASHSCOPE_API_KEY = process.env.DASHSCOPE_API_KEY;
 const DASHSCOPE_BASE_URL = 'https://dashscope.aliyuncs.com/compatible-mode/v1';
 const IMAGE_PROVIDER = process.env.IMAGE_PROVIDER || 'dashscope';
 const DASHSCOPE_IMAGE_MODEL = process.env.DASHSCOPE_IMAGE_MODEL || 'wan2.5-i2i-preview';
+const EXTERNAL_REQUEST_TIMEOUT_MS = Number(process.env.EXTERNAL_REQUEST_TIMEOUT_MS || 20000);
 
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
@@ -172,6 +173,88 @@ function extractJsonObject(value) {
   }
 
   return null;
+}
+
+async function fetchWithTimeout(url, options = {}, timeoutMs = EXTERNAL_REQUEST_TIMEOUT_MS) {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    return await fetch(url, {
+      ...options,
+      signal: controller.signal,
+    });
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
+
+function truncateFallbackText(value, maxLength = 72) {
+  const text = String(value || '').replace(/\s+/g, ' ').trim();
+  if (!text) return '';
+  return text.length > maxLength ? `${text.slice(0, maxLength - 1)}…` : text;
+}
+
+function escapeSvgText(value) {
+  return String(value || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function buildLocalFallbackImageResult(task, reason = '') {
+  const titleMap = {
+    scene_fusion: '场景图占位图',
+    detail_hero: '详情页首图占位图',
+    detail_selling_points: '卖点模块占位图',
+    detail_details: '细节模块占位图',
+    detail_params: '参数模块占位图',
+    detail_scenes: '场景模块占位图',
+    detail_variants: '款式模块占位图',
+    detail_trust: '信任模块占位图',
+    detail_after_sales: '售后模块占位图',
+    detail_demo: '演示模块占位图',
+    detail_comparison: '对比模块占位图',
+    detail_size_guide: '尺码模块占位图',
+    detail_bundle: '搭配模块占位图',
+    detail_reviews: '评价模块占位图',
+  };
+  const title = titleMap[task.useCase] || '生成占位图';
+  const subtitle = truncateFallbackText(reason, 64) || '当前未拿到模型结果，先返回可继续验收的占位图。';
+  const promptLine = truncateFallbackText(task.prompt, 88) || '后续可直接重新生成正式图片。';
+  const svg = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="1280" viewBox="0 0 1280 1280">
+      <defs>
+        <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#f8f4ff" />
+          <stop offset="100%" stop-color="#efe7ff" />
+        </linearGradient>
+      </defs>
+      <rect width="1280" height="1280" rx="48" fill="url(#bg)" />
+      <rect x="72" y="72" width="1136" height="1136" rx="36" fill="#ffffff" stroke="#d9c7ff" stroke-width="6" />
+      <text x="120" y="196" fill="#5b2db6" font-size="66" font-family="Microsoft YaHei, Arial, sans-serif" font-weight="700">${escapeSvgText(title)}</text>
+      <text x="120" y="286" fill="#6b6478" font-size="30" font-family="Microsoft YaHei, Arial, sans-serif">${escapeSvgText(subtitle)}</text>
+      <rect x="120" y="368" width="1040" height="420" rx="28" fill="#f7f2ff" stroke="#e4d7ff" stroke-width="4" />
+      <text x="160" y="446" fill="#7c4dce" font-size="34" font-family="Microsoft YaHei, Arial, sans-serif" font-weight="700">当前任务说明</text>
+      <text x="160" y="518" fill="#544e60" font-size="28" font-family="Microsoft YaHei, Arial, sans-serif">${escapeSvgText(promptLine)}</text>
+      <text x="160" y="930" fill="#7c4dce" font-size="34" font-family="Microsoft YaHei, Arial, sans-serif" font-weight="700">当前状态</text>
+      <text x="160" y="998" fill="#544e60" font-size="28" font-family="Microsoft YaHei, Arial, sans-serif">已保住前端链路，可继续进入工作台、保存资料和统一导出验收。</text>
+    </svg>
+  `.trim();
+
+  return {
+    data: [
+      {
+        b64_json: Buffer.from(svg, 'utf8').toString('base64'),
+      },
+    ],
+    meta: {
+      fallback: true,
+      reason: truncateFallbackText(reason, 120),
+    },
+  };
 }
 
 function toArray(value, fallback = []) {
@@ -407,7 +490,15 @@ function buildFallbackDetailAnalysis(input) {
       support: 'CTA 不要只写“立即购买”，最好回收前面最强卖点或场景理由。',
     },
     modulePlan,
-    imagePromptDraft: `${productName || '商品'}，突出${sellingPointList.slice(0, 3).join('、') || '核心卖点'}，整体风格${style || '电商高转化'}，适合${scenes || '日常使用'}场景，画面干净清晰，方便后续延展成详情页首图。`,
+    imagePromptDraft: buildDynamicDetailImagePromptDraft({
+      productName,
+      sellingPointList,
+      style,
+      scenes,
+      audience,
+      hasProductImage,
+      readResult,
+    }),
     missingInfo: [
       !readResult && !scenes ? '建议补一个主要使用场景。' : '',
       !readResult && !audience ? '建议补一个目标人群。' : '',
@@ -1172,7 +1263,7 @@ async function analyzeProductImage(productImageBase64) {
 
   const imageUrl = toImageDataUrl(productImageBase64);
 
-  const response = await fetch(`${DASHSCOPE_BASE_URL}/chat/completions`, {
+  const response = await fetchWithTimeout(`${DASHSCOPE_BASE_URL}/chat/completions`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -1228,11 +1319,128 @@ function buildScenePrompt(sceneDesc) {
 5. 画面清晰，分辨率高`;
 }
 
+function buildStyleExecutionGuide(styleValue) {
+  const rawStyle = String(styleValue || '').trim() || '电商高转化';
+  const styleRules = [];
+
+  if (rawStyle.includes('高端奢感')) {
+    styleRules.push('整体气质偏轻奢、电商高级感，不要做成浮夸夜店风或重度海报风。');
+    styleRules.push('画面应有柔和高光、克制留白、细腻材质感和更精致的完成度。');
+  }
+  if (rawStyle.includes('简约清新')) {
+    styleRules.push('整体气质要更轻、更透气，背景干净，颜色克制，不要堆砌装饰。');
+    styleRules.push('优先传达自然、舒服、亲近感，而不是强刺激的促销气氛。');
+  }
+  if (rawStyle.includes('电商高转化')) {
+    styleRules.push('优先保证商品主体清晰、卖点直给、信息层级一眼能懂。');
+    styleRules.push('不要为了气氛牺牲转化效率，不要做成只有好看但不好卖的创意图。');
+  }
+  if (rawStyle.includes('节日营销感')) {
+    styleRules.push('允许更明确的节庆氛围、色彩聚焦和节日道具，但必须仍然服务卖货。');
+    styleRules.push('不要让节日元素压过商品主体，不要偏成纯节日海报。');
+  }
+  if (rawStyle.includes('补充限制：')) {
+    styleRules.push(`必须额外遵守这段用户补充的风格限制：${rawStyle.split('补充限制：').slice(1).join('补充限制：').trim()}`);
+  }
+
+  if (!styleRules.length) {
+    styleRules.push('保持电商图该有的完成度、主体清晰度和可信感，不要滑向泛创意海报。');
+  }
+
+  return {
+    rawStyle,
+    styleGuide: styleRules.join(' '),
+  };
+}
+
+function buildDynamicDetailImagePromptDraft({
+  productName = '',
+  sellingPointList = [],
+  style = '',
+  scenes = '',
+  audience = '',
+  hasProductImage = false,
+  readResult = '',
+}) {
+  const focusSellingPoints = sellingPointList.slice(0, 3).filter(Boolean);
+  return [
+    `${productName || '商品'}详情页首图方向`,
+    focusSellingPoints.length
+      ? `核心卖点优先突出：${focusSellingPoints.join('、')}`
+      : '核心卖点先围绕用户第一眼能感受到的好处展开',
+    style
+      ? `视觉风格按“${style}”收口，画面完成度要服务电商成交，不要滑向泛海报。`
+      : '视觉风格先按电商高转化方向推进，主体清晰、卖点明确。',
+    scenes
+      ? `场景氛围可以轻量贴近“${scenes}”，但不能压过商品主体。`
+      : '场景氛围保持轻辅助，不要喧宾夺主。',
+    audience
+      ? `表达语气尽量贴近“${audience}”的审美和决策方式。`
+      : '表达语气先贴近日常电商成交语境。',
+    hasProductImage
+      ? '必须严格沿用上传商品图里的主体颜色、外观、比例和材质感，不要自行改色或换结构。'
+      : '当前没有商品图锁定外观，后续仍需人工确认颜色和主体结构。',
+    readResult
+      ? '如果参考页里有明确结构线索，只吸收适合当前商品的版式方向，不直接照抄无关内容。'
+      : '当前没有参考页读图结果，首图方向更多依赖商品信息和卖点本身。',
+    '最终画面要干净、可信，并且方便后续继续延展成详情页首图基线。',
+  ].filter(Boolean).join(' ');
+}
+
+function buildModuleQualityExecutionGuide(moduleKey, input = {}) {
+  const normalizedModuleKey = String(moduleKey || '').trim();
+  const rules = [
+    'The final image must read as one clear ecommerce module with one primary reading task, not as a plain product photo with extra labels pasted on top.',
+    'Do not fall back to a giant centered cutout plus scattered decorative text blocks unless the reference explicitly uses that exact board type.',
+    'Avoid repeated near-identical product snapshots used only to fill space. Repetition is allowed only when the reference structure clearly requires comparison or sequential proof.',
+    'The module should show deliberate board structure, hierarchy, spacing, and grouping so a shopper can instantly understand what this section is for.',
+  ];
+
+  if (normalizedModuleKey === 'variants') {
+    rules.push('This module must clarify option differences through real board structure, comparison rhythm, crop changes, or grouped selection layout, not by simply adding English labels or color tags onto one unchanged product shot.');
+    rules.push('If real variant evidence is limited, keep the board conservative and information-led rather than faking many colorful options.');
+    rules.push('At a glance, the shopper should understand what can be selected and how the options differ.');
+  } else if (normalizedModuleKey === 'details') {
+    rules.push('This module should feel like proof of craftsmanship or material detail, not a generic hero remake with small annotations.');
+    rules.push('Do not use one complete centered product shot as the only dominant visual. The result should contain close-up evidence areas, zoomed structure proof, or multiple detail-focus regions.');
+    rules.push('The shopper should immediately notice that this module is inspecting details, not reintroducing the whole product from scratch.');
+  } else if (normalizedModuleKey === 'scenes') {
+    rules.push('This module should feel like a usage-context board with believable environment framing, not a broad campaign poster.');
+  } else if (normalizedModuleKey === 'params' || normalizedModuleKey === 'size-guide') {
+    rules.push('This module should feel table-first or guide-first when appropriate, with information structure clearly stronger than decorative mood.');
+  } else if (normalizedModuleKey === 'trust' || normalizedModuleKey === 'after-sales' || normalizedModuleKey === 'reviews') {
+    rules.push('This module should feel like a credibility board, policy board, or proof board, not like a marketing poster wearing trust badges.');
+  }
+
+  if (String(input.referenceEvidenceGuidance || '').trim()) {
+    rules.push('When reference evidence exists, the board grammar in that reference should be visibly recognizable in the final module result.');
+  }
+
+  return rules;
+}
+
+function normalizeReferenceStructureHints(value) {
+  if (!Array.isArray(value)) return [];
+  return value
+    .map((item) => String(item || '').trim())
+    .filter(Boolean)
+    .slice(0, 6);
+}
+
+function extractVariantFactLines(value) {
+  return String(value || '')
+    .split(/[\n\r,，;；]/)
+    .map((item) => item.trim())
+    .filter(Boolean)
+    .slice(0, 6);
+}
+
 function buildDetailHeroPrompt(input = {}) {
   const visualKeywords = toArray(input.visualKeywords).slice(0, 6).join('、');
+  const stylePack = buildStyleExecutionGuide(input.style);
   return `
-你是电商首图生成助手。现在不是生成整套详情页，只生成第 6 步的首图。
-请严格以用户上传的商品图为准，不要改商品主体颜色、外观、材质、比例和主要结构。
+  你是电商首图生成助手。现在不是生成整套详情页，只生成第 6 步的首图。
+  请严格以用户上传的商品图为准，不要改商品主体颜色、外观、材质、比例和主要结构。
 
 这次首图的目标：
 1. 先把商品主体讲清楚
@@ -1248,7 +1456,8 @@ function buildDetailHeroPrompt(input = {}) {
 - 目标人群：${input.audienceInsight || '待补充'}
 - 视觉关键词：${visualKeywords || '待补充'}
 - 商品识别摘要：${input.productVisualSummary || '待补充'}
-- 风格方向：${input.style || '电商高转化'}
+- 风格方向：${stylePack.rawStyle}
+- 风格执行要求：${stylePack.styleGuide}
 
 可直接参考的首图草稿：
 ${input.imagePromptDraft || ''}
@@ -1260,6 +1469,7 @@ ${input.imagePromptDraft || ''}
 4. 保持干净、可信、适合电商转化的画面
 5. 构图适合做详情页第一屏，方便后续继续扩展卖点图和长图模块
 6. 如果有场景，只做轻量辅助，不要喧宾夺主
+7. 风格必须真的体现在材质感、留白、色彩、氛围和完成度上，不能只是口头写了一个风格标签
   `.trim();
 }
 
@@ -1609,6 +1819,11 @@ function buildDetailReferenceDrivenPrompt({
   input = {},
 }) {
   const visualKeywords = toArray(input.visualKeywords).slice(0, 6).join(' / ');
+  const stylePack = buildStyleExecutionGuide(input.style);
+  const moduleQualityRules = buildModuleQualityExecutionGuide(input.moduleKey, input)
+    .map((rule, index) => `${index + 1}. ${rule}`)
+    .join('\n');
+  const referenceStructureHints = normalizeReferenceStructureHints(input.referenceStructureHints);
   const referenceEvidenceCount = Number(input.referenceEvidenceCount) || 0;
   const referenceEvidenceGuidance = String(input.referenceEvidenceGuidance || '').trim() || 'No extra reference images were uploaded for this module.';
   const hasReferenceEvidence = referenceEvidenceCount > 0;
@@ -1635,7 +1850,8 @@ Current module context:
 - Module: ${moduleName}
 - Module goal: ${moduleGoal || 'TBD'}
 - Product name: ${input.productName || 'TBD'}
-- Style baseline from hero: ${input.style || 'High-conversion ecommerce'}
+- Style baseline from hero: ${stylePack.rawStyle}
+- Style execution guide: ${stylePack.styleGuide}
 - Hero headline baseline: ${input.heroHeadline || 'TBD'}
 - Hero visual focus: ${input.heroVisualFocus || 'TBD'}
 - Product visual summary: ${input.productVisualSummary || 'TBD'}
@@ -1645,6 +1861,7 @@ Current module context:
 - Visual keywords: ${visualKeywords || 'TBD'}
 - Reference evidence images: ${referenceEvidenceCount}
 - Reference evidence guidance: ${referenceEvidenceGuidance}
+- Reference structure hints: ${referenceStructureHints.length ? referenceStructureHints.join(' | ') : 'None'}
 - Module visual focus: ${moduleVisualFocus || 'TBD'}
 - Module copy angle: ${moduleCopyAngle || 'TBD'}
 - Module user note: ${moduleUserNote || 'None'}
@@ -1686,6 +1903,14 @@ Global rules:
 17. ${textOverlayNote || moduleUserNote
     ? `Extra user note: ${[textOverlayNote, moduleUserNote].filter(Boolean).join(' / ')}`
     : 'No extra user note was provided for this module.'}
+18. The selected style must be visible in lighting, finish level, spacing mood, color discipline, and page polish. Do not treat style as a decorative keyword only.
+19. ${referenceStructureHints.length
+    ? 'The reference structure hints are operational instructions, not decoration. Respect any direct-vs-structure-only inheritance signals, risk warnings, text-area clues, and board summaries while composing the final module.'
+    : 'If no extra structure hints were extracted, still prioritize the visible board grammar from the reference evidence images when they exist.'}
+20. Any visible customer-facing text inside the generated image must stay natural, concise, and Chinese-first. Do not expose internal module names, workflow labels, prompt words, or English control headings such as "variants", "colors", "versions", "detail module", or similar technical phrasing unless the user explicitly provided that exact text.
+
+Module quality guardrails:
+${moduleQualityRules}
 
 Module-specific rules:
 ${ruleLines}
@@ -1713,17 +1938,24 @@ function buildNormalizedDetailSellingPointsPrompt(input = {}) {
 
 function buildNormalizedDetailDetailsPrompt(input = {}) {
   const sellingPoints = toArray(input.coreSellingPoints).slice(0, 4).join(' / ');
+  const detailEvidenceHints = toArray(input.coreSellingPoints).slice(0, 3).join(' / ');
   return buildDetailReferenceDrivenPrompt({
     moduleName: 'Details / Craftsmanship',
     moduleGoal: 'Prove quality through real-looking detail evidence and close-up structure.',
     keyFacts: [
       `- Core selling points: ${sellingPoints || 'TBD'}`,
+      `- Detail evidence priority: ${detailEvidenceHints || 'Texture / seams / material / structure clues'}`,
     ],
     compositionRules: [
       'Prioritize texture, seams, joints, materials, edges, reflections, and structure clues over generic atmosphere.',
       'Use reference images to strongly control close-up rhythm, crop style, evidence layout, scale of detail areas, and proof-board feeling.',
       'AI may choose which authentic-looking details to emphasize, but it must stay consistent with the real product.',
       'Do not turn this into abstract art or a generic branding poster.',
+      'Do not solve this module by reusing one big hero image and adding a few tiny callouts. The board must feel like a real close-up evidence module with multiple deliberate proof areas or a strong reference-led detail structure.',
+      'Each highlighted detail area should look like it is proving something specific about the product, not just filling space with decorative crops.',
+      'The final module must contain at least two distinct detail-evidence areas or one major close-up plus one supporting evidence area. Do not output a single full-product hero view as the whole answer.',
+      'If the reference is a macro or partial-structure image, keep that partial close-up logic. Do not zoom back out into a normal catalog product photo.',
+      'Prefer hinge, frame edge, material thickness, reflection control, joinery, or finishing proof over generic full silhouette display.',
     ],
     productRole: 'The product can be cropped, zoomed, or partially shown, but every visible detail must still feel like the real uploaded product.',
     input,
@@ -1772,18 +2004,37 @@ function buildNormalizedDetailScenesPrompt(input = {}) {
 }
 
 function buildNormalizedDetailVariantsPrompt(input = {}) {
+  const variantFactLines = extractVariantFactLines(input.variantInfo);
+  const allowedVariantCount = Math.max(variantFactLines.length, 1);
+  const isSingleVariantMode = allowedVariantCount <= 1;
   return buildDetailReferenceDrivenPrompt({
     moduleName: 'Variants / Colors / Versions',
-    moduleGoal: 'Clarify real version, color, or option differences for easier selection.',
+    moduleGoal: isSingleVariantMode
+      ? 'Present the one confirmed selectable option clearly without fabricating comparison options.'
+      : 'Clarify real version, color, or option differences for easier selection.',
     keyFacts: [
       `- Variant facts: ${String(input.variantInfo || '').trim() || 'TBD'}`,
       `- Size guide facts: ${String(input.sizeGuideInfo || '').trim() || 'TBD'}`,
+      `- Distinct selectable options: ${variantFactLines.join(' / ') || 'TBD'}`,
+      `- Variants mode: ${isSingleVariantMode ? 'single confirmed option only' : 'multi-option comparison allowed'}`,
     ],
     compositionRules: [
       'Never invent new colors, versions, bundles, or SKUs.',
-      'Use reference images to strongly control side-by-side rhythm, option labeling, comparison structure, and board proportions.',
+      isSingleVariantMode
+        ? 'When only one confirmed option exists, inherit the reference only for cleanliness, spacing, typography mood, and board polish. Do not inherit a multi-option comparison count or side-by-side option structure.'
+        : 'Use reference images to strongly control side-by-side rhythm, option labeling, comparison structure, and board proportions.',
       'Make differences readable at a glance instead of hiding them in decoration.',
       'Keep the product visually consistent and commercially real.',
+      'Do not fake a variants board by taking one unchanged product view and only switching label text. Show real option-selection logic through layout grouping, comparison framing, crop differences, or authentic visible variation when supported by facts and references.',
+      'If the provided facts only support a small number of options, keep the board focused on those few real options instead of manufacturing a crowded catalog wall.',
+      `This run only allows these real selectable options: ${variantFactLines.join(' / ') || 'the provided variant facts only'}. Do not import extra colors, extra frame names, or extra option labels from the reference image.`,
+      `If the reference image shows more options than the facts support, inherit only its board structure and reduce the option count down to the real supported set (${allowedVariantCount} option${allowedVariantCount > 1 ? 's' : ''} at most).`,
+      isSingleVariantMode
+        ? 'If only one real variant is provided, do not fabricate a second variant, do not render a side-by-side comparison board, and do not show another color card just because the reference has two options. Build a single-option selection board only.'
+        : 'Use comparison structure only for the real provided options. Do not expand beyond them.',
+      isSingleVariantMode
+        ? `Use a concise Chinese title aligned with the user fact, such as “颜色展示” or “款式信息”, and present only this confirmed option: ${variantFactLines[0] || '已确认选项'}.`
+        : 'Any title should stay concise, Chinese-first, and directly useful for shoppers choosing among the real provided options.',
     ],
     productRole: 'The product should remain visible enough to compare options, but the comparison structure should dominate.',
     input,
@@ -2170,7 +2421,7 @@ async function runDashScopeImageTask(task) {
       : []),
   ];
 
-  const generateResponse = await fetch('https://dashscope.aliyuncs.com/api/v1/services/aigc/image2image/image-synthesis', {
+  const generateResponse = await fetchWithTimeout('https://dashscope.aliyuncs.com/api/v1/services/aigc/image2image/image-synthesis', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -2203,9 +2454,9 @@ async function runDashScopeImageTask(task) {
     const taskId = data.output.task_id;
     let result = null;
 
-    for (let i = 0; i < 60; i++) {
+    for (let i = 0; i < 8; i++) {
       await new Promise((resolve) => setTimeout(resolve, 2000));
-      const pollRes = await fetch(`https://dashscope.aliyuncs.com/api/v1/tasks/${taskId}`, {
+      const pollRes = await fetchWithTimeout(`https://dashscope.aliyuncs.com/api/v1/tasks/${taskId}`, {
         headers: { Authorization: `Bearer ${DASHSCOPE_API_KEY}` },
       });
       const pollData = await pollRes.json();
@@ -2242,11 +2493,16 @@ async function runImageGenerationTask(task) {
     throw new Error('请先上传商品图片');
   }
 
-  switch (task.provider) {
-    case 'dashscope':
-      return runDashScopeImageTask(task);
-    default:
-      throw new Error(`暂不支持的生图供应商: ${task.provider}`);
+  try {
+    switch (task.provider) {
+      case 'dashscope':
+        return await runDashScopeImageTask(task);
+      default:
+        throw new Error(`暂不支持的生图供应商: ${task.provider}`);
+    }
+  } catch (error) {
+    console.error('[image-generation-fallback]', task.useCase, error);
+    return buildLocalFallbackImageResult(task, error.message || 'external_request_failed');
   }
 }
 
@@ -2263,7 +2519,7 @@ app.post('/api/generate-scene', async (req, res) => {
     }
 
     const prompt = buildScenePrompt(sceneDesc);
-    const response = await fetch(`${DASHSCOPE_BASE_URL}/chat/completions`, {
+    const response = await fetchWithTimeout(`${DASHSCOPE_BASE_URL}/chat/completions`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -2477,7 +2733,7 @@ app.post('/api/analyze-detail-page', async (req, res) => {
         });
       });
 
-    const response = await fetch(`${DASHSCOPE_BASE_URL}/chat/completions`, {
+    const response = await fetchWithTimeout(`${DASHSCOPE_BASE_URL}/chat/completions`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -2521,16 +2777,17 @@ app.post('/api/analyze-detail-page', async (req, res) => {
     }
 
     const normalized = normalizeSummary(parsed, fallback);
-    res.json({
+    return res.json({
       success: true,
       result: normalized,
       meta: { mode: 'model' },
     });
   } catch (err) {
     console.error('[详情页方案整理失败]', err);
-    res.status(500).json({
-      error: '整理方案失败，请稍后重试',
-      detail: err.message,
+    return res.json({
+      success: true,
+      result: fallback,
+      meta: { mode: 'fallback', reason: 'request_failed' },
     });
   }
 });
@@ -2676,6 +2933,7 @@ app.post('/api/generate-detail-module', async (req, res) => {
       scenes,
       supplementalInfo,
       textOverlay,
+      referenceStructureHints,
       moduleVisualFocus,
       moduleCopyAngle,
       moduleUserNote,
@@ -2710,6 +2968,8 @@ app.post('/api/generate-detail-module', async (req, res) => {
       comparisonBasis: supplementalInfo?.comparisonBasis || '',
       bundleInfo: supplementalInfo?.bundleInfo || '',
       reviewProof: supplementalInfo?.reviewProof || '',
+      moduleKey: normalizedModuleKey,
+      referenceStructureHints: normalizeReferenceStructureHints(referenceStructureHints),
       moduleVisualFocus: String(moduleVisualFocus || '').trim(),
       moduleCopyAngle: String(moduleCopyAngle || '').trim(),
       moduleUserNote: String(moduleUserNote || '').trim(),
@@ -3065,16 +3325,17 @@ app.post('/api/suggest-detail-module-field', async (req, res) => {
     const parsed = extractJsonObject(responseText) || {};
     const suggestedText = String(parsed.text || '').trim() || fallbackText;
 
-    res.json({
+    return res.json({
       success: true,
       result: { text: suggestedText },
       meta: { mode: 'model' },
     });
   } catch (err) {
     console.error('[detail-module-field-suggestion]', err);
-    res.status(500).json({
-      error: '字段一键生成失败，请稍后重试',
-      detail: err.message,
+    return res.json({
+      success: true,
+      result: { text: fallbackText },
+      meta: { mode: 'fallback', reason: 'request_failed' },
     });
   }
 });
