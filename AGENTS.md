@@ -16,21 +16,22 @@ This is a single-context repo. Engineering skills should read the root `CONTEXT.
 
 When continuing this repo, read these files first:
 
-- `AGENTS.md`
-- `CONTEXT.md`
-- `PROGRESS.md`
-- `docs/current-handoff.md`
-- `docs/detail-page-upgrade-optimization-plan.md`
-- `docs/detail-page-generation-step-plan.md`
-- `docs/detail-page-generation-step-05-confirmation-panel.md`
-- `docs/detail-page-generation-step-06-hero-generation.md`
+- `AGENTS.md` — project overview and current rules
+- `CONTEXT.md` — product context
+- `PROGRESS.md` — full progress log
+- `docs/current-handoff.md` — latest handoff status
+- `docs/detail-page-upgrade-optimization-plan.md` — 7-stage upgrade plan (current roadmap)
+- `docs/detail-page-generation-step-plan.md` — original step plan
+- `docs/detail-page-generation-step-05-confirmation-panel.md` — Step 5 details
+- `docs/detail-page-generation-step-06-hero-generation.md` — Step 6 details
 
 ## Current product focus
 
 - Active root workspace: `D:\ECONY`
 - Active preview target: `http://localhost:3000/`
 - `file:///D:/ECONY/public/index.html` may still be used for rough visual screenshots, but real API behavior only works through the local server route above
-- Main work is now inside Step 7 detail-page module planning and single-module generation refinement
+- Main work is now inside **Step 7** detail-page module planning and single-module generation refinement
+- Current upgrade phase: **第 1 阶段 — 修通关键断路点** (see `docs/detail-page-upgrade-optimization-plan.md`)
 - The current highest-value surface is the independent `一键整理详情页` area plus stricter per-module reference inheritance
 
 ## Current workflow reality
@@ -73,26 +74,36 @@ Do not skip the module-planning layer and jump straight to full-batch detail-pag
 
 ## Current completed progress snapshot
 
-- Step 5 summary confirmation is live
-- Step 6 hero generation is live and remains the only first-image checkpoint
-- Step 7 module workbench is live
-- Reference-image classification exists and supports compatibility metadata plus text-area metadata
-- Formal single-module generation exists for selling-points, details, params, scenes, variants, trust, after-sales, demo, comparison, size-guide, bundle, and reviews
-- Module generation now filters blocked risky references, deduplicates reference images, and hides customer-facing prompt internals
-- Module text handling now supports:
-  - auto text
-  - manual text
-  - pure image / no text
-  - text position hint
-  - user note
-- Supplemental fields now support AI one-click grounded suggestion generation
-- `一键整理详情页` now has a first independent page-level stacked preview, but still needs polish and full verification
+- Step 5 summary confirmation is live and accepted
+- Step 6 hero generation is live and accepted as the only first-image checkpoint
+- Step 7 module workbench is live with 8 required + 5 optional modules
+- Reference-image classification exists with field mapping, compatibility risk, inheritance mode, warning, and text-area metadata
+- Formal single-module generation exists for: selling-points, details, params, scenes, variants, trust, after-sales, demo, comparison, size-guide, bundle, and reviews
+- Module generation filters blocked risky references, deduplicates reference images, and hides customer-facing prompt internals
+- Module text handling supports: auto text, manual text, pure image / no text, with position hint, user text, and note/override
+- Supplemental fields support AI one-click grounded suggestion generation via `/api/suggest-detail-module-field`
+- `一键整理详情页` has a first page-level stacked preview; still needs polish
+- Staged upgrade governance document exists: `docs/detail-page-upgrade-optimization-plan.md` with 7 phases
 
-## Current highest-value next steps
+## Current upgrade roadmap
 
-- Align the new staged upgrade plan in `docs/detail-page-upgrade-optimization-plan.md` and follow it phase by phase
-- Verify in browser that module generation truly follows module visual focus, text mode, and reference structure
-- Keep strengthening per-module reference inheritance, especially for detail/craftsmanship modules
-- Improve spacing, alignment, and mobile presentation inside the Step 7 workbench
-- Continue refining the independent `一键整理详情页` page so users can preview and download the whole arranged page comfortably
-- Reduce legacy duplicate-function risk in `public/index.html` without destabilizing the accepted workflow
+Follow `docs/detail-page-upgrade-optimization-plan.md` phase by phase. **Do not skip phases.**
+
+| 阶段 | 内容 | 状态 |
+|------|------|------|
+| **1** | 修通关键断路点（按钮接通、模块生成入口、统一导出） | **⬅️ 当前** |
+| 2 | 状态管理 + 前端布局稳定性 | 待做 |
+| 3 | 重做视觉风格约束 | 待做 |
+| 4 | 重做模块生成质量 | 待做 |
+| 5 | 重做智能优化提示词系统 | 待做 |
+| 6 | 老板模式 / 一键整套详情页 | 待做 |
+| 7 | 模型解耦与可替换架构 | 待做 |
+
+## Current highest-value next steps (第 1 阶段)
+
+1. 接通场景使用图正式生成
+2. 补齐所有模块正式生成入口
+3. 接通 `AI 一键生成`、`保存这项`、`导出摘要` 按钮
+4. 主动作按钮统一紫色风格
+5. `一键整理详情页` 改名为 `统一导出详情页`，不要求全部模块先生成完成
+6. 验收通过后才能进入第 2 阶段
