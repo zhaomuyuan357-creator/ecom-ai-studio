@@ -4107,24 +4107,6 @@
       if (regenerate) regenerate.disabled = false;
     }
 
-    function setDetailUploadStateLegacy(kind, file) {
-      const isProduct = kind === "product";
-      const box = isProduct ? detailProductBox : detailReferenceBox;
-      const nameEl = isProduct ? detailProductName : detailReferenceName;
-
-      if (isProduct) activeDetailProductFile = file;
-      else activeDetailReferenceFile = file;
-
-      if (!file) {
-        box.classList.remove("has-file");
-        nameEl.textContent = "未选择文件";
-        return;
-      }
-
-      box.classList.add("has-file");
-      nameEl.textContent = `${file.name} · ${formatBytes(file.size)}`;
-    }
-
     function setDetailUploadState(kind, filesOrFile) {
       const isProduct = kind === "product";
       const box = isProduct ? detailProductBox : detailReferenceBox;
@@ -4182,16 +4164,15 @@
         selectedTags: []
       };
       currentDetailRevisionRound = 0;
-      resultPanel.classList.add("show");
 
       const subject = kind === "product" ? "商品图" : "参考图";
-      resultZone.innerHTML = `
+      const html = `
         <div class="result-placeholder">
           <strong>已更新${subject}，可以直接重新整理方案</strong>
           <p>新的上传文件已经生效，保留当前产品信息和卖点后，点击“整理方案摘要”即可继续出下一版方案。</p>
         </div>
       `;
-      resultStatus.textContent = "待重新整理";
+      setStoredResultView("detail", html, "待重新整理", { show: true });
 
       const { download } = getActionButtons();
       if (download) download.disabled = true;
@@ -5482,125 +5463,6 @@
       `;
     }
 
-    function renderDetailModuleSupplementalPanel(workbench = currentDetailModuleWorkbench) {
-      const fields = collectMissingSupplementalFields(workbench);
-      if (!fields.length) return "";
-
-      const itemsHtml = fields.map((field) => {
-        const recognitionImages = getSupplementalRecognitionImages(field.key);
-        const referenceImages = getSupplementalReferenceImages(field.key);
-        const globalReferenceImages = getGlobalDetailReferenceImages(field.key);
-        const previewUrl = recognitionImages[0] || referenceImages[0] || globalReferenceImages[0] || "";
-        const isAnalyzing = currentDetailSupplementalAnalyzingKey === field.key;
-
-        return `
-        <article
-          class="detail-module-supplemental-item ${globalReferenceImages.length ? "reference-linked" : ""}"
-          id="${escapeHtml(getReferenceClassificationTargetId(field.key))}"
-        >
-          <div>
-            <label for="detail-supplemental-${escapeHtml(field.key)}">${escapeHtml(field.label)}</label>
-            <p>${escapeHtml(field.description || "请先补充这项信息，再继续生成对应板块。")}</p>
-          </div>
-          <div class="detail-module-supplemental-upload">
-            <input type="file" accept="image/*" multiple id="detail-supplemental-file-${escapeHtml(field.key)}" data-supplemental-file="${escapeHtml(field.key)}" hidden>
-            <input type="file" accept="image/*" multiple id="detail-supplemental-reference-file-${escapeHtml(field.key)}" data-supplemental-reference-file="${escapeHtml(field.key)}" hidden>
-            <button type="button" data-supplemental-upload-btn="${escapeHtml(field.key)}">${isAnalyzing ? "识别中..." : "上传图片并自动识别"}</button>
-            <button type="button" data-supplemental-reference-upload-btn="${escapeHtml(field.key)}">${globalReferenceImages.length ? `若有补充参考图请再上传（已继承 ${globalReferenceImages.length} 张）` : "若有参考图请上传"}</button>
-            <span>${previewUrl ? `已识别 ${recognitionImages.length} 张资料图 / 本字段 ${referenceImages.length} 张参考图 / 前面已继承 ${globalReferenceImages.length} 张全局参考图` : "支持多张上传；识别图用于提取真实信息，参考图用于借排版和信息结构。"}</span>
-          </div>
-          ${previewUrl ? `<img class="detail-module-supplemental-preview" src="${escapeHtml(previewUrl)}" alt="${escapeHtml(field.label)}预览">` : ""}
-          <textarea
-            id="detail-supplemental-${escapeHtml(field.key)}"
-            data-supplemental-key="${escapeHtml(field.key)}"
-            placeholder="${escapeHtml(field.placeholder)}"
-          >${escapeHtml(currentDetailModuleSupplementalInfo[field.key] || "")}</textarea>
-          <div class="detail-module-inline-fill-actions">
-            <button type="button" class="detail-confirm-btn" data-suggest-supplemental-field="${escapeHtml(field.key)}">AI 一键生成</button>
-            <button type="button" class="detail-confirm-btn" data-save-supplemental-field="${escapeHtml(field.key)}">保存这项</button>
-          </div>
-        </article>
-      `;
-      }).join("");
-
-      return `
-        <section class="detail-module-supplemental-panel" id="detail-module-supplemental-panel">
-          <div class="detail-module-supplemental-head">
-            <strong>先把这些板块资料补齐</strong>
-            <p>识别图负责读出真实参数、资质和售后信息；参考图负责把你想要的排版、证据层级和信息结构带进后面的模块生成里。当前只会继承已被自动归类到本板块的参考图，避免一张参数图误带到所有板块。</p>
-          </div>
-          ${currentDetailSupplementalPanelOpen ? `
-          <div class="detail-module-supplemental-grid">${itemsHtml}</div>
-          <div class="detail-module-supplemental-actions">
-            <p>如果前面已经上传过整套参考图，后面的模块会自动继续沿用；这里只需要补充模块专属的资料图或排版参考图。</p>
-            <div class="detail-module-inline-actions">
-              <button type="button" class="detail-confirm-btn" data-toggle-supplemental-panel="true">收起资料台</button>
-              <button type="button" class="detail-confirm-btn primary" id="detail-supplemental-refresh-btn">保存资料并重新检查</button>
-            </div>
-          </div>
-          ` : `
-          <div class="detail-module-supplemental-actions">
-            <p>资料台已收起，需要时可再次展开继续填写。</p>
-            <div class="detail-module-inline-actions">
-              <button type="button" class="detail-confirm-btn primary" data-toggle-supplemental-panel="true">展开资料台继续填写</button>
-            </div>
-          </div>
-          `}
-        </section>
-      `;
-    }
-
-    function renderInlineModuleQuickFill(item) {
-      const missingKeys = Array.isArray(item?.missingRequiredInputs) ? item.missingRequiredInputs : [];
-      if (!missingKeys.length) return "";
-
-      const fieldsHtml = missingKeys.map((fieldKey) => {
-        const field = DETAIL_SUPPLEMENTAL_FIELD_COPY[fieldKey] || {
-          label: fieldKey,
-          placeholder: "请补充这项信息"
-        };
-        const recognitionImages = getSupplementalRecognitionImages(fieldKey);
-        const referenceImages = getSupplementalReferenceImages(fieldKey);
-        const globalReferenceImages = getGlobalDetailReferenceImages(fieldKey);
-        const previewUrl = recognitionImages[0] || referenceImages[0] || globalReferenceImages[0] || "";
-        const isAnalyzing = currentDetailSupplementalAnalyzingKey === fieldKey;
-        const recognitionFileId = `detail-inline-supplemental-file-${item.key}-${fieldKey}`;
-        const referenceFileId = `detail-inline-supplemental-reference-file-${item.key}-${fieldKey}`;
-
-        return `
-          <div class="detail-module-inline-field">
-            <label for="detail-inline-supplemental-${escapeHtml(item.key)}-${escapeHtml(fieldKey)}">${escapeHtml(field.label)}</label>
-            <div class="detail-module-supplemental-upload">
-              <input type="file" accept="image/*" multiple id="${escapeHtml(recognitionFileId)}" data-supplemental-file="${escapeHtml(fieldKey)}" hidden>
-              <input type="file" accept="image/*" multiple id="${escapeHtml(referenceFileId)}" data-supplemental-reference-file="${escapeHtml(fieldKey)}" hidden>
-              <button type="button" data-supplemental-upload-btn="${escapeHtml(fieldKey)}" data-supplemental-upload-target="${escapeHtml(recognitionFileId)}">${isAnalyzing ? "识别中..." : "上传图片并自动识别"}</button>
-              <button type="button" data-supplemental-reference-upload-btn="${escapeHtml(fieldKey)}" data-supplemental-reference-upload-target="${escapeHtml(referenceFileId)}">${globalReferenceImages.length ? `若有补充参考图请再上传（已继承 ${globalReferenceImages.length} 张）` : "若有参考图请上传"}</button>
-              <span>${previewUrl ? `已识别 ${recognitionImages.length} 张资料图 / 本字段 ${referenceImages.length} 张参考图 / 前面已继承 ${globalReferenceImages.length} 张全局参考图` : "支持多张上传；识别图读信息，参考图借排版。"}</span>
-            </div>
-            <textarea
-              id="detail-inline-supplemental-${escapeHtml(item.key)}-${escapeHtml(fieldKey)}"
-              data-supplemental-key="${escapeHtml(fieldKey)}"
-              placeholder="${escapeHtml(field.placeholder || "请补充这项信息")}"
-            >${escapeHtml(currentDetailModuleSupplementalInfo[fieldKey] || "")}</textarea>
-            <div class="detail-module-ai-actions">
-              <button type="button" class="detail-confirm-btn" data-suggest-supplemental-field="${escapeHtml(fieldKey)}">AI 一键生成</button>
-            </div>
-          </div>
-        `;
-      }).join("");
-
-      return `
-        <div class="detail-module-inline-fill">
-          <strong>先补这块需要的资料</strong>
-          <div class="detail-module-inline-fill-grid">${fieldsHtml}</div>
-          <div class="detail-module-inline-fill-actions">
-            <button type="button" class="detail-confirm-btn" data-inline-refresh-module="${escapeHtml(item.key)}">保存并重新检查</button>
-            <button type="button" class="detail-confirm-btn primary" data-inline-generate-module="${escapeHtml(item.key)}">保存并直接生成图片</button>
-          </div>
-        </div>
-      `;
-    }
-
     function getSelectedDetailModules() {
       if (!currentDetailModulePlan) return [];
 
@@ -6107,10 +5969,16 @@
         }
         return false;
       } finally {
+        activeGenerationMode = "";
         isGenerating = false;
         btnDetailGenerate.disabled = false;
         updateResultActions();
       }
+    }
+
+    async function handleDetailModuleStart(event) {
+      event?.preventDefault?.();
+      await refreshDetailModuleWorkbench();
     }
 
     function bindDetailModulePlannerActions() {
@@ -6318,6 +6186,14 @@
           downloadImageUrl(currentDetailHeroImageUrl || currentDetailModuleWorkbench?.heroImageUrl || "", `detail-hero-${Date.now()}.png`);
         });
       });
+
+      const assemblyOpenBtn = document.getElementById("detail-assembly-open-btn");
+      if (assemblyOpenBtn) {
+        assemblyOpenBtn.addEventListener("click", () => {
+          openDetailAssemblyBoard();
+          showToast("已打开统一导出详情页区域");
+        });
+      }
 
       planner.querySelectorAll("[data-inline-refresh-module]").forEach((button) => {
         button.addEventListener("click", async () => {
@@ -6665,37 +6541,6 @@
         .filter(Boolean);
     }
 
-    function getModuleSupplementalImageBase64List(moduleKey) {
-      const fieldKeys = getModuleSupplementalImageKeys(moduleKey);
-      const scopedImageDataUrls = fieldKeys.flatMap((key) => ([
-        ...getSupplementalRecognitionImages(key),
-        ...getSupplementalReferenceImages(key)
-      ]));
-      const globalReferenceDataUrls = fieldKeys.flatMap((key) => getFilteredGlobalDetailReferenceImages(key));
-
-      return [
-        ...scopedImageDataUrls,
-        ...globalReferenceDataUrls
-      ]
-        .map((dataUrl) => String(dataUrl || "").split(",")[1])
-        .filter(Boolean);
-    }
-
-    async function postJson(url, body) {
-      const response = await fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body)
-      });
-      const data = await response.json();
-      if (!response.ok) {
-        const error = new Error(data.error || "请求失败");
-        error.payload = data;
-        throw error;
-      }
-      return data;
-    }
-
     function getFirstGeneratedImage(data) {
       const images = Array.isArray(data?.result?.images)
         ? data.result.images
@@ -6839,272 +6684,6 @@
       });
     }
 
-    function setDetailResultMock(payload) {
-      clearDetailPreviewUrls();
-      currentResultKind = "detail";
-      const { download } = getActionButtons();
-
-      const productName = payload.productName || "\u672a\u547d\u540d\u5546\u54c1";
-      const sellingPointText = payload.sellingPoints || "\u5356\u70b9\u5f85\u8865\u5145";
-      const primaryReferenceFile = getPrimaryDetailReferenceFile();
-      const previewImage = primaryReferenceFile
-        ? buildDetailPreviewUrl(primaryReferenceFile)
-        : (activeDetailProductFile ? buildDetailPreviewUrl(activeDetailProductFile) : "");
-      const heroImage = activeDetailProductFile
-        ? buildDetailPreviewUrl(activeDetailProductFile)
-        : previewImage;
-      const sizeText = payload.size || detailSize.value;
-      const sceneText = payload.scenes || "\u65e5\u5e38\u8f6c\u5316\u573a\u666f";
-      const audienceText = payload.audience || "\u7535\u5546\u76ee\u6807\u6d88\u8d39\u4eba\u7fa4";
-      const sourceText = payload.url ? "\u5df2\u7ed3\u5408\u7ade\u54c1\u8be6\u60c5\u9875\u94fe\u63a5\u4e0e\u5546\u54c1\u56fe\u505a\u7ed3\u6784\u62c6\u89e3" : "\u5f53\u524d\u65b9\u6848\u57fa\u4e8e\u5546\u54c1\u56fe\u4e0e\u624b\u52a8\u5356\u70b9\u751f\u6210";
-      const extraLine = payload.extra || "\u5efa\u8bae\u5148\u786e\u8ba4\u9996\u56fe\u98ce\u683c\uff0c\u518d\u7ee7\u7eed\u751f\u6210\u5356\u70b9\u6a21\u5757\u3001\u5c3a\u7801\u8868\u4e0e\u6574\u5957\u8be6\u60c5\u9875\u3002";
-      const safeProductName = escapeHtml(productName);
-      const safeStyle = escapeHtml(currentDetailStyle);
-      const safeSizeText = escapeHtml(sizeText);
-      const safeSceneText = escapeHtml(sceneText);
-      const safeAudienceText = escapeHtml(audienceText);
-      const safeSourceText = escapeHtml(sourceText);
-      const safeExtraLine = escapeHtml(extraLine);
-      const sellingPoints = splitDetailText(sellingPointText, ["\u6838\u5fc3\u5356\u70b9\u5f85\u8865\u5145", "\u5efa\u8bae\u8865\u5145\u6750\u8d28\u4e0e\u573a\u666f\u5173\u952e\u8bcd", "\u9996\u56fe\u4e0e\u8be6\u60c5\u9875\u4f1a\u66f4\u5bb9\u6613\u7edf\u4e00"]);
-      const sceneItems = splitDetailText(sceneText, ["\u901a\u52e4\u9648\u5217", "\u5c45\u5bb6\u8fd1\u666f", "\u793c\u8d60\u5c55\u793a"]).slice(0, 3);
-      const proofItems = payload.url
-        ? ["\u7ade\u54c1\u7ed3\u6784\u5df2\u53c2\u8003", "\u5356\u70b9\u987a\u5e8f\u66f4\u8d34\u8fd1\u5e73\u53f0\u9605\u8bfb\u4e60\u60ef", "\u51cf\u5c11\u63d0\u6848\u6c9f\u901a\u8f6e\u6b21"]
-        : ["\u5efa\u8bae\u8865\u5145\u7ade\u54c1\u94fe\u63a5", "\u540e\u7eed\u53ef\u52a0\u5165\u5bf9\u6bd4\u56fe", "\u53ef\u7ee7\u7eed\u7ec6\u5316\u8f6c\u5316\u8bc1\u636e"];
-      const heroPointsHtml = sellingPoints.slice(0, 3).map((point) => `<div>${escapeHtml(point)}</div>`).join("");
-      const sellingPointsHtml = sellingPoints.map((point, index) => `
-        <div class="detail-preview-point">
-          <strong>\u5356\u70b9 ${String(index + 1).padStart(2, "0")}</strong>
-          <span>${escapeHtml(point)}</span>
-        </div>
-      `).join("");
-      const sceneCardsHtml = sceneItems.map((item, index) => `
-        <div class="detail-preview-scene-card">
-          <img src="${index % 2 === 0 ? heroImage : (previewImage || heroImage)}" alt="\u4f7f\u7528\u573a\u666f\u9884\u89c8 ${index + 1}">
-          <div class="detail-preview-scene-copy">${escapeHtml(item)}</div>
-        </div>
-      `).join("");
-      const proofCardsHtml = proofItems.map((item, index) => `
-        <div class="detail-preview-proof-card${index === 0 ? " active" : ""}">
-          <strong>${index === 0 ? "\u5f53\u524d\u65b9\u6848" : "\u8865\u5145\u5efa\u8bae"}</strong>
-          <span>${escapeHtml(item)}</span>
-        </div>
-      `).join("");
-      const planItemsHtml = [
-        "\u9996\u5c4f\u5148\u9501\u5b9a\u4e3b\u89c6\u89c9\u4e0e\u98ce\u683c\u6807\u7b7e\uff0c\u4fbf\u4e8e\u5ba2\u6237\u5feb\u901f\u786e\u8ba4\u65b9\u5411\u3002",
-        "\u4e2d\u6bb5\u56f4\u7ed5\u5356\u70b9\u3001\u6750\u8d28\u3001\u5c3a\u7801\u548c\u4f7f\u7528\u573a\u666f\u5c55\u5f00\uff0c\u51cf\u5c11\u4fe1\u606f\u8df3\u8dc3\u3002",
-        payload.url ? "\u5df2\u53c2\u8003\u7ade\u54c1\u7ed3\u6784\u8282\u594f\uff0c\u9002\u5408\u76f4\u63a5\u8fdb\u5165\u4e0b\u4e00\u8f6e\u8be6\u60c5\u9875\u51fa\u56fe\u3002" : "\u5f53\u524d\u4e3a\u524d\u7aef\u6f14\u793a\u7248\u7ed3\u6784\uff0c\u63a5\u5165\u771f\u5b9e\u540e\u7aef\u540e\u53ef\u7ee7\u7eed\u7ec6\u5316\u6a21\u5757\u5185\u5bb9\u3002",
-        extraLine
-      ].map((item) => `<div class="detail-preview-list-item">${escapeHtml(item)}</div>`).join("");
-
-      const html = `
-        <div class="detail-preview-stage">
-          <div class="detail-preview-summary">
-            <section class="detail-preview-card detail-preview-brief">
-              <div class="detail-preview-kicker">详情页系统预览</div>
-              <div class="detail-preview-title">
-                <strong>${safeProductName} \u8be6\u60c5\u9875\u751f\u6210\u65b9\u6848</strong>
-                <span>${safeSourceText}</span>
-              </div>
-              <div class="detail-preview-chip-row">
-                <em>\u9996\u56fe\u786e\u8ba4</em>
-                <em>\u5356\u70b9\u62c6\u89e3</em>
-                <em>\u957f\u56fe\u7ed3\u6784\u9884\u89c8</em>
-              </div>
-              <div class="detail-preview-meta-grid">
-                <div class="detail-preview-meta">
-                  <label>\u98ce\u683c\u65b9\u5411</label>
-                  <strong>${safeStyle}</strong>
-                </div>
-                <div class="detail-preview-meta">
-                  <label>\u8be6\u60c5\u5c3a\u5bf8</label>
-                  <strong>${safeSizeText}</strong>
-                </div>
-                <div class="detail-preview-meta">
-                  <label>\u76ee\u6807\u4eba\u7fa4</label>
-                  <strong>${safeAudienceText}</strong>
-                </div>
-              </div>
-            </section>
-            <aside class="detail-preview-card detail-preview-plan">
-              <strong>\u672c\u8f6e\u8f93\u51fa\u91cd\u70b9</strong>
-              <div class="detail-preview-list">${planItemsHtml}</div>
-            </aside>
-          </div>
-
-          <section class="detail-preview-sheet">
-            <article class="detail-preview-module detail-preview-hero">
-              <div class="detail-preview-hero-copy">
-                <div>
-                  <div class="detail-preview-module-header">
-                    <span class="detail-preview-module-index">模块 01</span>
-                    <span class="detail-preview-module-label">首屏确认</span>
-                  </div>
-                  <h3>${safeProductName}</h3>
-                  <p>\u9996\u5c4f\u5148\u660e\u786e\u4ea7\u54c1\u4e3b\u89c6\u89c9\u3001\u98ce\u683c\u8c03\u6027\u548c\u5e73\u53f0\u9002\u914d\u65b9\u5411\uff0c\u8ba9\u8be6\u60c5\u9875\u540e\u7eed\u6a21\u5757\u90fd\u56f4\u7ed5\u540c\u4e00\u5957\u7535\u5546\u8868\u8fbe\u7ee7\u7eed\u5c55\u5f00\u3002</p>
-                </div>
-                <div class="detail-preview-hero-points">${heroPointsHtml}</div>
-              </div>
-              <div class="detail-preview-image-wrap">
-                <img src="${heroImage}" alt="\u8be6\u60c5\u9875\u9996\u56fe\u786e\u8ba4">
-                <div class="detail-preview-image-badge">${safeStyle} / ${safeSizeText}</div>
-              </div>
-            </article>
-
-            <article class="detail-preview-module">
-              <div class="detail-preview-module-header">
-                <span class="detail-preview-module-index">Module 02</span>
-                <span class="detail-preview-module-label">Selling Points / \u5356\u70b9\u6a21\u5757</span>
-              </div>
-              <div class="detail-preview-two-col">
-                <div class="detail-preview-section-copy">
-                  <h3>\u6838\u5fc3\u5356\u70b9\u6392\u5e03</h3>
-                  <p>\u628a\u8f93\u5165\u7684\u5356\u70b9\u62c6\u6210\u66f4\u5bb9\u6613\u9605\u8bfb\u7684\u6a21\u5757\u5361\u7247\uff0c\u6a21\u62df\u771f\u5b9e\u7535\u5546\u8be6\u60c5\u9875\u91cc\u201c\u6807\u9898 + \u8bc1\u636e + \u573a\u666f\u201d\u7684\u8868\u8fbe\u8282\u594f\u3002</p>
-                  <div class="detail-preview-points-grid">${sellingPointsHtml}</div>
-                </div>
-                <div class="detail-preview-image-wrap">
-                  <img src="${previewImage || heroImage}" alt="\u5356\u70b9\u6a21\u5757\u9884\u89c8">
-                  <div class="detail-preview-image-badge">${safeSceneText}</div>
-                </div>
-              </div>
-            </article>
-
-            <article class="detail-preview-module">
-              <div class="detail-preview-module-header">
-                <span class="detail-preview-module-index">Module 03</span>
-                <span class="detail-preview-module-label">Material / \u7ec6\u8282\u4e0e\u6750\u8d28</span>
-              </div>
-              <div class="detail-preview-two-col">
-                <div class="detail-preview-image-wrap">
-                  <img src="${heroImage}" alt="\u6750\u8d28\u7ec6\u8282\u9884\u89c8">
-                  <div class="detail-preview-image-badge">\u6750\u8d28\u8fd1\u666f / \u5c40\u90e8\u653e\u5927</div>
-                </div>
-                <div class="detail-preview-section-copy">
-                  <h3>\u6750\u8d28\u7ec6\u8282\u5f3a\u5316</h3>
-                  <p>\u8fd9\u91cc\u6a21\u62df\u9762\u6599\u3001\u505a\u5de5\u3001\u7ed3\u6784\u6216\u5305\u88c5\u7b49\u8fd1\u666f\u4fe1\u606f\uff0c\u7528\u6765\u652f\u6491\u4e3b\u5356\u70b9\uff0c\u51cf\u5c11\u201c\u53ea\u6709\u4e00\u53e5\u6587\u6848\u6ca1\u6709\u8bc1\u636e\u201d\u7684\u5ec9\u4ef7\u611f\u3002</p>
-                  <div class="detail-preview-tags">
-                    <span>\u5c40\u90e8\u7279\u5199</span>
-                    <span>\u5de5\u827a\u8bf4\u660e</span>
-                    <span>\u7ec6\u8282\u53ef\u4fe1\u5ea6</span>
-                  </div>
-                </div>
-              </div>
-            </article>
-
-            <article class="detail-preview-module">
-              <div class="detail-preview-module-header">
-                <span class="detail-preview-module-index">Module 04</span>
-                <span class="detail-preview-module-label">Specs / \u5c3a\u7801\u4e0e\u4fe1\u606f</span>
-              </div>
-              <div class="detail-preview-two-col">
-                <div class="detail-preview-section-copy">
-                  <h3>\u5c3a\u7801\u4e0e\u8d2d\u4e70\u4fe1\u606f</h3>
-                  <p>\u628a\u5e73\u53f0\u5e38\u89c1\u7684\u5c3a\u7801\u3001\u9002\u7528\u4eba\u7fa4\u548c\u8d2d\u4e70\u63d0\u793a\u62c6\u6210\u6e05\u6670\u4fe1\u606f\u5361\uff0c\u4fdd\u8bc1\u8be6\u60c5\u9875\u5728\u201c\u597d\u770b\u201d\u4e4b\u5916\u4e5f\u8db3\u591f\u5b9e\u7528\u3002</p>
-                  <div class="detail-preview-spec-grid">
-                    <div class="detail-preview-spec-card">
-                      <strong>\u8be6\u60c5\u9875\u5c3a\u5bf8</strong>
-                      <span>${safeSizeText}</span>
-                    </div>
-                    <div class="detail-preview-spec-card">
-                      <strong>\u76ee\u6807\u4eba\u7fa4</strong>
-                      <span>${safeAudienceText}</span>
-                    </div>
-                    <div class="detail-preview-spec-card">
-                      <strong>\u6295\u653e\u5efa\u8bae</strong>
-                      <span>\u9002\u5408\u9996\u5c4f\u786e\u8ba4\u540e\u7ee7\u7eed\u6269\u5c55\u6574\u5957\u8be6\u60c5\u9875\u6a21\u5757</span>
-                    </div>
-                  </div>
-                </div>
-                <div class="detail-preview-plan">
-                  <strong>\u4fe1\u606f\u6a21\u5757\u5efa\u8bae</strong>
-                  <div class="detail-preview-list">
-                    <div class="detail-preview-list-item">\u7edf\u4e00\u5c3a\u7801\u3001\u5356\u70b9\u3001\u4f7f\u7528\u63d0\u9192\u7684\u89c6\u89c9\u6837\u5f0f\uff0c\u964d\u4f4e\u9605\u8bfb\u8d1f\u62c5\u3002</div>
-                    <div class="detail-preview-list-item">\u89c4\u683c\u6a21\u5757\u9002\u5408\u9760\u8fd1\u6750\u8d28\u533a\uff0c\u4fbf\u4e8e\u7528\u6237\u8fde\u7eed\u5224\u65ad\u662f\u5426\u9002\u5408\u8d2d\u4e70\u3002</div>
-                    <div class="detail-preview-list-item">${safeExtraLine}</div>
-                  </div>
-                </div>
-              </div>
-            </article>
-
-            <article class="detail-preview-module">
-              <div class="detail-preview-module-header">
-                <span class="detail-preview-module-index">Module 05</span>
-                <span class="detail-preview-module-label">Scenes / \u4f7f\u7528\u573a\u666f</span>
-              </div>
-              <div class="detail-preview-two-col">
-                <div class="detail-preview-section-copy">
-                  <h3>\u4f7f\u7528\u573a\u666f\u5ef6\u5c55</h3>
-                  <p>\u901a\u8fc7\u573a\u666f\u6a21\u5757\u544a\u8bc9\u4e70\u5bb6\u201c\u8fd9\u4ef6\u5546\u54c1\u9002\u5408\u5728\u4ec0\u4e48\u60c5\u5883\u4e0b\u4f7f\u7528\u201d\uff0c\u5e2e\u52a9\u5c0f\u5356\u5bb6\u628a\u767d\u5e95\u56fe\u5ef6\u5c55\u6210\u66f4\u5b8c\u6574\u7684\u8f6c\u5316\u53d9\u4e8b\u3002</p>
-                  <div class="detail-preview-tags">
-                    <span>${safeSceneText}</span>
-                    <span>\u5e73\u53f0\u6d4f\u89c8\u53cb\u597d</span>
-                    <span>\u53ef\u7ee7\u7eed\u51fa\u6a2a\u7ad6\u7248</span>
-                  </div>
-                </div>
-                <div class="detail-preview-scene-stack">${sceneCardsHtml}</div>
-              </div>
-            </article>
-
-            <article class="detail-preview-module">
-              <div class="detail-preview-module-header">
-                <span class="detail-preview-module-index">Module 06</span>
-                <span class="detail-preview-module-label">Proof / \u5bf9\u6bd4\u4e0e\u4fe1\u4efb</span>
-              </div>
-              <div class="detail-preview-two-col">
-                <div class="detail-preview-proof-grid">${proofCardsHtml}</div>
-                <div class="detail-preview-section-copy">
-                  <h3>\u8865\u5145\u8f6c\u5316\u8bc1\u636e</h3>
-                  <p>\u8fd9\u4e00\u5c4f\u9884\u7559\u7ed9\u5bf9\u6bd4\u3001\u53c2\u6570\u8bc1\u636e\u3001\u4e70\u5bb6\u7591\u95ee\u56de\u5e94\u6216\u5e73\u53f0\u4f18\u52bf\u8bf4\u660e\uff0c\u7528\u6765\u8865\u8db3\u4e0b\u5355\u524d\u7684\u6700\u540e\u4e00\u6b65\u8bf4\u670d\u529b\u3002</p>
-                  <div class="detail-preview-tags">
-                    <span>\u5bf9\u6bd4\u8bf4\u660e</span>
-                    <span>\u5e73\u53f0\u4fe1\u4efb\u611f</span>
-                    <span>\u51cf\u5c11\u53cd\u590d\u6c9f\u901a</span>
-                  </div>
-                </div>
-              </div>
-            </article>
-
-            <article class="detail-preview-module">
-              <div class="detail-preview-module-header">
-                <span class="detail-preview-module-index">Module 07</span>
-                <span class="detail-preview-module-label">CTA / \u6536\u53e3\u6a21\u5757</span>
-              </div>
-              <div class="detail-preview-cta">
-                <div class="detail-preview-cta-copy">
-                  <h3>\u9996\u56fe\u786e\u8ba4\u901a\u8fc7\u540e\uff0c\u5373\u53ef\u7ee7\u7eed\u751f\u6210\u6574\u5957\u8be6\u60c5\u9875</h3>
-                  <p>\u5f53\u524d\u7ed3\u679c\u533a\u5df2\u7ecf\u4ece\u63d0\u6848\u5361\u7247\u5347\u7ea7\u4e3a\u957f\u56fe\u7ed3\u6784\u9884\u89c8\uff0c\u66f4\u9002\u5408\u62ff\u53bb\u8ddf\u5ba2\u6237\u6216\u8fd0\u8425\u540c\u4e8b\u786e\u8ba4\u6a21\u5757\u5b8c\u6574\u5ea6\u4e0e\u8f6c\u5316\u903b\u8f91\u3002</p>
-                  <div class="detail-preview-tags">
-                    <span>\u5148\u786e\u8ba4\u65b9\u5411</span>
-                    <span>\u518d\u6279\u91cf\u51fa\u56fe</span>
-                    <span>\u66f4\u8d34\u8fd1\u771f\u5b9e\u7535\u5546\u6d41\u7a0b</span>
-                  </div>
-                </div>
-                <div class="detail-preview-cta-stat">
-                  <div>
-                    <strong>\u5f53\u524d\u65b9\u6848\u57fa\u7ebf</strong>
-                    <span>${safeSourceText}</span>
-                  </div>
-                  <div>
-                    <strong>\u5efa\u8bae\u4e0b\u4e00\u6b65</strong>
-                    <span>\u8fdb\u5165\u9996\u56fe\u786e\u8ba4\u540e\uff0c\u7ee7\u7eed\u751f\u6210\u5356\u70b9\u56fe\u3001\u5c3a\u7801\u56fe\u3001\u573a\u666f\u56fe\u548c\u6536\u53e3 CTA\u3002</span>
-                  </div>
-                </div>
-              </div>
-            </article>
-          </section>
-        </div>
-      `;
-
-      const nextStepItems = resultZone.querySelectorAll(".detail-preview-plan .detail-preview-list-item");
-      if (nextStepItems[2]) {
-        nextStepItems[2].textContent = "如果这张首图通过，就先把这个方向当作后续详情页的基线。具体模块名称和提示区，等你给出更准确的说法后再补。";
-      }
-
-      currentResultUrl = heroImage || "";
-      resultStatus.textContent = "\u8be6\u60c5\u9875\u65b9\u6848\u5df2\u751f\u6210";
-      if (download) download.disabled = false;
-      updateResultActions();
-    }
-
     function setDetailHeroResult(imageUrl, promptText = "") {
       clearDetailPreviewUrls();
       currentResultKind = "detail";
@@ -7131,8 +6710,7 @@
         .map((item) => `<span>${escapeHtml(item)}</span>`)
         .join("") || "<span>电商首图</span><span>商品主体清晰</span><span>后续可延展</span>";
 
-      resultPanel.classList.add("show");
-      resultZone.innerHTML = `
+      const html = `
         <div class="detail-preview-stage">
           <div class="detail-preview-summary">
             <section class="detail-preview-card detail-preview-brief">
@@ -7237,6 +6815,7 @@
 
       setStoredResultView("detail", html, "首图已生成", { show: true });
       if (download) download.disabled = false;
+      bindDetailHeroActions();
       rememberCurrentResultView("detail");
       updateResultActions();
     }
@@ -7255,48 +6834,14 @@
         statusEl.classList.add("approved");
         chipStatusEl.textContent = "可继续扩展详情页";
         copyEl.textContent = "这张首图已经通过，可以把它作为后续详情页内容的第一屏基线。";
-        resultStatus.textContent = "首图方向已确认";
-        rememberCurrentResultView("detail");
-        return;
-      }
-
-      if (state === "revise") {
-        statusEl.textContent = "待回到摘要";
-        statusEl.classList.add("revise");
-        chipStatusEl.textContent = "建议先回摘要微调";
-        copyEl.textContent = "这张图先不要继续往后扩。建议回到第 5 步摘要，把首图方向、卖点或风格再收一版，然后重新生成首图。";
-        resultStatus.textContent = "首图待微调";
-        rememberCurrentResultView("detail");
-        return;
-      }
-
-      statusEl.textContent = "待确认";
-      chipStatusEl.textContent = "待确认是否继续";
-      copyEl.textContent = "如果这张首图已经能作为后续详情页内容的第一屏基线，就继续后面的阶段；如果还不够稳，可以直接重做，或者回到摘要阶段先微调方案。";
-      resultStatus.textContent = "首图已生成";
-      rememberCurrentResultView("detail");
-    }
-
-    function setDetailHeroApprovalState(state) {
-      currentDetailHeroApproval = state;
-      const statusEl = document.getElementById("detail-hero-status");
-      const copyEl = document.getElementById("detail-hero-copy");
-      const chipStatusEl = document.getElementById("detail-hero-chip-status");
-      const planner = document.getElementById("detail-module-planner");
-      if (!statusEl || !copyEl || !chipStatusEl) return;
-
-      statusEl.classList.remove("approved", "revise");
-
-      if (state === "approved") {
-        statusEl.textContent = "已确认，可以继续";
-        statusEl.classList.add("approved");
-        chipStatusEl.textContent = "可继续规划详情页";
-        copyEl.textContent = "这张首图已经通过，可以先把它当作后续详情页第一屏的基线。下面先确认本次详情页需要生成哪些板块。";
+        if (!currentDetailModulePlan) {
+          currentDetailModulePlan = buildDetailModulePlan(currentDetailAnalysis || {});
+        }
         let activePlanner = planner;
         if (!activePlanner) {
           const plannerHost = document.querySelector(".detail-preview-module:last-child");
           if (plannerHost) {
-            plannerHost.insertAdjacentHTML("beforeend", '<div class="detail-module-planner" id="detail-module-planner"></div>');
+            plannerHost.insertAdjacentHTML("beforeend", '<div class="detail-module-planner show" id="detail-module-planner"></div>');
             activePlanner = document.getElementById("detail-module-planner");
           }
         }
@@ -7305,6 +6850,7 @@
           updateDetailModulePlanner();
         }
         resultStatus.textContent = "首图方向已确认";
+        rememberCurrentResultView("detail");
         return;
       }
 
@@ -7316,6 +6862,7 @@
         planner?.classList.remove("show");
         clearDetailModuleWorkbench();
         resultStatus.textContent = "首图待微调";
+        rememberCurrentResultView("detail");
         return;
       }
 
@@ -7325,6 +6872,7 @@
       planner?.classList.remove("show");
       clearDetailModuleWorkbench();
       resultStatus.textContent = "首图已生成";
+      rememberCurrentResultView("detail");
     }
 
     function bindDetailHeroActions() {
@@ -7381,71 +6929,6 @@
       }
     }
 
-    async function handleDetailModuleStartLegacy() {
-      if (isGenerating) return;
-
-      if (!currentDetailAnalysis) {
-        showToast("请先完成第 5 步方案摘要");
-        return;
-      }
-
-      if (currentDetailHeroApproval !== "approved") {
-        showToast("请先确认第 6 步首图通过，再进入详情页板块工作台");
-        return;
-      }
-
-      if (!currentDetailModulePlan) {
-        currentDetailModulePlan = buildDetailModulePlan(currentDetailAnalysis || {});
-      }
-
-      const selectedModules = getSelectedDetailModules();
-      if (!selectedModules.length) {
-        showToast("请先勾选本次要进入生成的详情页板块");
-        return;
-      }
-
-      isGenerating = true;
-      btnDetailGenerate.disabled = true;
-      currentDetailModuleStageState = "loading";
-      currentDetailModuleWorkbench = null;
-      updateDetailModulePlanner();
-
-      try {
-        const data = await postJson("/api/prepare-detail-modules", {
-          productName: currentDetailAnalysis.productName || detailProductNameInput.value.trim(),
-          style: currentDetailStyle,
-          summary: currentDetailAnalysis,
-          selectedModules,
-          heroImageUrl: currentDetailHeroImageUrl,
-          sellingPoints: detailSellingPoints.value.trim(),
-          scenes: detailScenes.value.trim(),
-          audience: detailAudience.value.trim(),
-          extra: detailExtra.value.trim(),
-          readResult: getEffectiveDetailReadResult(),
-          hasProductImage: Boolean(activeDetailProductFile),
-          supplementalInfo: currentDetailModuleSupplementalInfo
-        });
-
-        currentDetailModuleWorkbench = data.result || null;
-        currentDetailSupplementalPanelOpen = Boolean(data.result?.needsInputCount);
-        currentDetailModuleStageState = "ready";
-        updateDetailModulePlanner();
-        showToast(data.result?.stageSummary || "已进入详情页板块工作台");
-      } catch (error) {
-        clearDetailModuleWorkbench();
-        updateDetailModulePlanner();
-        showToast(error.message || "进入详情页板块工作台失败");
-      } finally {
-        isGenerating = false;
-        btnDetailGenerate.disabled = false;
-        updateResultActions();
-      }
-    }
-
-    async function handleDetailModuleStart() {
-      await refreshDetailModuleWorkbench();
-    }
-
     async function handleDetailGenerate(options = {}) {
       if (isGenerating) return;
 
@@ -7455,27 +6938,29 @@
       const activeReadResult = getEffectiveDetailReadResult();
       const revisionFeedback = String(options.revisionFeedback || "").trim();
       const revisionTags = Array.isArray(options.revisionTags) ? options.revisionTags : [];
+
       if (!activeDetailProductFile) {
-        showToast("\u8bf7\u5148\u4e0a\u4f20\u5546\u54c1\u767d\u5e95\u56fe");
+        showToast("请先上传商品白底图");
         return;
       }
       if (!productName) {
-        showToast("\u8bf7\u5148\u586b\u5199\u4ea7\u54c1\u540d\u79f0");
+        showToast("请先填写产品名称");
         detailProductNameInput.focus();
         return;
       }
       if (!sellingPoints) {
-        showToast("\u8bf7\u5148\u586b\u5199\u6838\u5fc3\u5356\u70b9");
+        showToast("请先填写核心卖点");
         detailSellingPoints.focus();
         return;
       }
       if (targetUrl && !activeReadResult) {
-        showToast("当前链接还没重新读取，请先点“先读取链接”");
+        showToast("当前链接还没有重新读取，请先点“先读取链接”");
         detailUrl.focus();
         return;
       }
 
       isGenerating = true;
+      activeGenerationMode = "detail";
       btnDetailGenerate.disabled = true;
       setDetailResultLoading();
       resultPanel.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -7486,6 +6971,7 @@
         const referenceScreenshotBase64List = (await filesToDataUrls(activeDetailReferenceFiles))
           .map((dataUrl) => String(dataUrl || "").split(",")[1])
           .filter(Boolean);
+
         const data = await postJson("/api/analyze-detail-page", {
           productName,
           sellingPoints,
@@ -7500,14 +6986,15 @@
           revisionRound: revisionFeedback || revisionTags.length ? currentDetailRevisionRound + 1 : currentDetailRevisionRound,
           productColorHint,
           productImageBase64: productImageBase64 || undefined,
-          referenceScreenshotBase64List,
+          referenceScreenshotBase64List
         });
 
         setDetailAnalysisResult(data.result, data.meta || {});
         showToast(data.meta?.mode === "model" ? "方案摘要已由模型整理完成" : "方案摘要已基础整理完成");
       } catch (error) {
-        setResultError(error.message || "整理方案失败");
+        setResultError(error.message || "整理方案失败", "detail");
       } finally {
+        activeGenerationMode = "";
         isGenerating = false;
         btnDetailGenerate.disabled = false;
         updateResultActions();
@@ -7521,18 +7008,17 @@
         showToast("请先上传商品白底图");
         return;
       }
-
       if (!currentDetailAnalysis) {
         showToast("请先完成第 5 步方案摘要");
         return;
       }
-
       if (currentDetailApproval !== "approved") {
         showToast("请先确认第 5 步摘要通过，再进入首图生成");
         return;
       }
 
       isGenerating = true;
+      activeGenerationMode = "detail";
       btnDetailGenerate.disabled = true;
       setDetailHeroLoading();
       resultPanel.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -7549,7 +7035,7 @@
           emotionalHook: currentDetailAnalysis.emotionalHook || "",
           audienceInsight: currentDetailAnalysis.audienceInsight || "",
           visualKeywords: currentDetailAnalysis.visualKeywords || [],
-          productVisualSummary: currentDetailAnalysis.productVisualSummary || "",
+          productVisualSummary: currentDetailAnalysis.productVisualSummary || ""
         });
 
         const imgUrl = getFirstGeneratedImage(data);
@@ -7560,8 +7046,9 @@
         setDetailHeroResult(imgUrl, "");
         showToast("第 6 步首图生成完成");
       } catch (error) {
-        setResultError(error.message || "首图生成失败");
+        setResultError(error.message || "首图生成失败", "detail");
       } finally {
+        activeGenerationMode = "";
         isGenerating = false;
         btnDetailGenerate.disabled = false;
         updateResultActions();
@@ -7601,6 +7088,7 @@
       }
 
       isGenerating = true;
+      activeGenerationMode = "detail";
       if (btnDetailRead) btnDetailRead.disabled = true;
       btnDetailGenerate.disabled = true;
       setDetailReadLoading();
@@ -7608,17 +7096,17 @@
 
       try {
         const data = await postJson("/api/read-detail-page", { url: targetUrl });
-
         setDetailReadResult(data.result);
         showToast("参考详情页读取完成");
       } catch (error) {
         if (error?.payload?.result) {
           setDetailReadResult(error.payload.result);
         } else if (!currentDetailReadResult) {
-          setResultError(error.message || "读取详情页失败");
+          setResultError(error.message || "读取详情页失败", "detail");
         }
         showToast(error.message || "读取详情页失败");
       } finally {
+        activeGenerationMode = "";
         isGenerating = false;
         if (btnDetailRead) btnDetailRead.disabled = !canReadDetailLink();
         btnDetailGenerate.disabled = false;
@@ -7751,8 +7239,9 @@
       }
 
       isGenerating = true;
+      activeGenerationMode = "scene";
       btnGenerate.disabled = true;
-      setResultLoading();
+      setResultLoading("scene");
       resultPanel.scrollIntoView({ behavior: "smooth", block: "start" });
 
       const reader = new FileReader();
@@ -7771,17 +7260,20 @@
             throw new Error("接口未返回图片结果");
           }
 
+          currentSceneResultUrl = imgUrl;
           currentResultUrl = imgUrl;
-          setResultImage(imgUrl);
+          setResultImage(imgUrl, "scene");
           showToast("场景图生成完成");
         } catch (error) {
           setResultError(error.message || "生成失败");
         } finally {
-          isGenerating = false;
+        activeGenerationMode = "";
+        isGenerating = false;
           btnGenerate.disabled = false;
         }
       };
       reader.onerror = () => {
+        activeGenerationMode = "";
         isGenerating = false;
         btnGenerate.disabled = false;
         setResultError("读取图片失败，请重新上传。");
@@ -7851,18 +7343,6 @@
     btnGenerate.addEventListener("click", handleGenerate);
     btnDetailRead.addEventListener("click", handleDetailRead);
     btnDetailGenerate.addEventListener("click", handleDetailGenerate);
-    btnRegenerate.addEventListener("click", handleGenerate);
-    btnDownload.addEventListener("click", () => {
-      if (currentMode === "detail" && currentDetailHeroImageUrl) {
-        openDetailAssemblyBoard();
-        return;
-      }
-      if (!currentResultUrl) return;
-      const a = document.createElement("a");
-      a.href = currentResultUrl;
-      a.download = `scene_${Date.now()}.png`;
-      a.click();
-    });
 
     promptInput.addEventListener("keydown", (event) => {
       if (event.key === "Enter" && (event.metaKey || event.ctrlKey)) {
@@ -8021,14 +7501,8 @@
       input.addEventListener("input", updateResultActions);
       input.addEventListener("change", updateResultActions);
     });
-
-    const freshRegenerate = btnRegenerate.cloneNode(true);
-    btnRegenerate.replaceWith(freshRegenerate);
-    freshRegenerate.addEventListener("click", handleRegenerate);
-
-    const freshDownload = btnDownload.cloneNode(true);
-    btnDownload.replaceWith(freshDownload);
-    freshDownload.addEventListener("click", downloadCurrentResult);
+    btnRegenerate.addEventListener("click", handleRegenerate);
+    btnDownload.addEventListener("click", downloadCurrentResult);
 
     renderGallery();
     syncSettingsLabels();

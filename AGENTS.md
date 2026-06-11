@@ -32,6 +32,7 @@ When continuing this repo, read these files first:
 - `file:///D:/ECONY/public/index.html` may still be used for rough visual screenshots, but real API behavior only works through the local server route above
 - Main work is now inside **Step 7** detail-page module planning and single-module generation refinement
 - Current upgrade phase: **第 1 阶段 — 修通关键断路点** (see `docs/detail-page-upgrade-optimization-plan.md`)
+- Phase 1 should currently be treated as **in acceptance / regression-repair mode**, not fully closed; restore broken accepted flows first, then re-verify before reopening wider upgrades
 - The current highest-value surface is the independent `一键整理详情页` area plus stricter per-module reference inheritance
 
 ## Current workflow reality
@@ -68,6 +69,8 @@ Do not skip the module-planning layer and jump straight to full-batch detail-pag
 ## Current codebase cautions
 
 - `public/index.html` still contains legacy duplicate functions and historical layers; always confirm which definition is actually active before editing
+- During refactors or cleanup, do not change already accepted and working flows unless the change is strictly necessary to fix the current bug; prefer minimal targeted patches over broad rewrites
+- When fixing regressions, prefer restoring the last accepted behavior first; do not combine regression repair with opportunistic Phase 2+ cleanup
 - The root app is the active product surface; do not assume `ecom-ai-studio/` is the current target unless the user explicitly redirects work there
 - The local worktree may contain unrelated untracked files; do not clean them up unless the user asks
 - When staging or committing, do not accidentally include unrelated untracked files such as old subdirectories or temporary images
@@ -83,6 +86,7 @@ Do not skip the module-planning layer and jump straight to full-batch detail-pag
 - Module text handling supports: auto text, manual text, pure image / no text, with position hint, user text, and note/override
 - Supplemental fields support AI one-click grounded suggestion generation via `/api/suggest-detail-module-field`
 - `一键整理详情页` has a first page-level stacked preview; still needs polish
+- Recent regression repairs restored the Step 7 start entry and reconnected the `统一导出详情页` button so the export area can open even when only the hero baseline exists
 - Staged upgrade governance document exists: `docs/detail-page-upgrade-optimization-plan.md` with 7 phases
 
 ## Current upgrade roadmap
@@ -107,3 +111,15 @@ Follow `docs/detail-page-upgrade-optimization-plan.md` phase by phase. **Do not 
 4. 主动作按钮统一紫色风格
 5. `一键整理详情页` 改名为 `统一导出详情页`，不要求全部模块先生成完成
 6. 验收通过后才能进入第 2 阶段
+
+## Current acceptance focus
+
+- Verify through `http://localhost:3000/`, not static file preview
+- Re-check the exact accepted chain:
+  1. summary confirm
+  2. hero generate
+  3. hero approve
+  4. Step 7 planner start
+  5. workbench open
+  6. `统一导出详情页` opens even if only hero exists
+- If any accepted chain breaks, fix only that broken path first before resuming broader upgrade work

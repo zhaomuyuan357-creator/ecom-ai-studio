@@ -27,83 +27,16 @@ Start the next conversation by reading:
 - Step 6 hero generation is live and accepted as the only first-generation image step
 - After hero approval, the flow now enters a real Step 7 planning/workbench layer instead of jumping straight to full detail-page batch generation
 
-## What Was Finished In Recent Rounds
+## Latest Checkpoint
 
-- Added post-hero module planning UI
-  - required modules and optional modules are separated
-  - required modules still allow manual toggle
+Recent work returned from broader cleanup to minimal regression repair because accepted flows were accidentally impacted during refactoring.
 
-- Added reference-image classification workflow
-  - top-level detail reference upload supports multiple images
-  - backend endpoint: `/api/classify-detail-reference-assets`
-  - classification now includes:
-    - field mapping
-    - compatibility risk
-    - inheritance mode
-    - warning
-    - text-area metadata
-  - UI supports manual reassignment by chip/button instead of native select
+Latest repaired paths:
 
-- Added single-module supplemental workflow
-  - module fields support text supplement
-  - module fields support image upload and auto-recognition
-  - module fields support extra reference-image upload
-  - global reference images are inherited only into matching module fields, not all modules
-  - supplemental fields now support AI one-click grounded suggestion generation through `/api/suggest-detail-module-field`
-
-- Added module workbench generation flow
-  - single-module generation can now run for:
-    - `selling-points`
-    - `details`
-    - `params`
-    - `scenes`
-    - `variants`
-    - `trust`
-    - `after-sales`
-    - `demo`
-    - `comparison`
-    - `size-guide`
-    - `bundle`
-    - `reviews`
-
-- Tightened generation normalization rules
-  - user facts define content truth
-  - reference images define layout/composition priority
-  - approved hero image defines style baseline
-  - AI is only allowed controlled extension inside those boundaries
-  - risky or incompatible references can now be filtered before downstream generation
-
-- Added module text handling controls
-  - modules can now choose:
-    - auto text
-    - manual text
-    - pure image / no text
-  - text settings include:
-    - position hint
-    - user text
-    - note / override
-  - backend prompt now consumes text overlay mode, module visual focus, copy angle, and user note
-
-- Removed customer-facing prompt leakage
-  - hero and module results no longer expose raw generation prompts
-
-- Improved `一键整理详情页`
-  - there is now a first page-level stacked preview area
-  - hero and generated modules can be viewed in detail-page order
-  - modules can still be downloaded individually
-
-- Added staged upgrade governance
-  - a new document now exists:
-    - `docs/detail-page-upgrade-optimization-plan.md`
-  - this document reorganizes the project into 7 upgrade phases:
-    - critical broken links
-    - state/layout stability
-    - visual-style strengthening
-    - module quality strengthening
-    - smart prompt optimization
-    - boss mode
-    - model decoupling
-  - from now on, upgrade work should follow that phase order and require acceptance between phases
+- restored the Step 7 planner start click path
+- repaired the detail hero stored-result rendering path
+- reconnected the `统一导出详情页` button inside the Step 7 workbench
+- confirmed `统一导出详情页` is intended to open even when only the hero baseline exists
 
 ## Important Current Reality
 
@@ -124,34 +57,50 @@ The current product direction is:
 5. generate modules one by one
 6. assemble them into a dedicated detail-page arrangement page
 
+## Current Rules
+
+- user facts define content truth
+- reference images define layout and composition
+- approved hero image defines style baseline
+- AI is only allowed controlled extension inside those boundaries
+- when fixing regressions, restore the last accepted behavior first
+- do not mix regression repair with wider Phase 2+ cleanup
+- during refactors, do not move accepted working logic unless it is strictly necessary to fix the current bug
+
 ## Known Current Risks
 
 - `public/index.html` still contains legacy duplicate function layers; later definitions often override earlier ones
-- Some user-visible issues may still come from stale local server state
-- The arrangement page is improved but still not fully polished
-- Text-area detection and module visual-focus obedience still need real browser validation
+- some user-visible issues may still come from stale local server state
+- the arrangement page is improved but still not fully polished
+- text-area detection and module visual-focus obedience still need real browser validation
+- Phase 1 should be treated as in acceptance / regression-repair mode until the accepted browser chain is re-verified end to end
 
 ## Recommended Next Step
 
 The next highest-value product move is:
 
-1. start from stage 1 in `docs/detail-page-upgrade-optimization-plan.md`
+1. stay in stage 1 of `docs/detail-page-upgrade-optimization-plan.md`
 2. repair all critical broken links before moving on
-3. then verify in browser that module generation follows module visual focus, text mode, and reference structure
-4. only after that continue the next upgrade phase
+3. verify in browser this accepted chain:
+   - summary confirm
+   - hero generate
+   - hero approve
+   - Step 7 planner start
+   - `统一导出详情页` opens even with hero-only baseline
+4. then verify module generation follows module visual focus, text mode, and reference structure
+5. only after that continue the next upgrade phase
 
 ## Suggested Resume Prompt
 
 ```text
-先读 AGENTS.md、CONTEXT.md、PROGRESS.md、docs/current-handoff.md、docs/detail-page-generation-step-plan.md、docs/detail-page-generation-step-05-confirmation-panel.md、docs/detail-page-generation-step-06-hero-generation.md，然后继续当前项目。
-
-当前重点：
-1. 基于 D:\ECONY 根目录继续，不要切回旧的 ecom-ai-studio 子目录
-2. 详情页流程已经进入 Step 7：模块规划 + 参考图归类 + 单模块正式生成
+先读 AGENTS.md、CONTEXT.md、PROGRESS.md、docs/current-handoff.md、docs/detail-page-upgrade-optimization-plan.md、docs/detail-page-generation-step-plan.md、docs/detail-page-generation-step-05-confirmation-panel.md、docs/detail-page-generation-step-06-hero-generation.md，然后继续当前项目。
+当前基线：
+1. 活跃根目录是 D:\ECONY，不是旧的 ecom-ai-studio 子目录
+2. 当前流程已经进入 Step 7：模块规划 + 参考图归类 + 单模块正式生成
 3. 不要跳过当前规划层直接做整套批量详情页
-4. 继续强化“用户资料定事实、参考图定版式、首图定基调、AI 受控发挥”这套规则
-5. 先阅读 docs/detail-page-upgrade-optimization-plan.md，并按阶段顺序推进
-6. 当前必须从第 1 阶段开始：先修断路，再做后面的质量和升级
-7. 优先继续完善“一键整理详情页”的独立整理页
-8. 继续验证和增强模块对参考图结构、文字区、视觉重点的遵循
+4. 当前规则是：用户资料定事实、参考图定版式、首图定基调、AI 受控发挥
+5. 先遵循 docs/detail-page-upgrade-optimization-plan.md 的阶段顺序推进
+6. 当前仍按第 1 阶段处理，先修断路并做验收，不要把 Phase 2 以上的大整理混进来
+7. 当前要优先回归验证这条链路：摘要确认 → 首图生成 → 首图确认 → Step 7 工作台 → 统一导出详情页
+8. 重构时非必要不动原有以及跑通的逻辑，优先做最小定点修补
 ```

@@ -193,6 +193,26 @@ What is still rough:
 
 ---
 
+## Latest Checkpoint
+
+Recent work shifted from broad Phase 2 cleanup back to minimal regression repair because accepted flows were accidentally impacted during refactoring.
+
+What was repaired in the latest checkpoint:
+
+- restored the Step 7 planner start entry by reconnecting the active click path to `refreshDetailModuleWorkbench()`
+- fixed the detail hero result rendering path so the stored result view no longer crashes on an undefined `html`
+- reconnected the `统一导出详情页` button inside the Step 7 workbench
+- confirmed the export-area open path is intended to work even when only the approved hero baseline exists
+- added a stronger project rule in `AGENTS.md`: do not move already accepted working flows during cleanup unless it is strictly necessary to fix the current bug
+
+What this means operationally:
+
+- Phase 1 should currently be treated as still under acceptance verification, not cleanly closed
+- the immediate priority is restoring and re-verifying accepted broken links, not widening the refactor
+- any next chat should preserve this minimal-patch discipline until the browser-verified chain is stable again
+
+---
+
 ## Important Files
 
 - `public/index.html`
@@ -225,6 +245,12 @@ Start following `docs/detail-page-upgrade-optimization-plan.md`, beginning from 
 
 - fix critical broken links
 - confirm every required button and module generation entry is really connected
+- re-verify this exact accepted chain in the browser:
+  - summary confirm
+  - hero generate
+  - hero approve
+  - Step 7 planner start
+  - `统一导出详情页` open with hero-only baseline
 
 ### Priority 2
 
