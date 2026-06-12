@@ -3850,6 +3850,9 @@
     let activeDetailProductFile = null;
     let activeDetailReferenceFiles = [];
     let currentResultUrl = "";
+    let currentSceneResultUrl = "";
+    let currentSceneResultStatus = "idle";
+    let currentSceneResultError = "";
     let isGenerating = false;
     let currentDetailItem = null;
     let currentMode = "scene";
@@ -7789,6 +7792,215 @@
         isGenerating = false;
         btnGenerate.disabled = false;
         setResultError("读取图片失败，请重新上传。");
+      };
+      reader.readAsDataURL(activeFile);
+    }
+
+    function restoreSceneResult() {
+      if (currentSceneResultStatus === "loading") {
+        setResultLoading();
+        return;
+      }
+      if (currentSceneResultStatus === "error") {
+        setResultError(currentSceneResultError || "生成失败");
+        return;
+      }
+      if (currentSceneResultUrl) {
+        setResultImage(currentSceneResultUrl);
+        return;
+      }
+      setResultPlaceholder();
+    }
+
+    function updateResultActions() {
+      const { download, regenerate } = getActionButtons();
+      if (!download || !regenerate) return;
+      const actionBar = resultPanel.querySelector(".result-actions");
+      if (currentMode === "scene") {
+        if (actionBar) actionBar.style.display = "flex";
+        download.textContent = "下载图片";
+        regenerate.textContent = "重新生成";
+        download.disabled = isGenerating || !currentSceneResultUrl;
+        if (!isGenerating) regenerate.disabled = !canRegenerateCurrentMode();
+      } else if (currentDetailHeroImageUrl) {
+        if (actionBar) actionBar.style.display = "none";
+        download.textContent = "一键整理详情页";
+        regenerate.textContent = "重新生成首图";
+        if (!isGenerating) regenerate.disabled = !canGenerateDetailHero();
+        download.disabled = false;
+      } else if (canGenerateDetailHero()) {
+        if (actionBar) actionBar.style.display = "flex";
+        download.textContent = "导出摘要";
+        regenerate.textContent = "开始生成首图";
+        if (!isGenerating) regenerate.disabled = false;
+        download.disabled = true;
+      } else {
+        if (actionBar) actionBar.style.display = "flex";
+        download.textContent = "导出摘要";
+        regenerate.textContent = "重新整理摘要";
+        if (!isGenerating) regenerate.disabled = !canRegenerateCurrentMode();
+        download.disabled = true;
+      }
+      if (btnDetailRead) btnDetailRead.disabled = isGenerating || !canReadDetailLink();
+    }
+
+    function setMode(mode) {
+      currentMode = mode;
+      const sceneActive = mode === "scene";
+      sceneModeBtn.classList.toggle("active", sceneActive);
+      detailModeBtn.classList.toggle("active", !sceneActive);
+      scenePanel.classList.toggle("active", sceneActive);
+      detailPanel.classList.toggle("active", !sceneActive);
+      updateResultActions();
+
+      if (!resultPanel.classList.contains("show")) {
+        setResultPlaceholder();
+        return;
+      }
+
+      if (sceneActive) {
+        restoreSceneResult();
+        return;
+      }
+
+      if (isGenerating && currentResultKind === "scene") {
+        return;
+      }
+
+      if (currentResultKind !== "detail") {
+        setResultPlaceholder();
+      }
+    }
+
+    function setResultLoading() {
+      currentResultKind = "scene";
+      currentSceneResultStatus = "loading";
+      currentSceneResultError = "";
+      resultPanel.classList.add("show");
+      resultZone.innerHTML = `
+        <div class="result-loading">
+          <div class="spinner"></div>
+          <strong>正在生成场景图</strong>
+          <p>系统正在将商品主体融入你描述的场景，请稍等几秒。</p>
+        </div>
+      `;
+      resultStatus.textContent = "生成中";
+      btnDownload.disabled = true;
+      btnRegenerate.disabled = true;
+    }
+
+    function setResultError(message) {
+      currentResultKind = "scene";
+      currentSceneResultStatus = "error";
+      currentSceneResultError = message;
+      resultPanel.classList.add("show");
+      resultZone.innerHTML = `
+        <div class="result-error">
+          <strong>生成失败</strong>
+          <p>${message}</p>
+        </div>
+      `;
+      resultStatus.textContent = "生成失败";
+      btnDownload.disabled = true;
+      btnRegenerate.disabled = !activeFile;
+    }
+
+    function setResultImage(url) {
+      currentResultKind = "scene";
+      currentSceneResultStatus = "ready";
+      currentSceneResultError = "";
+      currentSceneResultUrl = url;
+      currentResultUrl = url;
+      resultPanel.classList.add("show");
+      resultZone.innerHTML = `<img class="result-image" src="${url}" alt="生成结果">`;
+      resultStatus.textContent = "已完成";
+      btnDownload.disabled = false;
+      btnRegenerate.disabled = false;
+    }
+
+    function downloadCurrentResult() {
+      const downloadUrl = currentMode === "scene"
+        ? currentSceneResultUrl
+        : (currentDetailHeroImageUrl || currentResultUrl);
+
+      if (!downloadUrl) {
+        showToast("当前没有可下载的结果");
+        return;
+      }
+
+      const filename = `${currentMode === "scene" ? "scene" : "detail-hero"}_${Date.now()}.png`;
+      downloadImageUrl(downloadUrl, filename);
+    }
+
+    async function handleGenerate() {
+      if (isGenerating) return;
+      const sceneDesc = promptInput.value.trim();
+
+      if (!activeFile) {
+        showToast("请先上传商品白底图");
+        return;
+      }
+      if (!sceneDesc) {
+        showToast("请先填写场景描述");
+        promptInput.focus();
+        return;
+      }
+
+      isGenerating = true;
+      btnGenerate.disabled = true;
+      setResultLoading();
+      resultPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+
+      const reader = new FileReader();
+      reader.onload = async (event) => {
+        try {
+          const base64 = String(event.target?.result || "").split(",")[1];
+          const data = await postJson("/api/generate-scene-image", {
+            imageBase64: base64,
+            sceneDesc
+          });
+
+          const imgUrl = getFirstGeneratedImage(data);
+          if (!imgUrl) {
+            throw new Error("接口未返回图片结果");
+          }
+
+          currentSceneResultUrl = imgUrl;
+          currentSceneResultStatus = "ready";
+          currentSceneResultError = "";
+          currentResultUrl = imgUrl;
+
+          if (currentMode === "scene") {
+            setResultImage(imgUrl);
+          } else {
+            updateResultActions();
+          }
+          showToast("场景图生成完成");
+        } catch (error) {
+          const message = error.message || "生成失败";
+          currentSceneResultStatus = "error";
+          currentSceneResultError = message;
+          if (currentMode === "scene") {
+            setResultError(message);
+          } else {
+            updateResultActions();
+          }
+        } finally {
+          isGenerating = false;
+          btnGenerate.disabled = false;
+          updateResultActions();
+        }
+      };
+      reader.onerror = () => {
+        const message = "读取图片失败，请重新上传。";
+        currentSceneResultStatus = "error";
+        currentSceneResultError = message;
+        isGenerating = false;
+        btnGenerate.disabled = false;
+        if (currentMode === "scene") {
+          setResultError(message);
+        }
+        updateResultActions();
       };
       reader.readAsDataURL(activeFile);
     }
