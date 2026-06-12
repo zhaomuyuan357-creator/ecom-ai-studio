@@ -488,6 +488,115 @@
       border-color: rgba(139, 92, 246, 0.2);
     }
 
+    .inline-select {
+      position: relative;
+    }
+
+    .inline-select-trigger {
+      width: 100%;
+      min-height: 48px;
+      padding: 0 44px 0 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(114, 92, 185, 0.12);
+      background: rgba(249, 247, 255, 0.94);
+      color: var(--text);
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      text-align: left;
+      transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+      position: relative;
+    }
+
+    .inline-select-trigger::after {
+      content: "▾";
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      pointer-events: none;
+    }
+
+    .inline-select.open .inline-select-trigger,
+    .inline-select-trigger:focus {
+      border-color: rgba(139, 92, 246, 0.24);
+      box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.08);
+      outline: none;
+    }
+
+    .inline-select-menu {
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 0;
+      right: 0;
+      z-index: 12;
+      padding: 8px;
+      border-radius: 18px;
+      border: 1px solid rgba(114, 92, 185, 0.14);
+      background: rgba(255, 255, 255, 0.98);
+      box-shadow: 0 22px 48px rgba(41, 27, 79, 0.14);
+      display: none;
+      gap: 6px;
+    }
+
+    .inline-select.open .inline-select-menu {
+      display: grid;
+    }
+
+    .inline-select-custom {
+      margin-top: 8px;
+      display: none;
+    }
+
+    .inline-select-custom.show {
+      display: block;
+    }
+
+    .inline-select-option {
+      min-height: 42px;
+      padding: 0 14px;
+      border: 0;
+      border-radius: 14px;
+      background: transparent;
+      color: var(--text);
+      font-size: 14px;
+      text-align: left;
+      display: flex;
+      align-items: center;
+    }
+
+    .inline-select-option:hover,
+    .inline-select-option.active {
+      background: rgba(139, 92, 246, 0.12);
+      color: var(--accent);
+    }
+
+    .detail-style-tools {
+      display: grid;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .detail-style-tool-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .detail-style-custom {
+      flex: 1 1 260px;
+    }
+
+    .detail-style-note {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
     .detail-actions {
       display: flex;
       align-items: center;
@@ -3519,11 +3628,20 @@
                   </div>
                   <div class="field-group">
                     <label for="detail-size">详情页尺寸</label>
-                    <select class="field-select" id="detail-size">
-                      <option value="790px">790px（淘宝默认）</option>
-                      <option value="1080px">1080px（抖音图文）</option>
-                      <option value="Custom">自定义</option>
-                    </select>
+                    <input id="detail-size" type="hidden" value="790px">
+                    <div class="inline-select" id="detail-size-select">
+                      <button class="inline-select-trigger" type="button" id="detail-size-trigger" aria-expanded="false">
+                        <span id="detail-size-label">790px（淘宝默认）</span>
+                      </button>
+                      <div class="inline-select-menu" id="detail-size-menu">
+                        <button class="inline-select-option active" type="button" data-detail-size="790px" data-detail-size-label="790px（淘宝默认）">790px（淘宝默认）</button>
+                        <button class="inline-select-option" type="button" data-detail-size="1080px" data-detail-size-label="1080px（抖音图文）">1080px（抖音图文）</button>
+                        <button class="inline-select-option" type="button" data-detail-size="Custom" data-detail-size-label="自定义">自定义</button>
+                      </div>
+                    </div>
+                    <div class="inline-select-custom" id="detail-size-custom-wrap">
+                      <input class="field-input" id="detail-size-custom" type="text" placeholder="例如：900px / 1200px">
+                    </div>
                   </div>
                 </div>
 
@@ -3550,6 +3668,13 @@
                     <button class="style-chip" type="button" data-style="简约清新">简约清新</button>
                     <button class="style-chip" type="button" data-style="电商高转化">电商高转化</button>
                     <button class="style-chip" type="button" data-style="节日营销感">节日营销感</button>
+                  </div>
+                  <div class="detail-style-tools">
+                    <div class="detail-style-tool-row">
+                      <input class="field-input detail-style-custom" id="detail-style-custom" type="text" placeholder="自定义风格，例如：轻奢克制、冷白极简、专业参数板风格">
+                      <button class="soft-chip" type="button" id="detail-style-ai-btn">AI 自动生成</button>
+                    </div>
+                    <div class="detail-style-note" id="detail-style-note">支持直接自定义风格；也可以先上传白底图和竞品/参考图，完成方案整理后让 AI 自动给出视觉风格建议。</div>
                   </div>
                 </div>
 
@@ -3842,7 +3967,16 @@
     const detailExtra = $("#detail-extra");
     const detailUrl = $("#detail-url");
     const detailSize = $("#detail-size");
+    const detailSizeSelect = $("#detail-size-select");
+    const detailSizeTrigger = $("#detail-size-trigger");
+    const detailSizeLabel = $("#detail-size-label");
+    const detailSizeMenu = $("#detail-size-menu");
+    const detailSizeCustomWrap = $("#detail-size-custom-wrap");
+    const detailSizeCustomInput = $("#detail-size-custom");
     const detailStyleRow = $("#detail-style-row");
+    const detailStyleCustomInput = $("#detail-style-custom");
+    const detailStyleAiBtn = $("#detail-style-ai-btn");
+    const detailStyleNote = $("#detail-style-note");
     const btnDetailRead = $("#btn-detail-read");
     const btnDetailGenerate = $("#btn-detail-generate");
 
@@ -4181,12 +4315,80 @@
         audience: detailAudience.value.trim(),
         extra: detailExtra.value.trim(),
         url: detailUrl.value.trim(),
-        size: detailSize.value
+        size: getEffectiveDetailSize()
       };
     }
 
     function canReadDetailLink() {
       return Boolean(detailUrl.value.trim());
+    }
+
+    function getEffectiveDetailStyle() {
+      const customStyle = String(detailStyleCustomInput?.value || "").trim();
+      return customStyle || String(currentDetailStyle || "").trim() || "电商高转化";
+    }
+
+    function getEffectiveDetailSize() {
+      const value = String(detailSize?.value || "790px").trim() || "790px";
+      if (value === "Custom") {
+        return String(detailSizeCustomInput?.value || "").trim() || "Custom";
+      }
+      return value;
+    }
+
+    function closeDetailSizeMenu() {
+      if (!detailSizeSelect || !detailSizeTrigger) return;
+      detailSizeSelect.classList.remove("open");
+      detailSizeTrigger.setAttribute("aria-expanded", "false");
+    }
+
+    function applyDetailSizeChoice(value, label) {
+      if (!detailSize) return;
+      detailSize.value = value;
+      if (detailSizeLabel) detailSizeLabel.textContent = label || value;
+      if (detailSizeCustomWrap) {
+        detailSizeCustomWrap.classList.toggle("show", value === "Custom");
+      }
+      if (detailSizeMenu) {
+        detailSizeMenu.querySelectorAll("[data-detail-size]").forEach((button) => {
+          button.classList.toggle("active", button.dataset.detailSize === value);
+        });
+      }
+      if (value !== "Custom" && detailSizeCustomInput) {
+        detailSizeCustomInput.value = "";
+      }
+      closeDetailSizeMenu();
+      updateResultActions();
+    }
+
+    function buildAutoDetailStyleSuggestion() {
+      const analysis = currentDetailAnalysis || {};
+      const keywordList = Array.isArray(analysis.visualKeywords) ? analysis.visualKeywords.filter(Boolean) : [];
+      const referenceList = Array.isArray(analysis.referenceTakeaways) ? analysis.referenceTakeaways.filter(Boolean) : [];
+      const sceneText = detailScenes.value.trim();
+      const audienceText = detailAudience.value.trim();
+      const visualSummary = String(analysis.productVisualSummary || "").trim();
+      const styleHints = [];
+
+      if (visualSummary) {
+        if (/黑|金属|镜面|哑光|高级|质感/.test(visualSummary)) styleHints.push("轻奢质感");
+        if (/浅色|白色|奶油|干净|留白/.test(visualSummary)) styleHints.push("简洁留白");
+      }
+
+      if (referenceList.length) {
+        if (referenceList.some((item) => /结构|排版|信息层级|表格|参数/.test(item))) styleHints.push("电商信息板式");
+        if (referenceList.some((item) => /氛围|高级|材质|干净/.test(item))) styleHints.push("克制高级感");
+      }
+
+      if (keywordList.length) {
+        styleHints.push(...keywordList.slice(0, 3));
+      }
+
+      if (sceneText) styleHints.push(`${sceneText.split(/[、/／,，]/)[0].trim() || sceneText}场景导向`);
+      if (audienceText) styleHints.push(`面向${audienceText}`);
+
+      const uniqueHints = [...new Set(styleHints.map((item) => String(item || "").trim()).filter(Boolean))].slice(0, 5);
+      return uniqueHints.length ? uniqueHints.join(" / ") : "主体清晰 / 电商高转化 / 参考图优先构图";
     }
 
     function getEffectiveDetailReadResult() {
@@ -5966,7 +6168,7 @@
       try {
         const data = await postJson("/api/prepare-detail-modules", {
           productName: currentDetailAnalysis.productName || detailProductNameInput.value.trim(),
-          style: currentDetailStyle,
+          style: getEffectiveDetailStyle(),
           summary: currentDetailAnalysis,
           selectedModules,
           heroImageUrl: currentDetailHeroImageUrl,
@@ -6102,7 +6304,7 @@
               coreSellingPoints: currentDetailAnalysis?.coreSellingPoints || [],
               scenes: detailScenes.value.trim(),
               audience: currentDetailAnalysis?.audienceInsight || "",
-              style: currentDetailStyle,
+              style: getEffectiveDetailStyle(),
               existingInfo: currentDetailModuleSupplementalInfo[fieldKey] || ""
             });
             const suggestedText = String(data?.result?.text || "").trim();
@@ -6519,7 +6721,7 @@
           moduleKey,
           productImageBase64,
           productName: currentDetailAnalysis.productName || detailProductNameInput.value.trim(),
-          style: currentDetailStyle,
+          style: getEffectiveDetailStyle(),
           scenes: detailScenes.value.trim(),
           summary: currentDetailAnalysis,
           supplementalInfo: currentDetailModuleSupplementalInfo,
@@ -6830,13 +7032,13 @@
       const heroImage = activeDetailProductFile
         ? buildDetailPreviewUrl(activeDetailProductFile)
         : previewImage;
-      const sizeText = payload.size || detailSize.value;
+      const sizeText = payload.size || getEffectiveDetailSize();
       const sceneText = payload.scenes || "\u65e5\u5e38\u8f6c\u5316\u573a\u666f";
       const audienceText = payload.audience || "\u7535\u5546\u76ee\u6807\u6d88\u8d39\u4eba\u7fa4";
       const sourceText = payload.url ? "\u5df2\u7ed3\u5408\u7ade\u54c1\u8be6\u60c5\u9875\u94fe\u63a5\u4e0e\u5546\u54c1\u56fe\u505a\u7ed3\u6784\u62c6\u89e3" : "\u5f53\u524d\u65b9\u6848\u57fa\u4e8e\u5546\u54c1\u56fe\u4e0e\u624b\u52a8\u5356\u70b9\u751f\u6210";
       const extraLine = payload.extra || "\u5efa\u8bae\u5148\u786e\u8ba4\u9996\u56fe\u98ce\u683c\uff0c\u518d\u7ee7\u7eed\u751f\u6210\u5356\u70b9\u6a21\u5757\u3001\u5c3a\u7801\u8868\u4e0e\u6574\u5957\u8be6\u60c5\u9875\u3002";
       const safeProductName = escapeHtml(productName);
-      const safeStyle = escapeHtml(currentDetailStyle);
+      const safeStyle = escapeHtml(getEffectiveDetailStyle());
       const safeSizeText = escapeHtml(sizeText);
       const safeSceneText = escapeHtml(sceneText);
       const safeAudienceText = escapeHtml(audienceText);
@@ -7101,7 +7303,7 @@
       const productName = escapeHtml(summary.productName || detailProductNameInput.value.trim() || "未命名商品");
       const heroHeadline = escapeHtml(summary.heroDirection?.headline || "首图方向已确认");
       const heroFocus = escapeHtml(summary.heroDirection?.visualFocus || "商品主体 + 第一卖点");
-      const styleText = escapeHtml(currentDetailStyle);
+      const styleText = escapeHtml(getEffectiveDetailStyle());
       const sellingPoints = splitDetailText(detailSellingPoints.value.trim(), ["核心卖点待补充"]).slice(0, 3);
       const heroPointsHtml = sellingPoints.map((point) => `<div>${escapeHtml(point)}</div>`).join("");
       const visualKeywords = (summary.visualKeywords || [])
@@ -7389,7 +7591,7 @@
       try {
         const data = await postJson("/api/prepare-detail-modules", {
           productName: currentDetailAnalysis.productName || detailProductNameInput.value.trim(),
-          style: currentDetailStyle,
+          style: getEffectiveDetailStyle(),
           summary: currentDetailAnalysis,
           selectedModules,
           heroImageUrl: currentDetailHeroImageUrl,
@@ -7450,7 +7652,7 @@
           moduleKey,
           productImageBase64,
           productName: currentDetailAnalysis.productName || detailProductNameInput.value.trim(),
-          style: currentDetailStyle,
+          style: getEffectiveDetailStyle(),
           scenes: detailScenes.value.trim(),
           summary: currentDetailAnalysis,
           supplementalInfo: currentDetailModuleSupplementalInfo
@@ -7537,7 +7739,7 @@
           scenes: detailScenes.value.trim(),
           audience: detailAudience.value.trim(),
           extra: detailExtra.value.trim(),
-          style: currentDetailStyle,
+          style: getEffectiveDetailStyle(),
           url: targetUrl,
           readResult: activeReadResult,
           revisionFeedback,
@@ -7588,7 +7790,7 @@
         const data = await postJson("/api/generate-detail-hero", {
           productImageBase64,
           productName: currentDetailAnalysis.productName || detailProductNameInput.value.trim(),
-          style: currentDetailStyle,
+          style: getEffectiveDetailStyle(),
           imagePromptDraft: currentDetailAnalysis.imagePromptDraft || "",
           heroDirection: currentDetailAnalysis.heroDirection || {},
           emotionalHook: currentDetailAnalysis.emotionalHook || "",
@@ -8202,8 +8404,75 @@
       currentDetailStyle = chip.dataset.style;
       $$("#detail-style-row .style-chip").forEach((el) => el.classList.remove("active"));
       chip.classList.add("active");
+      if (detailStyleCustomInput) detailStyleCustomInput.value = "";
+      if (detailStyleNote) detailStyleNote.textContent = `当前使用预设风格：${currentDetailStyle}`;
       updateResultActions();
     });
+
+    if (detailStyleCustomInput) {
+      detailStyleCustomInput.addEventListener("input", () => {
+        const customStyle = detailStyleCustomInput.value.trim();
+        if (customStyle) {
+          $$("#detail-style-row .style-chip").forEach((el) => el.classList.remove("active"));
+          if (detailStyleNote) detailStyleNote.textContent = "当前使用自定义风格，后续首图和详情模块都会按这段描述收口。";
+        } else {
+          const activeChip = detailStyleRow.querySelector(`[data-style="${currentDetailStyle}"]`) || detailStyleRow.querySelector("[data-style]");
+          if (activeChip) activeChip.classList.add("active");
+          if (detailStyleNote) detailStyleNote.textContent = `当前使用预设风格：${currentDetailStyle}`;
+        }
+        updateResultActions();
+      });
+    }
+
+    if (detailStyleAiBtn) {
+      detailStyleAiBtn.addEventListener("click", () => {
+        if (!activeDetailProductFile) {
+          showToast("请先上传商品白底图");
+          return;
+        }
+
+        if (!currentDetailAnalysis) {
+          showToast("请先点击“整理方案摘要”，让 AI 先分析白底图和竞品/参考图，再自动生成风格建议");
+          return;
+        }
+
+        const aiStyle = buildAutoDetailStyleSuggestion();
+        if (detailStyleCustomInput) detailStyleCustomInput.value = aiStyle;
+        $$("#detail-style-row .style-chip").forEach((el) => el.classList.remove("active"));
+        if (detailStyleNote) detailStyleNote.textContent = "AI 已根据当前商品图、竞品/参考图分析结果生成风格建议，你可以直接用，也可以继续微调。";
+        showToast("AI 风格建议已生成");
+        updateResultActions();
+      });
+    }
+
+    if (detailSizeTrigger) {
+      detailSizeTrigger.addEventListener("click", (event) => {
+        event.stopPropagation();
+        const willOpen = !detailSizeSelect.classList.contains("open");
+        closeDetailSizeMenu();
+        if (willOpen) {
+          detailSizeSelect.classList.add("open");
+          detailSizeTrigger.setAttribute("aria-expanded", "true");
+        }
+      });
+    }
+
+    if (detailSizeMenu) {
+      detailSizeMenu.addEventListener("click", (event) => {
+        const option = event.target.closest("[data-detail-size]");
+        if (!option) return;
+        applyDetailSizeChoice(option.dataset.detailSize || "790px", option.dataset.detailSizeLabel || option.textContent.trim());
+      });
+    }
+
+    if (detailSizeCustomInput) {
+      detailSizeCustomInput.addEventListener("input", () => {
+        if (detailSize?.value !== "Custom") return;
+        const customValue = detailSizeCustomInput.value.trim();
+        if (detailSizeLabel) detailSizeLabel.textContent = customValue || "自定义";
+        updateResultActions();
+      });
+    }
 
     $("#ratio-options").addEventListener("click", (event) => {
       const option = event.target.closest("[data-ratio]");
@@ -8245,6 +8514,9 @@
     document.addEventListener("click", (event) => {
       if (!event.target.closest(".control-anchor")) {
         closeMenus();
+      }
+      if (!event.target.closest("#detail-size-select")) {
+        closeDetailSizeMenu();
       }
     });
 
@@ -8292,6 +8564,8 @@
     freshDownload.addEventListener("click", downloadCurrentResult);
 
     renderGallery();
+    applyDetailSizeChoice("790px", "790px（淘宝默认）");
+    if (detailStyleNote) detailStyleNote.textContent = `当前使用预设风格：${currentDetailStyle}`;
     syncSettingsLabels();
     setMode("scene");
     setResultPlaceholder();
