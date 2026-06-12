@@ -2497,6 +2497,8 @@ async function runImageGenerationTask(task) {
     switch (task.provider) {
       case 'dashscope':
         return await runDashScopeImageTask(task);
+      case 'openai':
+        return await runOpenAIImageTask(task);
       default:
         throw new Error(`暂不支持的生图供应商: ${task.provider}`);
     }
