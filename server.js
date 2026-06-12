@@ -2,22 +2,43 @@
 const express = require('express');
 const cors = require('cors');
 const fetch = require('node-fetch');
+const fs = require('fs');
 const path = require('path');
+const {
+  getProviderSummary,
+  runTextModel,
+  runVisionModel,
+  generateImage,
+} = require('./services/model-gateway');
+const {
+  buildScenePromptOptimizationFallback,
+  buildScenePromptOptimizationPrompt,
+} = require('./services/prompt-optimizer');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const REFERENCE_VIDEO_PATH = 'C:\\Users\\Edward\\Videos\\NVIDIA\\Desktop\\Desktop 2026.06.08 - 12.55.40.01.mp4';
+const REFERENCE_VIDEO_PATH = process.env.REFERENCE_VIDEO_PATH
+  ? path.resolve(process.env.REFERENCE_VIDEO_PATH)
+  : 'C:\\Users\\Edward\\Videos\\NVIDIA\\Desktop\\Desktop 2026.06.08 - 12.55.40.01.mp4';
 const DASHSCOPE_API_KEY = process.env.DASHSCOPE_API_KEY;
 const DASHSCOPE_BASE_URL = 'https://dashscope.aliyuncs.com/compatible-mode/v1';
-const IMAGE_PROVIDER = process.env.IMAGE_PROVIDER || 'dashscope';
-const DASHSCOPE_IMAGE_MODEL = process.env.DASHSCOPE_IMAGE_MODEL || 'wan2.5-i2i-preview';
 const EXTERNAL_REQUEST_TIMEOUT_MS = Number(process.env.EXTERNAL_REQUEST_TIMEOUT_MS || 20000);
+const PROVIDER_SUMMARY = getProviderSummary();
+const IMAGE_PROVIDER = PROVIDER_SUMMARY.image.provider;
+const DEFAULT_IMAGE_MODEL = PROVIDER_SUMMARY.image.model;
 
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.get('/healthz', (req, res) => {
+  res.json({ ok: true });
+});
+
 app.get('/reference-video', (req, res) => {
+  if (!REFERENCE_VIDEO_PATH || !fs.existsSync(REFERENCE_VIDEO_PATH)) {
+    return res.status(404).json({ error: 'reference_video_unavailable' });
+  }
   res.sendFile(REFERENCE_VIDEO_PATH);
 });
 
@@ -175,6 +196,52 @@ function extractJsonObject(value) {
   return null;
 }
 
+async function askTextModel(prompt, options = {}) {
+  return runTextModel({
+    prompt,
+    temperature: options.temperature ?? 0.2,
+  });
+}
+
+async function askVisionModel(prompt, imagesBase64 = [], options = {}) {
+  return runVisionModel({
+    prompt,
+    imagesBase64: Array.isArray(imagesBase64) ? imagesBase64 : [],
+    temperature: options.temperature ?? 0.2,
+  });
+}
+
+function extractNamedColors(text) {
+  const source = String(text || '');
+  const colorWords = [
+    '黑色', '白色', '蓝色', '红色', '绿色', '黄色', '紫色', '粉色', '灰色', '银色', '金色',
+    '棕色', '米色', '杏色', '橙色', '卡其色', '香槟色', '奶白色'
+  ];
+  return colorWords.filter((item) => source.includes(item));
+}
+
+function isOptimizedPromptGrounded(input = {}, improvedPrompt = '') {
+  const text = String(improvedPrompt || '').trim();
+  if (!text) return false;
+
+  const productName = String(input.productName || '').trim();
+  if (productName && !text.includes(productName)) {
+    return false;
+  }
+
+  const sourceColors = extractNamedColors([
+    input.originalPrompt,
+    input.productVisualSummary,
+  ].filter(Boolean).join(' '));
+  const optimizedColors = extractNamedColors(text);
+
+  if (sourceColors.length && optimizedColors.some((item) => !sourceColors.includes(item))) {
+    return false;
+  }
+
+  return true;
+}
+
 async function fetchWithTimeout(url, options = {}, timeoutMs = EXTERNAL_REQUEST_TIMEOUT_MS) {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
@@ -204,6 +271,31 @@ function escapeSvgText(value) {
     .replace(/'/g, '&#39;');
 }
 
+function summarizeImageFallbackReason(reason = '') {
+  const raw = String(reason || '').trim();
+  if (!raw) {
+    return '当前未拿到模型结果，先返回可继续验收的占位图。';
+  }
+
+  if (/upstream_error|负载已饱和|稍后再试|稍后重试/i.test(raw)) {
+    return '当前生图通道繁忙，请稍后重试。';
+  }
+
+  if (/fetch failed|eacces|network|timeout|aborted/i.test(raw)) {
+    return '当前生图网络暂时不可用，请稍后重试。';
+  }
+
+  if (/invalid token|unauthorized|invalid api key|incorrect api key|authentication/i.test(raw)) {
+    return '当前生图通道鉴权失败，请检查中转站 API Key 是否正确。';
+  }
+
+  if (/not supported|invalid request|model/i.test(raw)) {
+    return '当前生图模型配置不可用，请检查模型名称或通道权限。';
+  }
+
+  return truncateFallbackText(raw, 64);
+}
+
 function buildLocalFallbackImageResult(task, reason = '') {
   const titleMap = {
     scene_fusion: '场景图占位图',
@@ -222,7 +314,7 @@ function buildLocalFallbackImageResult(task, reason = '') {
     detail_reviews: '评价模块占位图',
   };
   const title = titleMap[task.useCase] || '生成占位图';
-  const subtitle = truncateFallbackText(reason, 64) || '当前未拿到模型结果，先返回可继续验收的占位图。';
+  const subtitle = summarizeImageFallbackReason(reason);
   const promptLine = truncateFallbackText(task.prompt, 88) || '后续可直接重新生成正式图片。';
   const svg = `
     <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="1280" viewBox="0 0 1280 1280">
@@ -1261,50 +1353,17 @@ async function analyzeProductImage(productImageBase64) {
     return null;
   }
 
-  const imageUrl = toImageDataUrl(productImageBase64);
-
-  const response = await fetchWithTimeout(`${DASHSCOPE_BASE_URL}/chat/completions`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${DASHSCOPE_API_KEY}`,
-    },
-    body: JSON.stringify({
-      model: 'qwen-vl-max',
+  try {
+    const result = await runVisionModel({
+      prompt: buildProductVisualPrompt(),
+      imagesBase64: [productImageBase64],
       temperature: 0.1,
-      messages: [
-        {
-          role: 'user',
-          content: [
-            {
-              type: 'image_url',
-              image_url: {
-                url: imageUrl,
-              },
-            },
-            {
-              type: 'text',
-              text: buildProductVisualPrompt(),
-            },
-          ],
-        },
-      ],
-    }),
-  });
-
-  if (!response.ok) {
-    const errText = await response.text();
-    console.error('[商品图识别失败]', response.status, errText);
+    });
+    return extractJsonObject(result.text);
+  } catch (error) {
+    console.error('[商品图识别失败]', error);
     return null;
   }
-
-  const data = await response.json();
-  const choice = data.choices?.[0]?.message?.content;
-  const responseText = Array.isArray(choice)
-    ? choice.map((item) => item?.text || '').join('\n')
-    : String(choice || '');
-
-  return extractJsonObject(responseText);
 }
 
 function buildScenePrompt(sceneDesc) {
@@ -2245,21 +2304,6 @@ Generation rules:
   `.trim();
 }
 
-function ensureImageProviderReady() {
-  if (IMAGE_PROVIDER !== 'dashscope') {
-    throw new Error(`暂不支持的生图供应商: ${IMAGE_PROVIDER}`);
-  }
-
-  if (!DASHSCOPE_API_KEY || DASHSCOPE_API_KEY === 'sk-your-api-key-here') {
-    throw new Error('请在 .env 文件中配置 DASHSCOPE_API_KEY');
-  }
-}
-
-function toDashScopeImageDataUrl(imageBase64) {
-  const mime = String(imageBase64 || '').trim().startsWith('/9j/') ? 'image/jpeg' : 'image/png';
-  return `data:${mime};base64,${imageBase64}`;
-}
-
 function createImageGenerationTask(input = {}) {
   const referenceImagesBase64 = Array.isArray(input.referenceImagesBase64)
     ? input.referenceImagesBase64.map((item) => String(item || '').trim()).filter(Boolean)
@@ -2275,7 +2319,7 @@ function createImageGenerationTask(input = {}) {
 
   return {
     provider: IMAGE_PROVIDER,
-    model: input.model || DASHSCOPE_IMAGE_MODEL,
+    model: input.model || DEFAULT_IMAGE_MODEL,
     prompt: String(input.prompt || '').trim(),
     imageBase64: String(input.imageBase64 || '').trim(),
     referenceImagesBase64: uniqueReferenceImagesBase64,
@@ -2300,10 +2344,20 @@ function normalizeGeneratedImages(result) {
       item?.imageBase64 ||
       ''
     ).trim();
+    const mimeType = String(
+      item?.mimeType ||
+      item?.mime_type ||
+      ''
+    ).trim() || (
+      imageB64.startsWith('PHN2Zy')
+        ? 'image/svg+xml'
+        : 'image/png'
+    );
 
     return {
       url: imageUrl,
       b64: imageB64,
+      mimeType,
     };
   };
 
@@ -2413,78 +2467,7 @@ async function generateSceneImageResult(body = {}) {
   return normalizeImageGenerationResponse(task, rawResult);
 }
 
-async function runDashScopeImageTask(task) {
-  const imageDataUrls = [
-    toDashScopeImageDataUrl(task.imageBase64),
-    ...(Array.isArray(task.referenceImagesBase64)
-      ? task.referenceImagesBase64.map((item) => toDashScopeImageDataUrl(item))
-      : []),
-  ];
-
-  const generateResponse = await fetchWithTimeout('https://dashscope.aliyuncs.com/api/v1/services/aigc/image2image/image-synthesis', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${DASHSCOPE_API_KEY}`,
-      'X-DashScope-Async': 'enable',
-    },
-    body: JSON.stringify({
-      model: task.model,
-      input: {
-        prompt: task.prompt,
-        images: imageDataUrls,
-      },
-      parameters: {
-        n: 1,
-        size: task.size,
-        prompt_extend: true,
-      },
-    }),
-  });
-
-  const rawText = await generateResponse.text();
-
-  if (!generateResponse.ok) {
-    throw new Error(rawText || `API 调用失败: ${generateResponse.status}`);
-  }
-
-  const data = JSON.parse(rawText);
-
-  if (data.output?.task_status === 'PENDING' || data.output?.task_status === 'RUNNING') {
-    const taskId = data.output.task_id;
-    let result = null;
-
-    for (let i = 0; i < 8; i++) {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      const pollRes = await fetchWithTimeout(`https://dashscope.aliyuncs.com/api/v1/tasks/${taskId}`, {
-        headers: { Authorization: `Bearer ${DASHSCOPE_API_KEY}` },
-      });
-      const pollData = await pollRes.json();
-      const status = pollData.output?.task_status;
-
-      if (status === 'SUCCEEDED') {
-        result = pollData;
-        break;
-      }
-
-      if (status === 'FAILED') {
-        throw new Error(pollData.output?.message || JSON.stringify(pollData));
-      }
-    }
-
-    if (!result) {
-      throw new Error('生成超时，请稍后重试');
-    }
-
-    return { data: normalizeGeneratedImages(result) };
-  }
-
-  return data;
-}
-
 async function runImageGenerationTask(task) {
-  ensureImageProviderReady();
-
   if (!task.prompt) {
     throw new Error('请提供生成描述');
   }
@@ -2494,12 +2477,7 @@ async function runImageGenerationTask(task) {
   }
 
   try {
-    switch (task.provider) {
-      case 'dashscope':
-        return await runDashScopeImageTask(task);
-      default:
-        throw new Error(`暂不支持的生图供应商: ${task.provider}`);
-    }
+    return await generateImage(task);
   } catch (error) {
     console.error('[image-generation-fallback]', task.useCase, error);
     return buildLocalFallbackImageResult(task, error.message || 'external_request_failed');
@@ -2514,57 +2492,11 @@ app.post('/api/generate-scene', async (req, res) => {
       return res.status(400).json({ error: '请上传商品图片并填写场景描述' });
     }
 
-    {
-      return res.status(500).json({ error: '请在 .env 文件中配置 DASHSCOPE_API_KEY' });
-    }
-
-    const prompt = buildScenePrompt(sceneDesc);
-    const response = await fetchWithTimeout(`${DASHSCOPE_BASE_URL}/chat/completions`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${DASHSCOPE_API_KEY}`,
-      },
-      body: JSON.stringify({
-        model: 'qwen-vl-max',
-        messages: [
-          {
-            role: 'user',
-            content: [
-              {
-                type: 'image_url',
-                image_url: {
-                  url: `data:image/png;base64,${image}`,
-                },
-              },
-              {
-                type: 'text',
-                text: prompt,
-              },
-            ],
-          },
-        ],
-      }),
+    const data = await generateSceneImageResult({
+      imageBase64: image,
+      prompt: buildScenePrompt(sceneDesc),
     });
-
-    if (!response.ok) {
-      const errText = await response.text();
-      console.error('API 调用失败:', response.status, errText);
-      return res.status(502).json({ error: `API 调用失败: ${response.status}`, detail: errText });
-    }
-
-    const data = await response.json();
-    const choice = data.choices?.[0]?.message?.content;
-
-    if (!choice) {
-      return res.status(500).json({ error: 'API 未返回有效结果', detail: JSON.stringify(data) });
-    }
-
-    res.json({
-      success: true,
-      result: choice,
-      usage: data.usage,
-    });
+    res.json(data);
   } catch (err) {
     console.error('服务端错误', err);
     res.status(500).json({ error: '服务器内部错误', detail: err.message });
@@ -2618,6 +2550,98 @@ app.post('/api/read-detail-page', async (req, res) => {
     console.error('[读取详情页失败]', err);
     res.status(500).json({
       error: '读取详情页失败，请换一个链接，或直接上传参考截图',
+      detail: err.message,
+    });
+  }
+});
+
+app.post('/api/optimize-prompt', async (req, res) => {
+  try {
+    const {
+      mode,
+      originalPrompt,
+      productName,
+      productVisualSummary,
+      style,
+      referenceSummary,
+      sceneContext,
+      imageBase64,
+    } = req.body || {};
+
+    const normalizedOriginalPrompt = String(originalPrompt || '').trim();
+    if (!normalizedOriginalPrompt) {
+      return res.status(400).json({ error: '请先输入要优化的提示词' });
+    }
+
+    const fallbackPrompt = buildScenePromptOptimizationFallback({
+      originalPrompt: normalizedOriginalPrompt,
+      productName,
+      productVisualSummary,
+      style,
+      referenceSummary: referenceSummary || sceneContext,
+    });
+
+    try {
+      const optimizationPrompt = buildScenePromptOptimizationPrompt({
+        mode,
+        originalPrompt: normalizedOriginalPrompt,
+        productName,
+        productVisualSummary,
+        style,
+        referenceSummary: referenceSummary || sceneContext,
+      });
+
+      const result = String(imageBase64 || '').trim()
+        ? await askVisionModel(optimizationPrompt, [imageBase64], { temperature: 0.35 })
+        : await askTextModel(optimizationPrompt, { temperature: 0.35 });
+
+      const parsed = extractJsonObject(result.text) || {};
+      const candidatePrompt = String(parsed.improvedPrompt || '').trim();
+      const improvedPrompt = isOptimizedPromptGrounded({
+        originalPrompt: normalizedOriginalPrompt,
+        productName,
+        productVisualSummary,
+      }, candidatePrompt)
+        ? candidatePrompt
+        : fallbackPrompt;
+      const strategy = Array.isArray(parsed.strategy)
+        ? parsed.strategy.map((item) => String(item || '').trim()).filter(Boolean).slice(0, 4)
+        : [];
+      const groundedStrategy = improvedPrompt === fallbackPrompt
+        ? [
+            '模型结果偏离了商品事实，已自动退回到受控优化稿',
+            '继续保留原始商品名、颜色和主体约束，避免把商品优化成别的类目',
+            ...strategy,
+          ].slice(0, 4)
+        : strategy;
+
+      return res.json({
+        success: true,
+        result: {
+          improvedPrompt,
+          strategy: groundedStrategy,
+        },
+        meta: { mode: 'model', provider: result.provider, model: result.model },
+      });
+    } catch (error) {
+      console.error('[prompt-optimization]', error);
+      return res.json({
+        success: true,
+        result: {
+          improvedPrompt: fallbackPrompt,
+          strategy: [
+            '保留原始意图，再补足电商画面约束',
+            '强调商品主体不变、场景自然、构图清晰',
+            '避免空话重复，改写成可直接用于生图的描述',
+          ],
+        },
+        meta: { mode: 'fallback', reason: error.message },
+      });
+    }
+  } catch (err) {
+    console.error('[prompt-optimization-route]', err);
+    res.status(500).json({
+      error: '提示词优化失败，请稍后重试',
       detail: err.message,
     });
   }
@@ -2689,83 +2713,41 @@ app.post('/api/analyze-detail-page', async (req, res) => {
       fallback.productVisualSummary = `商品图识别结果：主体看起来是${productVisualFacts.primaryColor}${productVisualFacts.subjectType ? `的${productVisualFacts.subjectType}` : ''}，拍摄环境偏${productVisualFacts.environment || '待确认'}，后续描述必须以这张商品图为准。`;
     }
 
-    const content = [
-      {
-        type: 'text',
-        text: buildDetailAnalysisPrompt({
-          productName,
-          sellingPoints,
-          scenes,
-          audience,
-          extra,
-          style,
-          url,
-          productColorHint,
-          productVisualFacts,
-          readResult,
-          revisionFeedback,
-          revisionTags,
-          revisionRound,
-          hasProductImage: Boolean(productImageBase64),
-          hasReferenceScreenshot: normalizedReferenceScreenshotBase64List.length > 0,
-        }),
-      },
-    ];
-
-    if (productImageBase64) {
-      content.unshift({
-        type: 'image_url',
-        image_url: {
-          url: toImageDataUrl(productImageBase64),
-        },
-      });
-    }
-
-    normalizedReferenceScreenshotBase64List
-      .slice()
-      .reverse()
-      .forEach((imageBase64) => {
-        content.unshift({
-          type: 'image_url',
-          image_url: {
-            url: toImageDataUrl(imageBase64),
-          },
-        });
-      });
-
-    const response = await fetchWithTimeout(`${DASHSCOPE_BASE_URL}/chat/completions`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${DASHSCOPE_API_KEY}`,
-      },
-      body: JSON.stringify({
-        model: 'qwen-vl-max',
-        temperature: 0.3,
-        messages: [
-          {
-            role: 'user',
-            content,
-          },
-        ],
-      }),
+    const prompt = buildDetailAnalysisPrompt({
+      productName,
+      sellingPoints,
+      scenes,
+      audience,
+      extra,
+      style,
+      url,
+      productColorHint,
+      productVisualFacts,
+      readResult,
+      revisionFeedback,
+      revisionTags,
+      revisionRound,
+      hasProductImage: Boolean(productImageBase64),
+      hasReferenceScreenshot: normalizedReferenceScreenshotBase64List.length > 0,
     });
 
-    if (!response.ok) {
-      const errText = await response.text();
-      console.error('[整理方案失败]', response.status, errText);
+    const imagesBase64 = [
+      ...normalizedReferenceScreenshotBase64List,
+      ...(productImageBase64 ? [productImageBase64] : []),
+    ];
+
+    let responseText = '';
+    try {
+      const result = await askVisionModel(prompt, imagesBase64, { temperature: 0.3 });
+      responseText = result.text;
+    } catch (error) {
+      console.error('[整理方案失败]', error);
       return res.json({
         success: true,
         result: fallback,
-        meta: { mode: 'fallback', reason: `api_error_${response.status}` },
+        meta: { mode: 'fallback', reason: 'api_error_model_gateway' },
       });
     }
-
-    const data = await response.json();
-    const choice = data.choices?.[0]?.message?.content;
-    const responseText = Array.isArray(choice)
-      ? choice.map((item) => item?.text || '').join('\n')
-      : String(choice || '');
     const parsed = extractJsonObject(responseText);
 
     if (!parsed) {
@@ -2825,14 +2807,9 @@ app.use('/api/generate-scene-fusion', async (req, res, next) => {
 app.post('/api/generate-scene-image', async (req, res) => {
   try {
     const { prompt, imageBase64 } = getSceneImageTaskInput(req.body);
-    const sceneDesc = prompt;
 
     if (!prompt || !imageBase64) {
       return res.status(400).json({ error: '请上传商品图片并填写场景描述' });
-    }
-
-    if (!DASHSCOPE_API_KEY || DASHSCOPE_API_KEY === 'sk-your-api-key-here') {
-      return res.status(500).json({ error: '请在 .env 文件中配置 DASHSCOPE_API_KEY' });
     }
 
     const task = createImageGenerationTask({
@@ -2842,32 +2819,6 @@ app.post('/api/generate-scene-image', async (req, res) => {
     });
     const rawResult = await runImageGenerationTask(task);
     return res.json(normalizeImageGenerationResponse(task, rawResult));
-
-    const response = await fetch(`${DASHSCOPE_BASE_URL}/images/generations`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${DASHSCOPE_API_KEY}`,
-      },
-      body: JSON.stringify({
-        model: 'wanx-v1',
-        prompt,
-        n: 1,
-        size: '1024x1024',
-      }),
-    });
-
-    if (!response.ok) {
-      const errText = await response.text();
-      console.error('图像生成 API 调用失败:', response.status, errText);
-      return res.status(502).json({ error: `API 调用失败: ${response.status}`, detail: errText });
-    }
-
-    const data = await response.json();
-    res.json({
-      success: true,
-      result: data,
-    });
   } catch (err) {
     console.error('服务端错误', err);
     res.status(500).json({ error: '服务器内部错误', detail: err.message });
@@ -3177,46 +3128,16 @@ app.post('/api/analyze-detail-module-asset', async (req, res) => {
       });
     }
 
-    const response = await fetch(`${DASHSCOPE_BASE_URL}/chat/completions`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${DASHSCOPE_API_KEY}`,
-      },
-      body: JSON.stringify({
-        model: 'qwen-vl-max',
+    let responseText = '';
+    try {
+      const result = await askVisionModel(buildSupplementalImagePrompt(normalizedFieldKey), [normalizedImageBase64], {
         temperature: 0.1,
-        messages: [
-          {
-            role: 'user',
-            content: [
-              {
-                type: 'image_url',
-                image_url: {
-                  url: toImageDataUrl(normalizedImageBase64),
-                },
-              },
-              {
-                type: 'text',
-                text: buildSupplementalImagePrompt(normalizedFieldKey),
-              },
-            ],
-          },
-        ],
-      }),
-    });
-
-    if (!response.ok) {
-      const errText = await response.text();
-      console.error('[detail-module-asset-recognition]', response.status, errText);
-      return res.status(502).json({ error: '图片识别失败，请换一张更清晰的图再试', detail: errText });
+      });
+      responseText = result.text;
+    } catch (error) {
+      console.error('[detail-module-asset-recognition]', error);
+      return res.status(502).json({ error: '图片识别失败，请换一张更清晰的图再试', detail: error.message });
     }
-
-    const data = await response.json();
-    const choice = data.choices?.[0]?.message?.content;
-    const responseText = Array.isArray(choice)
-      ? choice.map((item) => item?.text || '').join('\n')
-      : String(choice || '');
     const parsed = extractJsonObject(responseText);
     const text = String(parsed?.text || responseText || '').trim();
 
@@ -3275,53 +3196,27 @@ app.post('/api/suggest-detail-module-field', async (req, res) => {
       });
     }
 
-    const response = await fetch(`${DASHSCOPE_BASE_URL}/chat/completions`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${DASHSCOPE_API_KEY}`,
-      },
-      body: JSON.stringify({
-        model: 'qwen-vl-max',
-        temperature: 0.2,
-        messages: [
-          {
-            role: 'user',
-            content: [
-              {
-                type: 'text',
-                text: buildSupplementalSuggestionPrompt({
-                  fieldKey: normalizedFieldKey,
-                  productName,
-                  productVisualSummary,
-                  coreSellingPoints,
-                  scenes,
-                  audience,
-                  style,
-                  existingInfo,
-                }),
-              },
-            ],
-          },
-        ],
-      }),
-    });
-
-    if (!response.ok) {
-      const errText = await response.text();
-      console.error('[detail-module-field-suggestion]', response.status, errText);
+    let responseText = '';
+    try {
+      const result = await askTextModel(buildSupplementalSuggestionPrompt({
+        fieldKey: normalizedFieldKey,
+        productName,
+        productVisualSummary,
+        coreSellingPoints,
+        scenes,
+        audience,
+        style,
+        existingInfo,
+      }), { temperature: 0.2 });
+      responseText = result.text;
+    } catch (error) {
+      console.error('[detail-module-field-suggestion]', error);
       return res.json({
         success: true,
         result: { text: fallbackText },
-        meta: { mode: 'fallback', reason: `api_error_${response.status}` },
+        meta: { mode: 'fallback', reason: 'api_error_model_gateway' },
       });
     }
-
-    const data = await response.json();
-    const choice = data.choices?.[0]?.message?.content;
-    const responseText = Array.isArray(choice)
-      ? choice.map((item) => item?.text || '').join('\n')
-      : String(choice || '');
     const parsed = extractJsonObject(responseText) || {};
     const suggestedText = String(parsed.text || '').trim() || fallbackText;
 
@@ -3364,38 +3259,14 @@ app.post('/api/classify-detail-reference-assets', async (req, res) => {
     }
 
     const results = await Promise.all(imageBase64List.map(async (imageBase64, index) => {
-      const response = await fetch(`${DASHSCOPE_BASE_URL}/chat/completions`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${DASHSCOPE_API_KEY}`,
-        },
-        body: JSON.stringify({
-          model: 'qwen-vl-max',
+      let responseText = '';
+      try {
+        const result = await askVisionModel(buildDetailReferenceAssetClassificationPrompt(), [imageBase64], {
           temperature: 0.1,
-          messages: [
-            {
-              role: 'user',
-              content: [
-                {
-                  type: 'image_url',
-                  image_url: {
-                    url: toImageDataUrl(imageBase64),
-                  },
-                },
-                {
-                  type: 'text',
-                  text: buildDetailReferenceAssetClassificationPrompt(),
-                },
-              ],
-            },
-          ],
-        }),
-      });
-
-      if (!response.ok) {
-        const errText = await response.text();
-        console.error('[detail-reference-asset-classification]', response.status, errText);
+        });
+        responseText = result.text;
+      } catch (error) {
+        console.error('[detail-reference-asset-classification]', error);
         return {
           index,
           fieldKey: 'unknown',
@@ -3412,12 +3283,6 @@ app.post('/api/classify-detail-reference-assets', async (req, res) => {
           textSuggestion: '',
         };
       }
-
-      const data = await response.json();
-      const choice = data.choices?.[0]?.message?.content;
-      const responseText = Array.isArray(choice)
-        ? choice.map((item) => item?.text || '').join('\n')
-        : String(choice || '');
       const parsed = extractJsonObject(responseText) || {};
       const fieldKey = String(parsed.fieldKey || 'unknown').trim();
 
@@ -3508,5 +3373,7 @@ app.post('/api/generate-scene-fusion', async (req, res) => {
 app.listen(PORT, () => {
   console.log('\nEcom AI Studio started');
   console.log(`URL: http://localhost:${PORT}`);
-  console.log(`API Key: ${DASHSCOPE_API_KEY ? 'configured' : 'missing'}`);
+  console.log(`DashScope Key: ${DASHSCOPE_API_KEY ? 'configured' : 'missing'}`);
+  console.log(`Provider Routing: text=${PROVIDER_SUMMARY.text.provider}/${PROVIDER_SUMMARY.text.model}, vision=${PROVIDER_SUMMARY.vision.provider}/${PROVIDER_SUMMARY.vision.model}, image=${PROVIDER_SUMMARY.image.provider}/${PROVIDER_SUMMARY.image.model}`);
+  console.log(`Provider Ready: text=${PROVIDER_SUMMARY.text.configured}, vision=${PROVIDER_SUMMARY.vision.configured}, image=${PROVIDER_SUMMARY.image.configured}`);
 });

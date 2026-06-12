@@ -1,0 +1,13 @@
+node_modules
+.git
+.env
+.scratch
+ecom-ai-studio
+*.log
+*.png
+*.jpg
+*.jpeg
+*.mp4
+.tmp-check*.js
+.tmp-syntax-check.js
+.git-head-server.js

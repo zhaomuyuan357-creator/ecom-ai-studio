@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
@@ -464,73 +464,28 @@
     }
 
     .style-chip-row {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      display: flex;
+      flex-wrap: wrap;
       gap: 10px;
     }
 
     .style-chip {
-      min-height: 86px;
-      padding: 14px 16px;
-      border-radius: 18px;
+      min-height: 42px;
+      padding: 0 14px;
+      border-radius: 999px;
       border: 1px solid rgba(114, 92, 185, 0.12);
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(246, 241, 255, 0.92));
+      background: rgba(249, 247, 255, 0.94);
       color: var(--muted);
       font-size: 13px;
-      display: grid;
-      gap: 8px;
-      text-align: left;
-      align-content: start;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.84);
-      transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
-    }
-
-    .style-chip:hover {
-      transform: translateY(-1px);
-      border-color: rgba(139, 92, 246, 0.2);
-      box-shadow: 0 12px 24px rgba(139, 92, 246, 0.08);
-    }
-
-    .style-chip-title {
-      color: var(--text);
-      font-size: 14px;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-    }
-
-    .style-chip-copy {
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.6;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .style-chip.active {
-      color: var(--text);
-      background:
-        linear-gradient(180deg, rgba(115, 76, 214, 0.12), rgba(255, 255, 255, 0.98)),
-        linear-gradient(135deg, rgba(139, 92, 246, 0.08), rgba(125, 211, 252, 0.08));
-      border-color: rgba(139, 92, 246, 0.3);
-      box-shadow: 0 14px 28px rgba(139, 92, 246, 0.12);
-    }
-
-    .style-chip.active .style-chip-title {
-      color: #5b2db6;
-    }
-
-    .style-chip.active .style-chip-copy {
-      color: rgba(36, 31, 56, 0.72);
-    }
-
-    .detail-style-note {
-      margin-top: 10px;
-      min-height: 82px;
-    }
-
-    .detail-style-help {
-      margin-top: 8px;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.6;
+      color: var(--accent);
+      background: rgba(139, 92, 246, 0.1);
+      border-color: rgba(139, 92, 246, 0.2);
     }
 
     .detail-actions {
@@ -844,43 +799,6 @@
       font-size: 13px;
       line-height: 1.75;
       white-space: pre-wrap;
-    }
-
-    .detail-prompt-draft-card {
-      display: grid;
-      gap: 12px;
-    }
-
-    .detail-prompt-draft-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .detail-prompt-draft-status {
-      display: inline-flex;
-      align-items: center;
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: rgba(139, 92, 246, 0.1);
-      color: var(--accent);
-      font-size: 11px;
-      font-weight: 700;
-    }
-
-    .detail-prompt-draft-copy {
-      margin: 0;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.7;
-    }
-
-    .detail-prompt-draft-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
     }
 
     .detail-summary-blueprint-list {
@@ -1577,8 +1495,8 @@
 
     .detail-module-inline-fill {
       display: grid;
-      gap: 14px;
-      padding: 18px;
+      gap: 12px;
+      padding: 14px 15px;
       border-radius: 18px;
       background: rgba(248, 246, 255, 0.96);
       border: 1px solid rgba(115, 96, 182, 0.12);
@@ -1591,18 +1509,12 @@
 
     .detail-module-inline-fill-grid {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 12px;
-      align-items: start;
     }
 
     .detail-module-inline-field {
       display: grid;
-      gap: 10px;
-      padding: 14px;
-      border-radius: 18px;
-      background: rgba(255, 255, 255, 0.88);
-      border: 1px solid rgba(115, 96, 182, 0.1);
+      gap: 8px;
     }
 
     .detail-module-inline-field label {
@@ -1611,7 +1523,7 @@
     }
 
     .detail-module-inline-field textarea {
-      min-height: 128px;
+      min-height: 88px;
       resize: vertical;
       border-radius: 16px;
       border: 1px solid rgba(115, 96, 182, 0.12);
@@ -1631,7 +1543,6 @@
       gap: 10px;
       flex-wrap: wrap;
       justify-content: flex-end;
-      align-items: center;
     }
 
     .detail-module-supplemental-panel {
@@ -1775,17 +1686,16 @@
     .detail-module-supplemental-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 16px;
+      gap: 14px;
     }
 
     .detail-module-supplemental-item {
       display: grid;
-      gap: 12px;
-      padding: 16px;
+      gap: 10px;
+      padding: 14px;
       border-radius: 18px;
       background: rgba(249, 247, 255, 0.84);
       border: 1px solid rgba(115, 96, 182, 0.08);
-      align-content: start;
     }
 
     .detail-module-supplemental-item label {
@@ -1814,7 +1724,7 @@
 
     .detail-module-supplemental-upload {
       display: flex;
-      align-items: flex-start;
+      align-items: center;
       gap: 10px;
       flex-wrap: wrap;
     }
@@ -1870,7 +1780,6 @@
     @media (max-width: 900px) {
       .detail-module-stats,
       .detail-module-groups,
-      .detail-module-inline-fill-grid,
       .detail-module-workbench-list,
       .detail-module-workbench-copy,
       .detail-module-supplemental-grid {
@@ -1879,38 +1788,6 @@
 
       .detail-module-planner-actions {
         align-items: flex-start;
-      }
-    }
-
-    @media (max-width: 640px) {
-      .style-chip-row {
-        grid-template-columns: 1fr;
-      }
-
-      .style-chip {
-        min-height: auto;
-      }
-
-      .detail-module-inline-fill,
-      .detail-module-supplemental-panel,
-      .detail-module-summary,
-      .detail-module-workbench,
-      .detail-module-workbench-card {
-        padding: 16px;
-      }
-
-      .detail-module-inline-fill-actions,
-      .detail-module-inline-actions,
-      .detail-module-supplemental-actions {
-        justify-content: stretch;
-      }
-
-      .detail-module-inline-fill-actions .detail-confirm-btn,
-      .detail-module-inline-actions .detail-confirm-btn,
-      .detail-module-supplemental-actions .detail-confirm-btn,
-      .detail-module-supplemental-upload button {
-        width: 100%;
-        justify-content: center;
       }
     }
 
@@ -3470,31 +3347,33 @@
       <div class="brand-mark">E</div>
       <div class="brand-copy">
         <strong>Ecom AI Studio</strong>
-        <span>鐏忓棗鏅㈤崫浣虹閺夋劕褰夐幋鎰讲閸烆喖宕犻悽濠氭桨</span>
+        <span>将商品素材变成可售卖画面</span>
       </div>
     </div>
     <nav class="main-nav">
-      <a class="nav-link" href="#create">閸掓稐缍?/a>
-      <a class="nav-link" href="#gallery">閻㈣绮?/a>
-      <a class="nav-link" href="#result-panel">娴ｆ粌鎼?/a>
-      <div class="nav-pill"><strong>閸熷棗顔嶉悧?/strong> <em>閻ц棄绨抽崶?-> 閸︾儤娅欓崶?/em></div>
-      <button class="nav-action primary" id="btn-open-config">闁板秶鐤?/button>
+      <a class="nav-link" href="#create">创作</a>
+      <a class="nav-link" href="#gallery">画廊</a>
+      <a class="nav-link" href="#works">作品</a>
+      <div class="nav-pill"><strong>商家版</strong> <em>白底图 -> 场景图</em></div>
+      <button class="nav-action primary" id="btn-open-config">配置</button>
     </nav>
   </header>
 
   <main class="site-shell">
     <section class="hero" id="create">
-      <h1>鐏忓棗鏅㈤崫?<em>閸欐ɑ鍨氶悽濠氭桨</em></h1>
-      <p>閹疇顩﹂崪灞界繁閸掗鑵戦梻杈剧礉<strong>鐟曚礁浠涢崚?/strong></p>
+      <h1>将商品 <em>变成画面</em></h1>
+      <p>想要和得到中间，<strong>要做到</strong></p>
     </section>
 
     <section class="create-zone">
       <div class="mode-switch">
         <button class="mode-tab active" type="button" id="mode-scene">
-          閸︾儤娅欓崶鍓ф晸閹?          <small>閻ц棄绨抽崶?-> 閸︾儤娅欓崶?/small>
+          场景图生成
+          <small>白底图 -> 场景图</small>
         </button>
         <button class="mode-tab" type="button" id="mode-detail">
-          鐠囷附鍎忔い鐢垫晸閹?          <small>閻ц棄绨抽崶?-> 閺佹潙顨滅拠锔藉剰妞?/small>
+          详情页生成
+          <small>白底图 -> 整套详情页</small>
         </button>
       </div>
 
@@ -3503,26 +3382,26 @@
           <textarea
             class="prompt-textarea"
             id="prompt-input"
-            placeholder="閹诲繗鍫禒缁樺壈閻㈤潧鏅㈤崷鐑樻珯娴ｇ姵鍏傞崚鎵畱閻㈠娼?.."
+            placeholder="描述任意电商场景你想到的画面..."
           ></textarea>
 
           <div class="prompt-controls">
             <div class="control-group">
-              <button class="circle-button" type="button" id="btn-upload" title="娑撳﹣绱堕崯鍡楁惂鎼存洖娴?>+</button>
-              <button class="soft-chip" type="button" id="btn-optimize">娴兼ê瀵查幓鎰仛鐠?/button>
-              <button class="soft-chip" type="button" id="btn-reference">娑撳﹣绱堕崣鍌濃偓鍐ㄦ禈</button>
+              <button class="circle-button" type="button" id="btn-upload" title="上传商品底图">+</button>
+              <button class="soft-chip" type="button" id="btn-optimize">优化提示词</button>
+              <button class="soft-chip" type="button" id="btn-reference">上传参考图</button>
               <div class="control-anchor" id="settings-anchor">
                 <button class="soft-chip dropdown-trigger" type="button" id="btn-settings">
-                  <span><strong id="settings-ratio-label">閺呴缚鍏?/strong> | <span id="settings-size-label">1K</span> | <span id="settings-format-label">JPEG</span></span>
-                  <span class="caret">閳?/span>
+                  <span><strong id="settings-ratio-label">智能</strong> | <span id="settings-size-label">1K</span> | <span id="settings-format-label">JPEG</span></span>
+                  <span class="caret">▾</span>
                 </button>
                 <div class="popover-card" id="settings-popover">
                   <div class="settings-group">
-                    <div class="settings-title">濮ｆ柧绶?/div>
+                    <div class="settings-title">比例</div>
                     <div class="settings-grid ratio-grid" id="ratio-options">
-                      <button class="option-card active" type="button" data-ratio="閺呴缚鍏?>
+                      <button class="option-card active" type="button" data-ratio="智能">
                         <div class="shape square" style="border-style:dashed;"></div>
-                        <span>閺呴缚鍏?/span>
+                        <span>智能</span>
                       </button>
                       <button class="option-card" type="button" data-ratio="1:1">
                         <div class="shape square"></div>
@@ -3556,7 +3435,7 @@
                   </div>
 
                   <div class="settings-group">
-                    <div class="settings-title">閸掑棜椴搁悳?/div>
+                    <div class="settings-title">分辨率</div>
                     <div class="segment-row" id="size-options">
                       <button class="segment-option active" type="button" data-size="1K">1K</button>
                       <button class="segment-option" type="button" data-size="2K">2K</button>
@@ -3565,7 +3444,7 @@
                   </div>
 
                   <div class="settings-group">
-                    <div class="settings-title">閺嶇厧绱?/div>
+                    <div class="settings-title">格式</div>
                     <div class="segment-row" id="format-options">
                       <button class="segment-option" type="button" data-format="PNG">PNG</button>
                       <button class="segment-option active" type="button" data-format="JPEG">JPEG</button>
@@ -3576,127 +3455,115 @@
               </div>
               <div class="control-anchor" id="count-anchor">
                 <button class="soft-chip dropdown-trigger" type="button" id="btn-count">
-                  <span id="count-label"><strong>1 瀵?/strong></span>
-                  <span class="caret">閳?/span>
+                  <span id="count-label"><strong>1 张</strong></span>
+                  <span class="caret">▾</span>
                 </button>
                 <div class="menu-card" id="count-menu">
                   <button class="menu-option active" type="button" data-count="1">
-                    <span>1 瀵?/span><span class="check">閴?/span>
+                    <span>1 张</span><span class="check">✓</span>
                   </button>
                   <button class="menu-option" type="button" data-count="2">
-                    <span>2 瀵?/span><span class="check">閴?/span>
+                    <span>2 张</span><span class="check">✓</span>
                   </button>
                   <button class="menu-option" type="button" data-count="3">
-                    <span>3 瀵?/span><span class="check">閴?/span>
+                    <span>3 张</span><span class="check">✓</span>
                   </button>
                   <button class="menu-option" type="button" data-count="4">
-                    <span>4 瀵?/span><span class="check">閴?/span>
+                    <span>4 张</span><span class="check">✓</span>
                   </button>
                 </div>
               </div>
               <div class="soft-chip file-chip" id="file-chip"></div>
             </div>
 
-            <button class="generate-button" type="button" id="btn-generate">閻㈢喐鍨?/button>
+            <button class="generate-button" type="button" id="btn-generate">生成</button>
           </div>
         </div>
 
         <div class="prompt-shell-inner workflow-panel" id="detail-panel">
           <div class="detail-form-grid">
             <div class="detail-card">
-              <h3>娑撳﹣绱堕崯鍡楁惂娑撳骸寮懓?/h3>
-              <p>閸忓牅绗傛导鐘叉櫌閸濅胶娅ф惔鏇炴禈閿涘苯鍟€鐞涖儰绔存稉顏嗙彽閸濅線鎽奸幒銉﹀灗閸欏倽鈧啯鍩呴崶淇扁偓鍌濈箹娑擃亝绁︾粙瀣纯闁倸鎮庡鏃傘仛閳ユ粍鏆ｆ總妤勵嚊閹懘銆夐悽鐔稿灇閳ユ繆鍏橀崝娑栤偓?/p>
+              <h3>上传商品与参考</h3>
+              <p>先上传商品白底图，再补一个竞品链接或参考截图。这个流程更适合演示“整套详情页生成”能力。</p>
               <div class="detail-upload-stack">
                 <button class="detail-upload-box" type="button" id="detail-product-box">
                   <span>
-                    <strong>娑撳﹣绱堕崯鍡楁惂閻ц棄绨抽崶?/strong>
-                    閺€顖涘瘮 PNG / JPG閵嗗倻鏁ゆ禍搴ｆ晸閹存劙顩婚崶淇扁偓浣稿礌閻愮懓娴橀妴浣告槀閻浇銆冮崪灞炬殻婵傛顕涢幆鍛淬€夌憴鍡氼潕閵?                    <span class="detail-file-name" id="detail-product-name">閺堫亪鈧瀚ㄩ弬鍥︽</span>
+                    <strong>上传商品白底图</strong>
+                    支持 PNG / JPG。用于生成首图、卖点图、尺码表和整套详情页视觉。
+                    <span class="detail-file-name" id="detail-product-name">未选择文件</span>
                   </span>
                 </button>
                 <button class="detail-upload-box" type="button" id="detail-reference-box">
                   <span>
-                    <strong>娑撳﹣绱堕崣鍌濃偓鍐╁焻閸ョ偓鍨ㄧ粩鐐叉惂妞ょ敻娼?/strong>
-                    閸欘垯浜掗崗鍫滅瑝娴?URL閿涘瞼娲块幒銉ょ炊缁旂偛鎼х拠锔藉剰妞ゅ灚鍩呴崶淇扁偓鍌氬缁旑垰鍘涢幎濠呯箹閺壜ょ熅瀵板嫬鐣弫瀛樻儗鐠ч攱娼甸妴?                    <span class="detail-file-name" id="detail-reference-name">閺堫亪鈧瀚ㄩ弬鍥︽</span>
+                    <strong>上传参考截图或竞品页面</strong>
+                    可以先不传 URL，直接传竞品详情页截图。前端先把这条路径完整搭起来。
+                    <span class="detail-file-name" id="detail-reference-name">未选择文件</span>
                   </span>
                 </button>
               </div>
             </div>
 
             <div class="detail-card">
-              <h3>婵夘偄鍟撶拠锔藉剰妞ゅ吀淇婇幁?/h3>
-              <p>閹稿鍙庣€广垺鍩涢張鈧惇鐔风杽閻ㄥ嫪濞囬悽銊︽煙瀵繑娼甸敍姘獓閸濅礁鎮曢妴浣稿礌閻愬箍鈧礁婧€閺咁垬鈧線顥撻弽绗衡偓浣稿棘閼板啴鎽奸幒銉ユ嫲鐞涖儱鍘栫拠瀛樻娑撯偓楠炴湹姘︾紒娆戦兇缂佺喆鈧?/p>
+              <h3>填写详情页信息</h3>
+              <p>按照客户最真实的使用方式来：产品名、卖点、场景、风格、参考链接和补充说明一并交给系统。</p>
               <div class="field-stack">
                 <div class="field-group">
-                  <label for="detail-url">缁旂偛鎼х拠锔藉剰妞ょ敻鎽奸幒?/label>
+                  <label for="detail-url">竞品详情页链接</label>
                   <input class="field-input" id="detail-url" type="text" placeholder="https://example.com/product-detail">
                 </div>
 
                 <div class="detail-subgrid">
                   <div class="field-group">
-                    <label for="detail-product-name-input">娴溠冩惂閸氬秶袨</label>
-                    <input class="field-input" id="detail-product-name-input" type="text" placeholder="娓氬顩ч敍姘樅瀹稿墽鍞亸蹇曞敽鐎硅姤婢?T 閹?>
+                    <label for="detail-product-name-input">产品名称</label>
+                    <input class="field-input" id="detail-product-name-input" type="text" placeholder="例如：毛巾绣小熊宽松 T 恤">
                   </div>
                   <div class="field-group">
-                    <label for="detail-size">鐠囷附鍎忔い闈涙槀鐎?/label>
+                    <label for="detail-size">详情页尺寸</label>
                     <select class="field-select" id="detail-size">
-                      <option value="790px">790px閿涘牊绐愮€规繈绮拋銈忕礆</option>
-                      <option value="1080px">1080px閿涘牊濮堥棅鍐叉禈閺傚浄绱?/option>
-                      <option value="Custom">閼奉亜鐣炬稊?/option>
+                      <option value="790px">790px（淘宝默认）</option>
+                      <option value="1080px">1080px（抖音图文）</option>
+                      <option value="Custom">自定义</option>
                     </select>
                   </div>
                 </div>
 
                 <div class="field-group">
-                  <label for="detail-selling-points">閺嶇绺鹃崡鏍仯</label>
-                  <textarea class="field-textarea" id="detail-selling-points" placeholder="娓氬顩ч敍姘堪閼层倛鍨濋柅鍌樷偓浣虹彌娴ｆ挻鐦哄鍓у敩閵嗕礁顔旈弶鐐▔閻︼负鈧胶娅ㄩ幖顓熸）鐢悶鈧?></textarea>
+                  <label for="detail-selling-points">核心卖点</label>
+                  <textarea class="field-textarea" id="detail-selling-points" placeholder="例如：亲肤舒适、立体毛巾绣、宽松显瘦、百搭日常。"></textarea>
                 </div>
 
                 <div class="detail-subgrid">
                   <div class="field-group">
-                    <label for="detail-scenes">娑撴槒顩︽担璺ㄦ暏閸︾儤娅?/label>
-                    <input class="field-input" id="detail-scenes" type="text" placeholder="娓氬顩ч敍姘垛偓姘珶 / 閺冦儱鐖?/ 鐏炲懎顔?/ 缁€鑲╁⒖">
+                    <label for="detail-scenes">主要使用场景</label>
+                    <input class="field-input" id="detail-scenes" type="text" placeholder="例如：通勤 / 日常 / 居家 / 礼物">
                   </div>
                   <div class="field-group">
-                    <label for="detail-audience">閻╊喗鐖ｆ禍铏瑰參</label>
-                    <input class="field-input" id="detail-audience" type="text" placeholder="娓氬顩ч敍?8-28 瀹€浣搞偝閻㈢噦绱濋崰婊勵偨鏉烆垵鎮撻懜鎺椻偓鍌烆棑閺?>
+                    <label for="detail-audience">目标人群</label>
+                    <input class="field-input" id="detail-audience" type="text" placeholder="例如：18-28 岁女生，喜欢软萌舒适风格">
                   </div>
                 </div>
 
                 <div class="field-group">
-                  <label>鐟欏棜顫庢搴㈢壐</label>
+                  <label>视觉风格</label>
                   <div class="style-chip-row" id="detail-style-row">
-                    <button class="style-chip active" type="button" data-style="妤傛顏總銏″妳">
-                      <span class="style-chip-title">妤傛顏總銏″妳</span>
-                      <span class="style-chip-copy">楠炴彃鍣ｉ悾娆戞閵嗕焦鐓嶉崪灞藉冀閸忓鈧浇浜ゆ總銏℃綏鐠愩劍鍔呴敍灞藉剼妤傛楠囬悽闈涙櫌妫ｆ牕鐫嗛敍灞肩瑝閸嬫碍璇炴径绋裤亣鐎涙鎹ｉ幎銉ｂ偓?/span>
-                    </button>
-                    <button class="style-chip" type="button" data-style="缁犫偓缁撅附绔婚弬?>
-                      <span class="style-chip-title">缁犫偓缁撅附绔婚弬?/span>
-                      <span class="style-chip-copy">濞村懓鍎楅弲顖樷偓浣戒氦缁岀儤鐨甸幇鐔粹偓渚€顤侀懝鎻掑帬閸掕绱濈粣浣稿毉閼告帗婀囬妴浣藉殰閻掕翰鈧焦妲楁禍鑼剁箮閻ㄥ嫬鏅㈤崫浣圭毜鐠愩劊鈧?/span>
-                    </button>
-                    <button class="style-chip" type="button" data-style="閻㈤潧鏅㈡妯挎祮閸?>
-                      <span class="style-chip-title">閻㈤潧鏅㈡妯挎祮閸?/span>
-                      <span class="style-chip-copy">娑撹缍嬪〒鍛殶閵嗕礁宕犻悙鍦纯閹恒儯鈧椒淇婇幁顖氱湴缁狙勬绾噯绱濇导妯哄帥閺堝秴濮熼悙鐟板毊閸滃奔绗呴崡鏇犳倞鐟欙絾鍨氶張顑锯偓?/span>
-                    </button>
-                    <button class="style-chip" type="button" data-style="閼哄倹妫╅拃銉╂敘閹?>
-                      <span class="style-chip-title">閼哄倹妫╅拃銉╂敘閹?/span>
-                      <span class="style-chip-copy">濮樻稑娲块弴鏉戝繁閵嗕浇澹婅ぐ鈺傛纯閼辨氨鍔嶉妴浣藉Ν鎼村棝浜鹃崗閿嬫纯閺勫海鈥橀敍灞肩稻娴犲秶鍔ф穱婵囧瘮閻㈤潧鏅㈡い闈涘讲閸楁牞鎻ｉ柅鏄忕帆閵?/span>
-                    </button>
+                    <button class="style-chip active" type="button" data-style="高端奢感">高端奢感</button>
+                    <button class="style-chip" type="button" data-style="简约清新">简约清新</button>
+                    <button class="style-chip" type="button" data-style="电商高转化">电商高转化</button>
+                    <button class="style-chip" type="button" data-style="节日营销感">节日营销感</button>
                   </div>
-                  <textarea class="field-textarea detail-style-note" id="detail-style-note" placeholder="閸欘垶鈧绱扮紒褏鐢荤悰銉ュ帠娴ｇ姵鍏傜憰浣烘畱妞嬪孩鐗搁梽鎰煑閿涘奔绶ユ俊鍌椻偓婊€绗夌憰浣搞亰缁屾亽鈧礁浜告總鑸佃ˉ閻у鈧焦鏋冪€涙灏悾娆忔躬閸欏厖绗傞妴浣规綏鐠愩劍鍔呴弴鎾彯缁狙佲偓浣风瑝鐟曚礁浠涢幋鎰崳閹躲儲鍔呴垾婵勨偓?></textarea>
-                  <div class="detail-style-help" id="detail-style-effective-hint">瑜版挸澧犻悽鐔告櫏妞嬪孩鐗搁敍姘剁彯缁旑垰銈㈤幇?/div>
                 </div>
 
                 <div class="field-group">
-                  <label for="detail-extra">鐞涖儱鍘栫拠瀛樻</label>
-                  <textarea class="field-textarea" id="detail-extra" placeholder="娓氬顩ч敍姘帥閸戞椽顩婚崶鍓р€樼拋銈夘棑閺嶇》绱濋崘宥囨晸閹存劕宕犻悙瑙勀侀崸妞尖偓浣告槀閻浇銆冮崪宀冾嚊閹懘銆夐弫鏉戭殰閸ュ墽澧栭妴?></textarea>
+                  <label for="detail-extra">补充说明</label>
+                  <textarea class="field-textarea" id="detail-extra" placeholder="例如：先出首图确认风格，再生成卖点模块、尺码表和详情页整套图片。"></textarea>
                 </div>
               </div>
 
               <div class="detail-actions">
-                <div class="detail-hint">缁?4 濮濄儱绱戞慨瀣Ω閸樼喎顫愮拠璇插絿缂佹挻鐏夐弫瀵告倞閹存劏鈧粌鍤崶鎯у閺傝顢嶉幗妯款洣閳ユ縿鈧倽绻栨稉鈧銉ュ涧閻鎮婄憴锝呮嫲閺佸鎮婇敍灞肩瑝鏉╂稑鍙嗛惇鐔割劀閸戝搫娴橀妴?/div>
+                <div class="detail-hint">第 4 步开始把原始读取结果整理成“出图前方案摘要”。这一步只看理解和整理，不进入真正出图。</div>
                 <div class="detail-action-buttons">
-                  <button class="soft-chip detail-read-btn" type="button" id="btn-detail-read">閸忓牐顕伴崣鏍懠閹?/button>
-                  <button class="generate-button detail-generate-btn" type="button" id="btn-detail-generate">閺佸鎮婇弬瑙勵攳閹芥顩?/button>
+                  <button class="soft-chip detail-read-btn" type="button" id="btn-detail-read">先读取链接</button>
+                  <button class="generate-button detail-generate-btn" type="button" id="btn-detail-generate">整理方案摘要</button>
                 </div>
               </div>
             </div>
@@ -3705,40 +3572,40 @@
       </div>
     </section>
 
-    <section class="result-panel" id="result-panel" data-section-alias="works">
+    <section class="result-panel" id="result-panel">
       <div class="result-shell">
         <div class="result-head">
-          <strong>閻㈢喐鍨氱紒鎾寸亯</strong>
-          <span id="result-status">缁涘绶熼悽鐔稿灇</span>
+          <strong>生成结果</strong>
+          <span id="result-status">等待生成</span>
         </div>
         <div class="result-frame" id="result-zone">
           <div class="result-placeholder">
-            <strong>缂佹挻鐏夋导姘▔缁€鍝勬躬鏉╂瑩鍣?/strong>
-            <p>娑撳﹣绱堕崯鍡楁惂閻ц棄绨抽崶鎾呯礉婵夘偄鍟撻崷鐑樻珯閹诲繗鍫崥搴礉缁崵绮烘导姘Ω閻㈢喐鍨氱紒鎾寸亯閺€鎯ф躬鏉╂瑩鍣烽敍灞炬煙娓氬じ缍樼涵顔款吇閸滃奔绗呮潪濮愨偓?/p>
+            <strong>结果会显示在这里</strong>
+            <p>上传商品白底图，填写场景描述后，系统会把生成结果放在这里，方便你确认和下载。</p>
           </div>
         </div>
         <div class="result-actions">
-          <button class="soft-chip" type="button" id="btn-download" disabled>娑撳娴囬崶鍓у</button>
-          <button class="soft-chip" type="button" id="btn-regenerate" disabled>闁插秵鏌婇悽鐔稿灇</button>
+          <button class="soft-chip" type="button" id="btn-download" disabled>下载图片</button>
+          <button class="soft-chip" type="button" id="btn-regenerate" disabled>重新生成</button>
         </div>
       </div>
     </section>
 
     <section class="section-head" id="gallery">
-      <h2>閻忓灚鍔呴悽璇茬矕</h2>
-      <p>閹恒垻鍌ㄩ悽闈涙櫌缁箖鈧鐗辨笟瀣剁礉娑撯偓闁款喖顦查悽銊ユ倱缁鏅㈤崫浣告簚閺咁垵顕㈢懛鈧?/p>
+      <h2>灵感画廊</h2>
+      <p>探索电商精选样例，一键复用同类商品场景语言</p>
     </section>
 
     <div class="filter-row" id="filter-row">
-      <button class="filter-chip active" data-cat="all">閸忋劑鍎?/button>
-      <button class="filter-chip" data-cat="lighting">閻忣垶銈?/ 濮樻稑娲块悘?/button>
-      <button class="filter-chip" data-cat="home">鐎硅泛鐪?/ 鐎广垹宸?/button>
-      <button class="filter-chip" data-cat="beauty">缂囧骸顩?/ 娑擃亝濮?/button>
-      <button class="filter-chip" data-cat="fashion">閺堝秹銈?/ 缁屾寧鎯?/button>
-      <button class="filter-chip" data-cat="detail">鐠囷附鍎忔い?/ 閸楁牜鍋ｉ崶?/button>
-      <button class="filter-chip" data-cat="showcase">鐏炴洖宸?/ 濮楄京鐛?/button>
-      <button class="filter-chip" data-cat="seasonal">閼哄倹妫?/ 閽€銉╂敘</button>
-      <button class="filter-chip" data-cat="car">濮瑰€熸簠 / 娴滃本澧滄潪?/button>
+      <button class="filter-chip active" data-cat="all">全部</button>
+      <button class="filter-chip" data-cat="lighting">灯饰 / 氛围灯</button>
+      <button class="filter-chip" data-cat="home">家居 / 客厅</button>
+      <button class="filter-chip" data-cat="beauty">美妆 / 个护</button>
+      <button class="filter-chip" data-cat="fashion">服饰 / 穿搭</button>
+      <button class="filter-chip" data-cat="detail">详情页 / 卖点图</button>
+      <button class="filter-chip" data-cat="showcase">展厅 / 橱窗</button>
+      <button class="filter-chip" data-cat="seasonal">节日 / 营销</button>
+      <button class="filter-chip" data-cat="car">汽车 / 二手车</button>
     </div>
 
     <section class="gallery-grid" id="gallery-grid"></section>
@@ -3748,22 +3615,22 @@
     <div class="detail-dialog">
       <div class="detail-grid">
         <div class="detail-pane">
-          <div class="detail-label">閸樼喎娴?/div>
+          <div class="detail-label">原图</div>
           <div class="detail-image-shell">
-            <img id="detail-original-image" src="" alt="閸樼喎娴?>
+            <img id="detail-original-image" src="" alt="原图">
           </div>
         </div>
         <div class="detail-pane">
-          <div class="detail-label">妫板嫯顫?/div>
+          <div class="detail-label">预览</div>
           <div class="detail-image-shell preview">
-            <img id="detail-preview-image" src="" alt="妫板嫯顫嶉崶?>
+            <img id="detail-preview-image" src="" alt="预览图">
           </div>
         </div>
         <div class="detail-pane detail-side">
-          <button class="detail-close" type="button" id="detail-close" aria-label="閸忔娊妫?>鑴?/button>
-          <div class="detail-side-title">鐎佃鐦崶?/div>
-          <div class="detail-case-title" id="detail-case-title">閻㈤潧鏅㈠鍫滅伐鐠囷附鍎?/div>
-          <div class="detail-prompt-label">閹绘劗銇氱拠?(PROMPT)</div>
+          <button class="detail-close" type="button" id="detail-close" aria-label="关闭">×</button>
+          <div class="detail-side-title">对比图</div>
+          <div class="detail-case-title" id="detail-case-title">电商案例详情</div>
+          <div class="detail-prompt-label">提示词 (PROMPT)</div>
           <div class="detail-prompt-box" id="detail-prompt-box">
             <svg class="detail-copy-corner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <rect x="9" y="9" width="11" height="11" rx="2"></rect>
@@ -3771,24 +3638,25 @@
             </svg>
             <div id="detail-prompt-text"></div>
           </div>
-          <button class="detail-primary-btn" type="button" id="detail-apply-btn">閴?娑撯偓闁款喖鎮撳▎?/button>
+          <button class="detail-primary-btn" type="button" id="detail-apply-btn">✦ 一键同款</button>
           <div class="detail-action-row">
-            <button class="detail-secondary-btn" type="button" id="detail-copy-btn">鐚?婢跺秴鍩楅幓鎰仛鐠?/button>
-            <button class="detail-secondary-btn" type="button" id="detail-share-btn">閳?閸掑棔闊?/button>
+            <button class="detail-secondary-btn" type="button" id="detail-copy-btn">⧉ 复制提示词</button>
+            <button class="detail-secondary-btn" type="button" id="detail-share-btn">↗ 分享</button>
           </div>
         </div>
       </div>
       <div class="detail-footer">
-        娴ｈ法鏁ら崡瀹犮€冪粈鐑樺亶瀹告彃鎮撻幇?<a href="javascript:void(0)">閵嗗ぞI 閻㈢喐鍨氶張宥呭閸楀繗顔呴妴?/a>閿涘瞼鍋ｉ崙缁樼叀閻顕涢幆?      </div>
+        使用即表示您已同意 <a href="javascript:void(0)">《AI 生成服务协议》</a>，点击查看详情
+      </div>
     </div>
   </div>
 
   <nav class="floating-dock">
-    <button class="dock-item" data-dock-target="works">娴ｆ粌鎼?/button>
-    <button class="dock-item" data-dock-target="gallery">閻㈣绮?/button>
-    <button class="dock-fab" data-dock-target="create">閴?/button>
-    <button class="dock-item active" data-dock-target="create">閸掓稐缍?/button>
-    <button class="dock-item" data-dock-target="result-panel">閹存垹娈?/button>
+    <button class="dock-item">作品</button>
+    <button class="dock-item">充值</button>
+    <button class="dock-fab">✦</button>
+    <button class="dock-item active">创作</button>
+    <button class="dock-item">我的</button>
   </nav>
 
   <div class="toast" id="toast"></div>
@@ -3972,8 +3840,6 @@
     const detailScenes = $("#detail-scenes");
     const detailAudience = $("#detail-audience");
     const detailExtra = $("#detail-extra");
-    const detailStyleNote = $("#detail-style-note");
-    const detailStyleEffectiveHint = $("#detail-style-effective-hint");
     const detailUrl = $("#detail-url");
     const detailSize = $("#detail-size");
     const detailStyleRow = $("#detail-style-row");
@@ -3984,24 +3850,17 @@
     let activeDetailProductFile = null;
     let activeDetailReferenceFiles = [];
     let currentResultUrl = "";
-    let currentSceneResultUrl = "";
     let isGenerating = false;
-    let activeGenerationMode = "";
     let currentDetailItem = null;
     let currentMode = "scene";
-    let currentDetailStyle = "妤傛顏總銏″妳";
+    let currentDetailStyle = "高端奢感";
     let currentResultKind = "scene";
-    let resultViewStateByMode = {
-      scene: { show: false, html: "", status: "" },
-      detail: { show: false, html: "", status: "" }
-    };
     let currentDetailPreviewUrls = [];
     let currentDetailReferenceImageDataUrls = [];
     let currentDetailReferenceAssetClassifications = [];
     let currentDetailReadResult = null;
     let currentDetailAnalysis = null;
     let currentDetailAnalysisMeta = null;
-    let currentDetailOptimizedPromptDraft = "";
     let currentDetailHeroImageUrl = "";
     let currentDetailHeroPrompt = "";
     let currentDetailHeroApproval = "pending";
@@ -4107,14 +3966,14 @@
       return [filesOrFile].filter(Boolean);
     }
 
-    function formatFileListSummary(files, emptyLabel = "閺堫亪鈧瀚ㄩ弬鍥︽") {
+    function formatFileListSummary(files, emptyLabel = "未选择文件") {
       const normalized = normalizeFileList(files);
       if (!normalized.length) return emptyLabel;
       if (normalized.length === 1) {
-        return `${normalized[0].name} 璺?${formatBytes(normalized[0].size)}`;
+        return `${normalized[0].name} · ${formatBytes(normalized[0].size)}`;
       }
       const totalBytes = normalized.reduce((sum, file) => sum + Number(file.size || 0), 0);
-      return `瀹告煡鈧瀚?${normalized.length} 瀵姴娴橀悧?璺?${formatBytes(totalBytes)}`;
+      return `已选择 ${normalized.length} 张图片 · ${formatBytes(totalBytes)}`;
     }
 
     async function filesToDataUrls(files) {
@@ -4173,7 +4032,7 @@
         "卖点不够准",
         "模块顺序要调整",
         "风格不够对",
-        "閺傚洦顢嶆径顏嗏敄",
+        "文案太空",
         "人群不够准",
         "场景不够明确"
       ];
@@ -4184,11 +4043,11 @@
       galleryGrid.innerHTML = list.map((item) => `
         <article class="gallery-card" data-title="${(item.title || "").replace(/"/g, "&quot;")}">
           <img src="${item.img}" alt="${item.title}">
-          ${item.compare ? '<div class="badge-compare">鐎佃鐦崶?/div>' : ""}
+          ${item.compare ? '<div class="badge-compare">对比图</div>' : ""}
           <div class="card-overlay">
             <strong>${item.title}</strong>
             <p>${item.summary || item.prompt}</p>
-            <button type="button" data-prompt="${item.prompt.replace(/"/g, "&quot;")}">娑撯偓闁款喖鎮撳▎?/button>
+            <button type="button" data-prompt="${item.prompt.replace(/"/g, "&quot;")}">一键同款</button>
           </div>
         </article>
       `).join("");
@@ -4196,17 +4055,34 @@
 
     function setFile(file) {
       activeFile = file;
-      const { regenerate } = getActionButtons();
       if (!file) {
         fileInput.value = "";
         fileChip.textContent = "";
         fileChip.classList.remove("show");
-        if (regenerate) regenerate.disabled = true;
+        btnRegenerate.disabled = true;
         return;
       }
-      fileChip.textContent = `${file.name} 璺?${formatBytes(file.size)}`;
+      fileChip.textContent = `${file.name} · ${formatBytes(file.size)}`;
       fileChip.classList.add("show");
-      if (regenerate) regenerate.disabled = false;
+      btnRegenerate.disabled = false;
+    }
+
+    function setDetailUploadStateLegacy(kind, file) {
+      const isProduct = kind === "product";
+      const box = isProduct ? detailProductBox : detailReferenceBox;
+      const nameEl = isProduct ? detailProductName : detailReferenceName;
+
+      if (isProduct) activeDetailProductFile = file;
+      else activeDetailReferenceFile = file;
+
+      if (!file) {
+        box.classList.remove("has-file");
+        nameEl.textContent = "未选择文件";
+        return;
+      }
+
+      box.classList.add("has-file");
+      nameEl.textContent = `${file.name} · ${formatBytes(file.size)}`;
     }
 
     function setDetailUploadState(kind, filesOrFile) {
@@ -4220,7 +4096,7 @@
 
       if (!files.length) {
         box.classList.remove("has-file");
-        nameEl.textContent = "閺堫亪鈧瀚ㄩ弬鍥︽";
+        nameEl.textContent = "未选择文件";
         return;
       }
 
@@ -4237,7 +4113,7 @@
       currentDetailReferenceImageDataUrls = await filesToDataUrls(mergedFiles);
       await classifyDetailReferenceAssets(currentDetailReferenceImageDataUrls);
       updateDetailModulePlanner();
-      showToast(`閸欏倽鈧啫娴樺鑼舵祰閸?${mergedFiles.length} 瀵媴绱濋獮璺哄嚒鐎瑰本鍨氳ぐ鎺旇`);
+      showToast(`参考图已载入 ${mergedFiles.length} 张，并已完成归类`);
     }
 
     function resetDetailResultForNewAsset(kind) {
@@ -4248,7 +4124,6 @@
       currentResultKind = "detail";
       currentDetailAnalysis = null;
       currentDetailAnalysisMeta = null;
-      currentDetailOptimizedPromptDraft = "";
       currentDetailHeroImageUrl = "";
       currentDetailHeroPrompt = "";
       currentDetailHeroApproval = "pending";
@@ -4267,19 +4142,19 @@
         selectedTags: []
       };
       currentDetailRevisionRound = 0;
+      resultPanel.classList.add("show");
 
       const subject = kind === "product" ? "商品图" : "参考图";
-      const html = `
+      resultZone.innerHTML = `
         <div class="result-placeholder">
           <strong>已更新${subject}，可以直接重新整理方案</strong>
           <p>新的上传文件已经生效，保留当前产品信息和卖点后，点击“整理方案摘要”即可继续出下一版方案。</p>
         </div>
       `;
-      setStoredResultView("detail", html, "详情页已更新", { show: true });
+      resultStatus.textContent = "待重新整理";
 
       const { download } = getActionButtons();
       if (download) download.disabled = true;
-      rememberCurrentResultView("detail");
       updateResultActions();
     }
 
@@ -4340,161 +4215,11 @@
       );
     }
 
-    function getEffectiveDetailStyle() {
-      const preset = String(currentDetailStyle || "").trim();
-      const customNote = String(detailStyleNote?.value || "").trim();
-      if (preset && customNote) {
-        return `${preset}；补充要求：${customNote}`;
-      }
-      return preset || customNote || "延续已确认首图风格";
-    }
-
-    function syncDetailStyleHint() {
-      if (!detailStyleEffectiveHint) return;
-      detailStyleEffectiveHint.textContent = `当前详情页风格基线：${getEffectiveDetailStyle()}`;
-    }
-
-    function buildOptimizedScenePrompt(basePrompt) {
-      const promptText = String(basePrompt || "").trim();
-      if (!promptText) return "";
-
-      const segments = [promptText];
-      if (!/真实产品主体|产品主体/.test(promptText)) {
-        segments.push("突出真实产品主体，避免泛化道具抢主角");
-      }
-      if (!/构图|版式/.test(promptText)) {
-        segments.push("构图参考已确认首图与参考图的镜头语言，主体清晰，层次明确");
-      }
-      if (!/真实材质|写实/.test(promptText)) {
-        segments.push("保持写实质感和真实材质表现，不做明显CG感的塑料质感");
-      }
-      if (!/光线|氛围/.test(promptText)) {
-        segments.push("光线自然干净，氛围高级克制，避免脏灰和过度滤镜");
-      }
-      if (!/细节特写|局部/.test(promptText)) {
-        segments.push("适当保留可用于详情页延展的局部细节信息，方便后续模块承接");
-      }
-      if (!/避免文字|无文字/.test(promptText)) {
-        segments.push("除非参考图明确有版式文字区，否则画面中不要生成额外大段文字");
-      }
-      return segments.join("；");
-    }
-
-    function buildOptimizedDetailPromptDraft(summary = currentDetailAnalysis) {
-      const productName = String(summary?.productName || detailProductNameInput.value || "").trim() || "产品";
-      const sellingPoints = (summary?.coreSellingPoints || [])
-        .map((item) => String(item || "").trim())
-        .filter(Boolean)
-        .slice(0, 3);
-      const style = getEffectiveDetailStyle();
-      const scenesText = String(detailScenes?.value || "").trim();
-      const audienceText = String(detailAudience?.value || "").trim();
-      const referenceTakeaways = (summary?.referenceTakeaways || [])
-        .map((item) => String(item || "").trim())
-        .filter(Boolean)
-        .slice(0, 2);
-      const referenceHints = (Array.isArray(currentDetailReferenceAssetClassifications) ? currentDetailReferenceAssetClassifications : [])
-        .filter((item) => !isReferenceClassificationBlocked(item))
-        .map((item) => String(item?.summary || "").trim())
-        .filter(Boolean)
-        .slice(0, 2);
-      const textLayouts = (Array.isArray(currentDetailReferenceAssetClassifications) ? currentDetailReferenceAssetClassifications : [])
-        .filter((item) => !isReferenceClassificationBlocked(item))
-        .map((item) => String(item?.textLayout || "").trim())
-        .filter(Boolean)
-        .slice(0, 1);
-      const draft = [
-        `${productName}详情页首图与后续模块应保持统一的视觉基线和商品认知。`,
-        sellingPoints.length
-          ? `优先突出这些真实卖点：${sellingPoints.join("；")}。`
-          : "卖点表达要围绕用户已确认的真实信息，不要自行补造参数或承诺。",
-        style
-          ? `整体风格遵循这条已确认基线：${style}。`
-          : "整体风格延续已确认首图的高级、克制、轻奢电商视觉。",
-        scenesText
-          ? `场景表达参考这些用户输入：${scenesText}。`
-          : "场景内容要服务商品展示，不要喧宾夺主。",
-        audienceText
-          ? `画面气质和文案语感要贴近这类目标人群：${audienceText}。`
-          : "目标人群表达要自然，不要堆砌空泛人设词。",
-        activeDetailProductFile
-          ? "必须以当前商品图为事实锚点，保持主体、材质、结构与配色一致。"
-          : "若缺少商品图，也只能在已有摘要事实范围内受控发挥。",
-        currentDetailReadResult
-          ? "结合已读出的商品资料，优先继承其中明确的结构、用途、材质和表达重点。"
-          : "如果读取资料不足，宁可少写也不要虚构规格、认证、售后或评价。",
-        referenceTakeaways.length
-          ? `参考图可以继承这些版式/镜头信号：${referenceTakeaways.join("；")}。`
-          : "",
-        referenceHints.length
-          ? `对于各模块参考图，还可吸收这些结构提示：${referenceHints.join("；")}。`
-          : "",
-        textLayouts.length
-          ? `如果参考图存在明确文字排版区，注意保留这类文字布局信号：${textLayouts.join("；")}。`
-          : "",
-        "不要输出内部提示词说明，不要编造认证、参数、价格、售后、评论或对比结论；在用户事实、参考图版式和首图基调边界内受控发挥。"
-      ];
-      return draft.filter(Boolean).join(" ");
-    }
-
-    function getEffectiveDetailPromptDraft(summary = currentDetailAnalysis) {
-      const optimizedDraft = String(currentDetailOptimizedPromptDraft || "").trim();
-      if (optimizedDraft) return optimizedDraft;
-      return String(summary?.imagePromptDraft || "").trim();
-    }
-
     function getActionButtons() {
       return {
         download: document.getElementById("btn-download"),
         regenerate: document.getElementById("btn-regenerate")
       };
-    }
-
-    function setStoredResultView(mode, html, status, options = {}) {
-      const { show = true, syncDom = currentMode === mode } = options;
-      resultViewStateByMode[mode] = { show, html, status };
-      if (!syncDom) return;
-      resultPanel.classList.toggle("show", show);
-      resultZone.innerHTML = html;
-      resultStatus.textContent = status;
-      currentResultKind = mode;
-      currentResultUrl = mode === "scene" ? currentSceneResultUrl : (currentDetailHeroImageUrl || "");
-      if (mode === "detail") bindDetailResultView();
-    }
-
-    function rememberCurrentResultView(mode = currentMode) {
-      resultViewStateByMode[mode] = {
-        show: resultPanel.classList.contains("show"),
-        html: resultZone.innerHTML,
-        status: resultStatus.textContent || ""
-      };
-      currentResultKind = mode;
-      currentResultUrl = mode === "scene" ? currentSceneResultUrl : (currentDetailHeroImageUrl || "");
-    }
-
-    function bindDetailResultView() {
-      if (document.getElementById("detail-approve-btn")) {
-        bindDetailConfirmationActions();
-        bindDetailRevisionActions();
-      }
-      if (document.getElementById("detail-hero-approve-btn")) {
-        bindDetailHeroActions();
-      }
-      if (document.getElementById("detail-module-planner")) {
-        updateDetailModulePlanner();
-      }
-    }
-
-    function restoreResultView(mode = currentMode) {
-      const view = resultViewStateByMode[mode];
-      if (!view?.html) {
-        setResultPlaceholder(mode);
-        return;
-      }
-      setStoredResultView(mode, view.html, view.status, {
-        show: view.show,
-        syncDom: true
-      });
     }
 
     function updateResultActions() {
@@ -4505,30 +4230,25 @@
         if (actionBar) actionBar.style.display = "flex";
         download.textContent = "下载图片";
         regenerate.textContent = "重新生成";
-        download.disabled = !currentSceneResultUrl;
-        regenerate.disabled = !canRegenerateCurrentMode();
+        if (!isGenerating) regenerate.disabled = !canRegenerateCurrentMode();
       } else if (currentDetailHeroImageUrl) {
         if (actionBar) actionBar.style.display = "none";
-        download.textContent = "统一导出详情页";
+        download.textContent = "一键整理详情页";
         regenerate.textContent = "重新生成首图";
-        regenerate.disabled = !canGenerateDetailHero();
+        if (!isGenerating) regenerate.disabled = !canGenerateDetailHero();
         download.disabled = false;
       } else if (canGenerateDetailHero()) {
         if (actionBar) actionBar.style.display = "flex";
         download.textContent = "导出摘要";
         regenerate.textContent = "开始生成首图";
-        regenerate.disabled = false;
-        download.disabled = !currentDetailAnalysis;
+        if (!isGenerating) regenerate.disabled = false;
+        download.disabled = true;
       } else {
         if (actionBar) actionBar.style.display = "flex";
         download.textContent = "导出摘要";
         regenerate.textContent = "重新整理摘要";
-        regenerate.disabled = !canRegenerateCurrentMode();
-        download.disabled = !currentDetailAnalysis;
-      }
-      if (isGenerating) {
+        if (!isGenerating) regenerate.disabled = !canRegenerateCurrentMode();
         download.disabled = true;
-        regenerate.disabled = true;
       }
       if (btnDetailRead) btnDetailRead.disabled = isGenerating || !canReadDetailLink();
     }
@@ -4540,76 +4260,82 @@
       detailModeBtn.classList.toggle("active", !sceneActive);
       scenePanel.classList.toggle("active", sceneActive);
       detailPanel.classList.toggle("active", !sceneActive);
-      currentResultUrl = sceneActive ? currentSceneResultUrl : (currentDetailHeroImageUrl || "");
-      restoreResultView(mode);
       updateResultActions();
+
+      if (!resultPanel.classList.contains("show")) {
+        setResultPlaceholder();
+        return;
+      }
+
+      if ((sceneActive && currentResultKind !== "scene") || (!sceneActive && currentResultKind !== "detail")) {
+        setResultPlaceholder();
+      }
     }
 
-    function setResultPlaceholder(mode = currentMode) {
-      const isDetailMode = mode === "detail";
+    function setResultPlaceholder() {
+      const isDetailMode = currentMode === "detail";
       const title = isDetailMode ? "第 5 步的方案摘要会显示在这里" : "结果会显示在这里";
       const description = isDetailMode
         ? "上传商品白底图，填写商品信息后，系统会先整理出“出图前方案摘要”，方便你先确认这版方向要不要继续。"
         : "上传商品白底图，填写场景描述后，系统会把生成结果放在这里，方便你确认和下载。";
-      const html = `
+      resultPanel.classList.add("show");
+      resultZone.innerHTML = `
         <div class="result-placeholder">
           <strong>${title}</strong>
           <p>${description}</p>
         </div>
       `;
-      const status = isDetailMode ? "等待整理摘要" : "等待生成图片";
-      setStoredResultView(mode, html, status, { show: true });
-      const { download } = getActionButtons();
-      if (download) download.disabled = true;
+      resultStatus.textContent = isDetailMode ? "等待整理" : "等待生成";
+      btnDownload.disabled = true;
     }
 
-    function setResultLoading(mode = currentMode) {
-      const html = `
+    function setResultLoading() {
+      resultPanel.classList.add("show");
+      resultZone.innerHTML = `
         <div class="result-loading">
           <div class="spinner"></div>
           <strong>正在生成场景图</strong>
           <p>系统正在将商品主体融入你描述的场景，请稍等几秒。</p>
         </div>
       `;
-      setStoredResultView(mode, html, "生成中", { show: true });
-      const { download, regenerate } = getActionButtons();
-      if (download) download.disabled = true;
-      if (regenerate) regenerate.disabled = true;
+      resultStatus.textContent = "生成中";
+      btnDownload.disabled = true;
+      btnRegenerate.disabled = true;
     }
 
-    function setResultError(message, mode = activeGenerationMode || currentMode) {
-      const html = `
+    function setResultError(message) {
+      resultPanel.classList.add("show");
+      resultZone.innerHTML = `
         <div class="result-error">
           <strong>生成失败</strong>
           <p>${message}</p>
         </div>
       `;
-      setStoredResultView(mode, html, "生成失败", { show: true });
-      const { download, regenerate } = getActionButtons();
-      if (download) download.disabled = true;
-      if (regenerate) regenerate.disabled = mode === "scene" ? !activeFile : !canRegenerateCurrentMode();
+      resultStatus.textContent = "生成失败";
+      btnDownload.disabled = true;
+      btnRegenerate.disabled = !activeFile;
     }
 
-    function setResultImage(url, mode = currentMode) {
-      if (mode === "scene") currentSceneResultUrl = url;
-      const html = `<img class="result-image" src="${url}" alt="生成结果">`;
-      setStoredResultView(mode, html, "已完成", { show: true });
-      const { download, regenerate } = getActionButtons();
-      if (download) download.disabled = false;
-      if (regenerate) regenerate.disabled = false;
+    function setResultImage(url) {
+      resultPanel.classList.add("show");
+      resultZone.innerHTML = `<img class="result-image" src="${url}" alt="生成结果">`;
+      resultStatus.textContent = "已完成";
+      btnDownload.disabled = false;
+      btnRegenerate.disabled = false;
     }
 
     function setDetailResultLoading() {
       currentResultKind = "detail";
       const { download, regenerate } = getActionButtons();
-      const html = `
+      resultPanel.classList.add("show");
+      resultZone.innerHTML = `
         <div class="result-loading">
           <div class="spinner"></div>
           <strong>正在整理生成前方案</strong>
           <p>系统会先理解参考页结构或商家描述，再整理成首图方向、模块顺序和后续可直接用于生图的说明。</p>
         </div>
       `;
-      setStoredResultView("detail", html, "方案整理中", { show: true });
+      resultStatus.textContent = "方案整理中";
       if (download) download.disabled = true;
       if (regenerate) regenerate.disabled = true;
     }
@@ -4617,14 +4343,15 @@
     function setDetailHeroLoading() {
       currentResultKind = "detail";
       const { download, regenerate } = getActionButtons();
-      const html = `
+      resultPanel.classList.add("show");
+      resultZone.innerHTML = `
         <div class="result-loading">
           <div class="spinner"></div>
           <strong>正在生成第 6 步首图</strong>
-          <p>系统会结合你确认的商品事实、参考图版式和方案摘要，先产出一张作为详情页基调的首图。</p>
+          <p>系统会基于你已经确认通过的摘要和商品图，只先生成一张首图，确认方向没问题后再继续扩展后续模块。</p>
         </div>
       `;
-      setStoredResultView("detail", html, "首图生成中", { show: true });
+      resultStatus.textContent = "首图生成中";
       if (download) download.disabled = true;
       if (regenerate) regenerate.disabled = true;
     }
@@ -4632,14 +4359,15 @@
     function setDetailReadLoading() {
       currentResultKind = "detail";
       const { download, regenerate } = getActionButtons();
-      const html = `
+      resultPanel.classList.add("show");
+      resultZone.innerHTML = `
         <div class="result-loading">
           <div class="spinner"></div>
-          <strong>正在读取参考页内容</strong>
-          <p>系统会尽量提取页面中的商品信息、卖点结构和版式信号，帮助后续摘要与模块规划更贴近原参考页。</p>
+          <strong>正在读取参考详情页</strong>
+          <p>这一步只检查链接能不能读到，并把标题、正文片段和图片候选先抓出来。</p>
         </div>
       `;
-      setStoredResultView("detail", html, "读取中", { show: true });
+      resultStatus.textContent = "读取中";
       if (download) download.disabled = true;
       if (regenerate) regenerate.disabled = true;
     }
@@ -4660,7 +4388,6 @@
       currentDetailReadResult = payload;
       currentDetailAnalysis = null;
       currentDetailAnalysisMeta = null;
-      currentDetailOptimizedPromptDraft = "";
       currentDetailHeroImageUrl = "";
       currentDetailHeroPrompt = "";
       currentDetailHeroApproval = "pending";
@@ -4688,7 +4415,8 @@
         .map((item) => `<a href="${escapeHtml(item)}" target="_blank" rel="noopener">${escapeHtml(item)}</a>`)
         .join("") || "<span>暂时没有识别到明确的图片候选。</span>";
 
-      const html = `
+      resultPanel.classList.add("show");
+      resultZone.innerHTML = `
         <div class="detail-read-result">
           <div class="detail-read-head">
             <div>
@@ -4730,7 +4458,7 @@
         </div>
       `;
 
-      setStoredResultView("detail", html, payload.readable ? "参考页已读到" : "读取完成", { show: true });
+      resultStatus.textContent = payload.readable ? "参考页已读到" : "读取完成";
       const { download } = getActionButtons();
       if (download) download.disabled = true;
       updateResultActions();
@@ -4821,7 +4549,6 @@
       currentResultUrl = "";
       currentDetailAnalysis = summary;
       currentDetailAnalysisMeta = meta || {};
-      const optimizedDraft = String(currentDetailOptimizedPromptDraft || "").trim();
       currentDetailHeroImageUrl = "";
       currentDetailHeroPrompt = "";
       currentDetailHeroApproval = "pending";
@@ -4873,14 +4600,12 @@
       const riskWarnings = (summary.riskWarnings || [])
         .map((item) => `<li>${escapeHtml(item)}</li>`)
         .join("") || "<li>当前暂无明显风险提醒。</li>";
-      const effectiveStyleText = escapeHtml(getEffectiveDetailStyle());
-      const effectivePromptDraft = optimizedDraft || String(summary.imagePromptDraft || "").trim();
-      const promptDraftStatusText = optimizedDraft ? "当前使用优化后草稿" : "当前使用摘要原稿";
       const confirmStatusText = "待确认";
       const revisionSummary = renderDetailRevisionSummary(summary);
       const confirmStatusClass = "";
 
-      const html = `
+      resultPanel.classList.add("show");
+      resultZone.innerHTML = `
         <div class="detail-summary-stage">
           <section class="detail-summary-hero">
             <div class="detail-summary-topline">
@@ -4894,7 +4619,6 @@
             <div class="detail-summary-chip-row">
               <span class="detail-summary-chip">${escapeHtml(sourceLabel)}</span>
               <span class="detail-summary-chip">${escapeHtml(summary.productType || "待确认商品类型")}</span>
-              <span class="detail-summary-chip">当前风格基线：${effectiveStyleText}</span>
               ${sellingPoints}
             </div>
             <p>${escapeHtml(summary.productVisualSummary || "当前还没有清晰的商品图识别说明。")}</p>
@@ -4960,21 +4684,6 @@
               <strong>后续可直接用于生图的首图说明</strong>
               <p>${escapeHtml(summary.imagePromptDraft || "待生成")}</p>
             </section>
-            <section class="detail-summary-card detail-prompt-draft-card">
-              <div class="detail-prompt-draft-head">
-                <strong>可编辑优化草稿</strong>
-                <span class="detail-prompt-draft-status" id="detail-prompt-draft-status">${escapeHtml(promptDraftStatusText)}</span>
-              </div>
-              <p class="detail-prompt-draft-copy">这里会承接摘要产出的首图说明。你可以在不改变事实边界的前提下，微调风格、构图和表达重点，再用于首图生成。</p>
-              <div class="field-group">
-                <label for="detail-prompt-draft-editor">首图生成前的可编辑草稿</label>
-                <textarea class="field-textarea" id="detail-prompt-draft-editor" placeholder="可以在这里补充你想加强的构图、镜头、氛围或版式要求，但不要脱离商品事实。">${escapeHtml(effectivePromptDraft)}</textarea>
-              </div>
-              <div class="detail-prompt-draft-actions">
-                <button class="soft-chip" type="button" id="detail-prompt-apply-btn">应用当前草稿</button>
-                <button class="soft-chip" type="button" id="detail-prompt-reset-btn">恢复摘要原稿</button>
-              </div>
-            </section>
             <section class="detail-summary-card">
               <strong>最后一屏怎么收尾</strong>
               <div class="detail-summary-meta">
@@ -5018,16 +4727,14 @@
         </div>
       `;
 
-      setStoredResultView("detail", html, "方案摘要已整理", { show: true });
+      resultStatus.textContent = "方案摘要已整理";
       const { download } = getActionButtons();
       if (download) download.disabled = true;
       bindDetailConfirmationActions();
       bindDetailRevisionActions();
-      bindDetailPromptDraftActions();
-      syncDetailPromptDraftEditor();
-      rememberCurrentResultView("detail");
       updateResultActions();
     }
+
     function setDetailApprovalState(state) {
       currentDetailApproval = state;
       const statusEl = document.getElementById("detail-confirm-status");
@@ -5042,7 +4749,6 @@
         copyEl.textContent = "这版摘要已经确认通过，下一步就可以基于这个方向进入首图生成。";
         resultStatus.textContent = "第 5 步已确认";
         if (revisionPanel) revisionPanel.classList.remove("show");
-        rememberCurrentResultView("detail");
         updateResultActions();
         return;
       }
@@ -5053,7 +4759,6 @@
         copyEl.textContent = "把要改的地方写在下面，系统会先自动归类，再重新整理一版方案给你确认。";
         resultStatus.textContent = "第 5 步待回改";
         if (revisionPanel) revisionPanel.classList.add("show");
-        rememberCurrentResultView("detail");
         updateResultActions();
         return;
       }
@@ -5062,7 +4767,6 @@
       copyEl.textContent = "如果你觉得这版摘要已经能指导后面的首图生成，就点“这个方向可以继续”；如果还不够准，就点“这版还要修改”。";
       resultStatus.textContent = "第 5 步摘要已整理";
       if (revisionPanel) revisionPanel.classList.remove("show");
-      rememberCurrentResultView("detail");
       updateResultActions();
     }
 
@@ -5133,7 +4837,7 @@
         detailProductNameInput?.value,
         detailSellingPoints?.value
       ].join(" ").toLowerCase();
-      return /閺堝尘闂夊闂堢！閸栧帄鐟佹鐟侇槩鐞涱梻t閹槩鐞涱剝锝瀨婢舵牕顨渱缁屾寧鎯寍fashion|shoe|bag|apparel/.test(source);
+      return /服|鞋|靴|包|裙|裤|衣|t恤|衬衫|外套|穿搭|fashion|shoe|bag|apparel/.test(source);
     }
 
     function buildDetailModulePlan(summary = currentDetailAnalysis) {
@@ -5349,42 +5053,6 @@
       };
     }
 
-    function buildModuleReferenceStructureHints(moduleKey) {
-      return getModuleReferenceClassificationRecords(moduleKey)
-        .filter((record) => !isReferenceClassificationBlocked(record))
-        .map((record, index) => {
-          const inheritanceMode = String(record.inheritanceMode || "direct").trim() || "direct";
-          const compatibilityRisk = String(record.compatibilityRisk || "low").trim() || "low";
-          const summary = String(record.summary || "").trim();
-          const warning = getReferenceClassificationWarning(record);
-          const textSignals = [];
-          if (record?.hasTextOverlay) {
-            textSignals.push(`文字位置：${String(record.textPosition || "").trim() || "未明确"}`);
-          }
-          if (String(record.textLayout || "").trim()) {
-            textSignals.push(`文字布局：${String(record.textLayout || "").trim()}`);
-          }
-          return [
-            `参考图 ${index + 1}`,
-            `继承模式：${inheritanceMode}`,
-            `风险等级：${compatibilityRisk}`,
-            summary ? `摘要：${summary}` : "",
-            warning ? `提示：${warning}` : "",
-            textSignals.length ? textSignals.join(" / ") : ""
-          ].filter(Boolean).join("；");
-        });
-    }
-    function getModuleGenerationGuardCopy(moduleKey) {
-      switch (moduleKey) {
-        case "variants":
-          return "这块更适合展示不同款式、颜色或规格差异，避免凭空补出不存在的变体信息。";
-        case "details":
-          return "这块更适合讲材质、结构、工艺和局部细节，避免写成泛泛卖点海报。";
-        default:
-          return "";
-      }
-    }
-
     function renderModuleTextConfig(moduleKey) {
       const setting = getModuleTextSetting(moduleKey);
       return `
@@ -5419,6 +5087,7 @@
         </div>
       `;
     }
+
     function getReferenceClassificationFieldOptions() {
       return [
         { key: "unknown", label: "暂不自动继承" },
@@ -5436,7 +5105,7 @@
     }
 
     function getReferenceClassificationLabel(fieldKey) {
-      return getReferenceClassificationFieldOptions().find((item) => item.key === fieldKey)?.label || fieldKey || "閺嗗倷绗夐懛顏勫З缂佈勫";
+      return getReferenceClassificationFieldOptions().find((item) => item.key === fieldKey)?.label || fieldKey || "暂不自动继承";
     }
 
     function getReferenceClassificationTargetId(fieldKey) {
@@ -5485,12 +5154,12 @@
         const matched = classifications.find((item) => Number(item.index) === index) || {
           index,
           fieldKey: "unknown",
-          summary: "当前这张参考图还没有稳定归类，可以手动指定它更适合服务哪个详情模块。",
+          summary: "这张图还没有明确归类，当前不会自动继承到具体板块。",
           confidence: "low"
         };
         const effectiveSummary = matched.fieldKey === "unknown"
-          ? (matched.summary || "当前先不自动继承这张参考图，避免误带到不合适的详情模块。")
-          : (matched.summary || "已生成归类摘要。");
+          ? (matched.summary || "这张图当前不会自动继承到具体板块。你可以手动指定到参数、资质、款式等板块。")
+          : (matched.summary || "已完成归类。");
         const options = getReferenceClassificationFieldOptions()
           .map((item) => `
             <button
@@ -5505,12 +5174,12 @@
         return `
           <article class="detail-reference-classification-card">
             <div class="detail-reference-classification-head">
-              <strong>閸欏倽鈧啫娴?${index + 1}</strong>
+              <strong>参考图 ${index + 1}</strong>
               <span class="detail-module-tag">${escapeHtml(getReferenceClassificationLabel(matched.fieldKey))}</span>
             </div>
-            <img class="detail-reference-classification-preview" src="${escapeHtml(imageUrl)}" alt="閸欏倽鈧啫娴?${index + 1}">
+            <img class="detail-reference-classification-preview" src="${escapeHtml(imageUrl)}" alt="参考图 ${index + 1}">
             <div class="detail-reference-classification-options">${options}</div>
-            <p>${escapeHtml(effectiveSummary)} 缂冾喕淇婃惔锔肩窗${escapeHtml(matched.confidence || "low")}</p>
+            <p>${escapeHtml(effectiveSummary)} 置信度：${escapeHtml(matched.confidence || "low")}</p>
           </article>
         `;
       }).join("");
@@ -5519,8 +5188,8 @@
         <section class="detail-module-supplemental-summary">
           <div class="detail-module-supplemental-summary-head">
             <div>
-              <strong>閸撳秹娼伴崣鍌濃偓鍐ㄦ禈瑜版帞琚紒鎾寸亯</strong>
-              <p>缁崵绮烘导姘帥閹跺﹤澧犻棃顫瑐娴肩姷娈戦崣鍌濃偓鍐ㄦ禈閹稿婢橀崸妤€缍婄猾浼欑礉閸愬秴鍠呯€规氨鎴烽幍璺ㄧ舶鐠嬩降鈧倽绻栭柌灞藉讲娴犮儳娲块幒銉﹀閸斻劍鏁奸敍灞炬暭鐎瑰瞼鐝涢崡宕囨晸閺佸牞绱辫ぐ鎺撳灇閳ユ粍娈忔稉宥堝殰閸斻劎鎴烽幍搴撯偓婵堟畱閸ュ彞绗夋导姘础鐢箑鍩岄崥搴ㄦ桨閺夊灝娼￠妴?/p>
+              <strong>前面参考图归类结果</strong>
+              <p>系统会先把前面上传的参考图按板块归类，再决定继承给谁。这里可以直接手动改，改完立即生效；归成“暂不自动继承”的图不会乱带到后面板块。</p>
             </div>
           </div>
           <div class="detail-reference-classification-list">${cards}</div>
@@ -5568,7 +5237,7 @@
         });
       }
 
-      showToast(`閸欏倽鈧啫娴?${index + 1} 瀹稿弶鏁兼稉鐚寸窗${getReferenceClassificationLabel(nextFieldKey)}`);
+      showToast(`参考图 ${index + 1} 已改为：${getReferenceClassificationLabel(nextFieldKey)}`);
     }
 
     function collectMissingSupplementalFields(workbench = currentDetailModuleWorkbench) {
@@ -5613,6 +5282,7 @@
         </section>
       `;
     }
+
     function renderDetailModuleSupplementalPanel(workbench = currentDetailModuleWorkbench) {
       const fields = collectMissingSupplementalFields(workbench);
       if (!fields.length) return "";
@@ -5672,6 +5342,7 @@
         </section>
       `;
     }
+
     function renderInlineModuleQuickFill(item) {
       const missingKeys = Array.isArray(item?.missingRequiredInputs) ? item.missingRequiredInputs : [];
       if (!missingKeys.length) return "";
@@ -5723,6 +5394,126 @@
         </div>
       `;
     }
+
+    function renderDetailModuleSupplementalPanel(workbench = currentDetailModuleWorkbench) {
+      const fields = collectMissingSupplementalFields(workbench);
+      if (!fields.length) return "";
+
+      const itemsHtml = fields.map((field) => {
+        const recognitionImages = getSupplementalRecognitionImages(field.key);
+        const referenceImages = getSupplementalReferenceImages(field.key);
+        const globalReferenceImages = getGlobalDetailReferenceImages(field.key);
+        const previewUrl = recognitionImages[0] || referenceImages[0] || globalReferenceImages[0] || "";
+        const isAnalyzing = currentDetailSupplementalAnalyzingKey === field.key;
+
+        return `
+        <article
+          class="detail-module-supplemental-item ${globalReferenceImages.length ? "reference-linked" : ""}"
+          id="${escapeHtml(getReferenceClassificationTargetId(field.key))}"
+        >
+          <div>
+            <label for="detail-supplemental-${escapeHtml(field.key)}">${escapeHtml(field.label)}</label>
+            <p>${escapeHtml(field.description || "请先补充这项信息，再继续生成对应板块。")}</p>
+          </div>
+          <div class="detail-module-supplemental-upload">
+            <input type="file" accept="image/*" multiple id="detail-supplemental-file-${escapeHtml(field.key)}" data-supplemental-file="${escapeHtml(field.key)}" hidden>
+            <input type="file" accept="image/*" multiple id="detail-supplemental-reference-file-${escapeHtml(field.key)}" data-supplemental-reference-file="${escapeHtml(field.key)}" hidden>
+            <button type="button" data-supplemental-upload-btn="${escapeHtml(field.key)}">${isAnalyzing ? "识别中..." : "上传图片并自动识别"}</button>
+            <button type="button" data-supplemental-reference-upload-btn="${escapeHtml(field.key)}">${globalReferenceImages.length ? `若有补充参考图请再上传（已继承 ${globalReferenceImages.length} 张）` : "若有参考图请上传"}</button>
+            <span>${previewUrl ? `已识别 ${recognitionImages.length} 张资料图 / 本字段 ${referenceImages.length} 张参考图 / 前面已继承 ${globalReferenceImages.length} 张全局参考图` : "支持多张上传；识别图用于提取真实信息，参考图用于借排版和信息结构。"}</span>
+          </div>
+          ${previewUrl ? `<img class="detail-module-supplemental-preview" src="${escapeHtml(previewUrl)}" alt="${escapeHtml(field.label)}预览">` : ""}
+          <textarea
+            id="detail-supplemental-${escapeHtml(field.key)}"
+            data-supplemental-key="${escapeHtml(field.key)}"
+            placeholder="${escapeHtml(field.placeholder)}"
+          >${escapeHtml(currentDetailModuleSupplementalInfo[field.key] || "")}</textarea>
+          <div class="detail-module-inline-fill-actions">
+            <button type="button" class="detail-confirm-btn" data-suggest-supplemental-field="${escapeHtml(field.key)}">AI 一键生成</button>
+            <button type="button" class="detail-confirm-btn" data-save-supplemental-field="${escapeHtml(field.key)}">保存这项</button>
+          </div>
+        </article>
+      `;
+      }).join("");
+
+      return `
+        <section class="detail-module-supplemental-panel" id="detail-module-supplemental-panel">
+          <div class="detail-module-supplemental-head">
+            <strong>先把这些板块资料补齐</strong>
+            <p>识别图负责读出真实参数、资质和售后信息；参考图负责把你想要的排版、证据层级和信息结构带进后面的模块生成里。当前只会继承已被自动归类到本板块的参考图，避免一张参数图误带到所有板块。</p>
+          </div>
+          ${currentDetailSupplementalPanelOpen ? `
+          <div class="detail-module-supplemental-grid">${itemsHtml}</div>
+          <div class="detail-module-supplemental-actions">
+            <p>如果前面已经上传过整套参考图，后面的模块会自动继续沿用；这里只需要补充模块专属的资料图或排版参考图。</p>
+            <div class="detail-module-inline-actions">
+              <button type="button" class="detail-confirm-btn" data-toggle-supplemental-panel="true">收起资料台</button>
+              <button type="button" class="detail-confirm-btn primary" id="detail-supplemental-refresh-btn">保存资料并重新检查</button>
+            </div>
+          </div>
+          ` : `
+          <div class="detail-module-supplemental-actions">
+            <p>资料台已收起，需要时可再次展开继续填写。</p>
+            <div class="detail-module-inline-actions">
+              <button type="button" class="detail-confirm-btn primary" data-toggle-supplemental-panel="true">展开资料台继续填写</button>
+            </div>
+          </div>
+          `}
+        </section>
+      `;
+    }
+
+    function renderInlineModuleQuickFill(item) {
+      const missingKeys = Array.isArray(item?.missingRequiredInputs) ? item.missingRequiredInputs : [];
+      if (!missingKeys.length) return "";
+
+      const fieldsHtml = missingKeys.map((fieldKey) => {
+        const field = DETAIL_SUPPLEMENTAL_FIELD_COPY[fieldKey] || {
+          label: fieldKey,
+          placeholder: "请补充这项信息"
+        };
+        const recognitionImages = getSupplementalRecognitionImages(fieldKey);
+        const referenceImages = getSupplementalReferenceImages(fieldKey);
+        const globalReferenceImages = getGlobalDetailReferenceImages(fieldKey);
+        const previewUrl = recognitionImages[0] || referenceImages[0] || globalReferenceImages[0] || "";
+        const isAnalyzing = currentDetailSupplementalAnalyzingKey === fieldKey;
+        const recognitionFileId = `detail-inline-supplemental-file-${item.key}-${fieldKey}`;
+        const referenceFileId = `detail-inline-supplemental-reference-file-${item.key}-${fieldKey}`;
+
+        return `
+          <div class="detail-module-inline-field">
+            <label for="detail-inline-supplemental-${escapeHtml(item.key)}-${escapeHtml(fieldKey)}">${escapeHtml(field.label)}</label>
+            <div class="detail-module-supplemental-upload">
+              <input type="file" accept="image/*" multiple id="${escapeHtml(recognitionFileId)}" data-supplemental-file="${escapeHtml(fieldKey)}" hidden>
+              <input type="file" accept="image/*" multiple id="${escapeHtml(referenceFileId)}" data-supplemental-reference-file="${escapeHtml(fieldKey)}" hidden>
+              <button type="button" data-supplemental-upload-btn="${escapeHtml(fieldKey)}" data-supplemental-upload-target="${escapeHtml(recognitionFileId)}">${isAnalyzing ? "识别中..." : "上传图片并自动识别"}</button>
+              <button type="button" data-supplemental-reference-upload-btn="${escapeHtml(fieldKey)}" data-supplemental-reference-upload-target="${escapeHtml(referenceFileId)}">${globalReferenceImages.length ? `若有补充参考图请再上传（已继承 ${globalReferenceImages.length} 张）` : "若有参考图请上传"}</button>
+              <span>${previewUrl ? `已识别 ${recognitionImages.length} 张资料图 / 本字段 ${referenceImages.length} 张参考图 / 前面已继承 ${globalReferenceImages.length} 张全局参考图` : "支持多张上传；识别图读信息，参考图借排版。"}</span>
+            </div>
+            <textarea
+              id="detail-inline-supplemental-${escapeHtml(item.key)}-${escapeHtml(fieldKey)}"
+              data-supplemental-key="${escapeHtml(fieldKey)}"
+              placeholder="${escapeHtml(field.placeholder || "请补充这项信息")}"
+            >${escapeHtml(currentDetailModuleSupplementalInfo[fieldKey] || "")}</textarea>
+            <div class="detail-module-ai-actions">
+              <button type="button" class="detail-confirm-btn" data-suggest-supplemental-field="${escapeHtml(fieldKey)}">AI 一键生成</button>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      return `
+        <div class="detail-module-inline-fill">
+          <strong>先补这块需要的资料</strong>
+          <div class="detail-module-inline-fill-grid">${fieldsHtml}</div>
+          <div class="detail-module-inline-fill-actions">
+            <button type="button" class="detail-confirm-btn" data-inline-refresh-module="${escapeHtml(item.key)}">保存并重新检查</button>
+            <button type="button" class="detail-confirm-btn primary" data-inline-generate-module="${escapeHtml(item.key)}">保存并直接生成图片</button>
+          </div>
+        </div>
+      `;
+    }
+
     function getSelectedDetailModules() {
       if (!currentDetailModulePlan) return [];
 
@@ -5752,51 +5543,35 @@
       if (!workbench) return "";
 
       const modules = Array.isArray(workbench.modules) ? workbench.modules : [];
-      const hasHeroBaseline = Boolean(workbench.heroImageUrl);
-      const effectiveStyleText = escapeHtml(getEffectiveDetailStyle());
-      const generatedCount = modules.filter((item) => (
-        item.key === "hero"
-          ? hasHeroBaseline
-          : Boolean(currentDetailGeneratedModules[item.key]?.imageUrl)
-      )).length;
+      const generatedCount = Object.values(currentDetailGeneratedModules).filter((item) => item?.imageUrl).length;
       const itemsHtml = modules.map((item) => {
         const generatedModule = currentDetailGeneratedModules[item.key] || null;
-        const isHeroModule = item.key === "hero";
-        const isReady = isHeroModule ? hasHeroBaseline : Boolean(generatedModule?.imageUrl);
         return `
-          <article class="detail-module-workbench-card ${isReady ? "" : "locked"}">
+          <article class="detail-module-workbench-card ${generatedModule?.imageUrl ? "" : "locked"}">
             <div class="detail-module-workbench-card-top">
               <div class="detail-module-workbench-card-title">
                 <span class="detail-module-workbench-index">0${item.queueIndex}</span>
                 <strong>${escapeHtml(item.name)}</strong>
               </div>
               <div class="detail-module-workbench-badges">
-                <span class="detail-module-tag ${isReady ? "active" : "inactive"}">${isReady ? (isHeroModule ? "瀹稿弶閮ㄩ悽? : "瀹稿弶鏆ｉ悶?) : "瀵板懐鏁撻幋?}</span>
+                <span class="detail-module-tag ${generatedModule?.imageUrl ? "active" : "inactive"}">${generatedModule?.imageUrl ? "已整理" : "待生成"}</span>
               </div>
             </div>
             <div class="detail-module-workbench-copy">
               <div>
-                <label>閺佸鎮婇悩鑸碘偓?/label>
-                <p>${escapeHtml(
-                  isReady
-                    ? (isHeroModule
-                      ? "鏉╂瑤绔撮崸妤冩纯閹恒儲閮ㄩ悽銊ь儑 6 濮濄儱鍑＄涵顔款吇妫ｆ牕娴橀敍灞藉嚒缂佸繋缍旀稉鐑樻殻婵傛顕涢幆鍛淬€夐惃鍕儑娑撯偓鐏炲繐鐔€缁捐儻绻橀崗銉︽殻閻炲棝銆夐妴?
-                      : "鏉╂瑥娼″鑼病鏉╂稑鍙嗙拠锔藉剰妞ゅ灚鏆ｉ悶鍡涖€夐敍灞藉讲閻╁瓨甯存稉瀣祰閸樼喎娴橀妴?)
-                    : "鏉╂瑥娼℃潻妯荤梾閺堝顒滃蹇曟晸閹存劗绮ㄩ弸婊愮礉閺佸鎮婃い鐢稿櫡娴兼艾鍘涙穱婵堟殌閸楃姳缍呴妴?
-                )}</p>
+                <label>整理状态</label>
+                <p>${escapeHtml(generatedModule?.imageUrl ? "这块已经进入详情页整理页，可直接下载原图。" : "这块还没有正式生成结果，整理页里会先保留占位。")}</p>
               </div>
             </div>
-            ${isReady ? `
+            ${generatedModule?.imageUrl ? `
               <div class="detail-module-workbench-generate">
                 <div class="detail-module-workbench-generate-head">
-                  <strong>${isHeroModule ? "瀹稿弶閮ㄩ悽銊╊浕閸? : "瀹稿弶鏆ｉ悶鍡欑波閺?}</strong>
+                  <strong>已整理结果</strong>
                   <div class="detail-module-workbench-generate-actions">
-                    ${isHeroModule
-                      ? `<button class="detail-confirm-btn" type="button" data-download-hero="true">娑撳娴囨＃鏍ф禈</button>`
-                      : `<button class="detail-confirm-btn" type="button" data-download-module="${escapeHtml(item.key)}">娑撳娴囬崢鐔锋禈</button>`}
+                    <button class="detail-confirm-btn" type="button" data-download-module="${escapeHtml(item.key)}">下载原图</button>
                   </div>
                 </div>
-                <img src="${escapeHtml(isHeroModule ? workbench.heroImageUrl : generatedModule.imageUrl)}" alt="${escapeHtml(item.name)}閺佸鎮婄紒鎾寸亯">
+                <img src="${escapeHtml(generatedModule.imageUrl)}" alt="${escapeHtml(item.name)}整理结果">
               </div>
             ` : ""}
           </article>
@@ -5807,12 +5582,12 @@
           <article class="detail-preview-module detail-assembly-page-module">
             <div class="detail-preview-module-header">
               <span class="detail-preview-module-index">01</span>
-              <span class="detail-preview-module-label">妫ｆ牕娴橀崺铏瑰殠</span>
+              <span class="detail-preview-module-label">首图基线</span>
             </div>
-            <img src="${escapeHtml(workbench.heroImageUrl)}" alt="妫ｆ牕娴橀崺铏瑰殠">
+            <img src="${escapeHtml(workbench.heroImageUrl)}" alt="首图基线">
           </article>
         ` : "",
-        ...modules.filter((item) => item.key !== "hero").map((item) => {
+        ...modules.map((item) => {
           const generatedModule = currentDetailGeneratedModules[item.key] || null;
           if (!generatedModule?.imageUrl) {
             return `
@@ -5821,7 +5596,7 @@
                   <span class="detail-preview-module-index">${String(item.queueIndex).padStart(2, "0")}</span>
                   <span class="detail-preview-module-label">${escapeHtml(item.name)}</span>
                 </div>
-                <p>鏉╂瑤绔村Ο鈥虫健鏉╂ɑ鐥呴張澶嬵劀瀵繒鏁撻幋鎰剁礉瑜版挸澧犻崣顏冪箽閻ｆ瑥婀弫鎾€夋い鍝勭碍闁插被鈧?/p>
+                <p>这一模块还没有正式生成，当前只保留在整页顺序里。</p>
               </article>
             `;
           }
@@ -5833,7 +5608,7 @@
               </div>
               <img src="${escapeHtml(generatedModule.imageUrl)}" alt="${escapeHtml(item.name)}">
               <div class="detail-module-workbench-generate-actions">
-                <button class="detail-confirm-btn" type="button" data-download-module="${escapeHtml(item.key)}">娑撳娴囨潻娆庣濡€虫健</button>
+                <button class="detail-confirm-btn" type="button" data-download-module="${escapeHtml(item.key)}">下载这一模块</button>
               </div>
             </article>
           `;
@@ -5844,34 +5619,30 @@
         <section class="detail-module-workbench" id="detail-assembly-board">
           <div class="detail-module-workbench-head">
             <div>
-              <span class="detail-module-plan-kicker">鐠囷附鍎忔い鍨殻閻炲棗灏?/span>
-              <strong>缂佺喍绔寸€电厧鍤拠锔藉剰妞?/strong>
-              <p>鏉╂瑩鍣锋导姘Ω瑜版挸澧犲鑼病閻㈢喐鍨氶惃鍕嚊閹懘銆夐弶鍨健闂嗗棔鑵戦弫瀵告倞閸掗绔存稉顏堛€夐棃銏ゅ櫡閿涘本鏌熸笟澶哥稑缂佺喍绔存０鍕潔閵嗕線鈧劕绱舵稉瀣祰閸滃苯鎮楃紒顓犳埛缂侇叀藟閸ヤ勘鈧?/p>
-              <div class="detail-preview-tags">
-                <span>瑜版挸澧犻悽鐔告櫏妞嬪孩鐗搁敍?{effectiveStyleText}</span>
-              </div>
+              <span class="detail-module-plan-kicker">详情页整理区</span>
+              <strong>一键整理详情页</strong>
+              <p>这里会把当前已经生成的详情页板块集中整理到一个页面里，方便你统一预览、逐张下载和后续继续补图。</p>
             </div>
-            <span class="detail-module-plan-note">瀹稿弶鏆ｉ悶?${generatedCount} / ${modules.length} 閸?/span>
+            <span class="detail-module-plan-note">已整理 ${generatedCount} / ${modules.length} 块</span>
           </div>
           <div class="detail-module-workbench-list">${itemsHtml}</div>
           <section class="detail-preview-sheet detail-assembly-page">
             <article class="detail-preview-module">
               <div class="detail-preview-module-header">
-                <span class="detail-preview-module-index">閺佹挳銆?/span>
-                <span class="detail-preview-module-label">瑜版挸澧犻弫鎾€夋０鍕潔</span>
+                <span class="detail-preview-module-index">整页</span>
+                <span class="detail-preview-module-label">当前整页预览</span>
               </div>
               <div class="detail-preview-two-col">
                 <div class="detail-preview-section-copy">
-                  <h3>鏉╂瑤绔存い鐢靛箛閸︺劏鍏橀惇瀣╃矆娑?/h3>
-                  <p>鏉╂瑩鍣锋导姘Ω妫ｆ牕娴橀崪灞藉嚒閻㈢喐鍨氬Ο鈥虫健閹稿顕涢幆鍛淬€夋い鍝勭碍娑撹尪鎹ｉ弶銉礉閺傞€涚┒娴ｇ姳绮犳稉濠傚煂娑撳鏆ｆ担鎾舵箙閼哄倸顨旈妴浣筋敊閹恒儱鎷扮€瑰本鍨氭惔锔肩礉閼板奔绗夐弰顖氬涧閻娴傞弫锝喣侀崸妞尖偓?/p>
+                  <h3>这一页现在能看什么</h3>
+                  <p>这里会把首图和已生成模块按详情页顺序串起来，方便你从上到下整体看节奏、衔接和完成度，而不是只看零散模块。</p>
                 </div>
                 <div class="detail-preview-plan">
-                  <strong>瑜版挸澧犵€瑰本鍨氭惔?/strong>
+                  <strong>当前完成度</strong>
                   <div class="detail-preview-tags">
-                    <span>妞嬪孩鐗搁崺铏瑰殠閿?{effectiveStyleText}</span>
-                    <span>瀹歌尙鏁撻幋?${generatedCount} 閸?/span>
-                    <span>瀵板懓藟姒?${Math.max(modules.length - generatedCount, 0)} 閸?/span>
-                    <span>閺€顖涘瘮闁劕娼℃稉瀣祰</span>
+                    <span>已生成 ${generatedCount} 块</span>
+                    <span>待补齐 ${Math.max(modules.length - generatedCount, 0)} 块</span>
+                    <span>支持逐块下载</span>
                   </div>
                 </div>
               </div>
@@ -5888,8 +5659,8 @@
           <div class="detail-module-stage show">
             <section class="detail-module-workbench detail-module-workbench-loading">
               <div class="spinner"></div>
-              <strong>濮濓絽婀弫瀵告倞鐠囷附鍎忔い鍨緲閸ф浼愭担婊冨酱</strong>
-              <p>缁崵绮烘导姘瘻娴ｇ姴鍨扮涵顔款吇閻ㄥ嫭婢橀崸妤佺閸楁洩绱濋弫瀵告倞濮濓絽绱℃潻娑樺弳 Step 07 閻ㄥ嫰銆庢惔蹇嬧偓浣圭槨閸ф娲伴弽鍥ф嫲妫ｆ牔閲滃楦款唴閸斻劋缍旈妴?/p>
+              <strong>正在整理详情页板块工作台</strong>
+              <p>系统会按你刚确认的板块清单，整理正式进入 Step 07 的顺序、每块目标和首个建议动作。</p>
             </section>
           </div>
         `;
@@ -5900,12 +5671,11 @@
       }
 
       const workbench = currentDetailModuleWorkbench;
-      const effectiveStyleText = escapeHtml(getEffectiveDetailStyle());
       const nextModule = workbench.nextRecommendedModule;
       const supplementalSummary = renderDetailModuleSupplementalSummary(workbench);
       const supplementalPanel = renderDetailModuleSupplementalPanel(workbench);
       const heroPreview = workbench.heroImageUrl
-        ? `<div class="detail-module-workbench-hero"><img src="${escapeHtml(workbench.heroImageUrl)}" alt="瀹歌尙鈥樼拋銈夘浕閸ラ箖顣╃憴?></div>`
+        ? `<div class="detail-module-workbench-hero"><img src="${escapeHtml(workbench.heroImageUrl)}" alt="已确认首图预览"></div>`
         : "";
       const moduleCards = (workbench.modules || []).map((item) => `
         ${(() => {
@@ -5921,56 +5691,45 @@
             .map((badge) => `<span class="detail-module-tag">${escapeHtml(badge.label)}</span>`)
             .join("");
           const generatedModule = currentDetailGeneratedModules[item.key] || null;
-          const isHeroModule = item.key === "hero";
           const supportsGeneration = ["selling-points", "details", "params", "scenes", "variants", "trust", "after-sales", "demo", "comparison", "size-guide", "bundle", "reviews"].includes(item.key) && item.status === "ready";
           const isGenerating = currentDetailModuleGeneratingKey === item.key;
           const inlineQuickFill = item.status === "needs_input" ? renderInlineModuleQuickFill(item) : "";
           const isReferenceFocused = currentDetailReferenceFocusFieldKey && getReferenceClassificationModuleKey(currentDetailReferenceFocusFieldKey) === item.key;
           const linkedReferenceCount = getModuleSupplementalImageBase64List(item.key).length;
           const moduleTextConfig = item.status === "ready" ? renderModuleTextConfig(item.key) : "";
-          const moduleGuardCopy = getModuleGenerationGuardCopy(item.key);
           const readinessBlock = `
             <div class="detail-module-workbench-readiness">
               <div>
-                <strong>閻㈢喐鍨氶崙鍡楀弳閸掋倖鏌?/strong>
-                <p>${escapeHtml(item.readinessNote || "瀵板懓藟閸?)}</p>
+                <strong>生成准入判断</strong>
+                <p>${escapeHtml(item.readinessNote || "待补充")}</p>
               </div>
-              ${moduleGuardCopy ? `<div><label>閺堫剝鐤嗛悽鐔稿灇闁插秶鍋ｉ梼鏌モ偓鈧崠?/label><p>${escapeHtml(moduleGuardCopy)}</p></div>` : ""}
-              ${missingChips ? `<div><label>閻㈢喐鍨氶崜宥呯箑妞よ鍘涚悰?/label><div class="detail-module-workbench-chip-row">${missingChips}</div></div>` : ""}
-              ${suggestedChips ? `<div><label>瑜版挸澧犲鎻掑讲閻╁瓨甯撮崚鈺冩暏</label><div class="detail-module-workbench-chip-row">${suggestedChips}</div></div>` : ""}
+              ${missingChips ? `<div><label>生成前必须先补</label><div class="detail-module-workbench-chip-row">${missingChips}</div></div>` : ""}
+              ${suggestedChips ? `<div><label>当前已可直接利用</label><div class="detail-module-workbench-chip-row">${suggestedChips}</div></div>` : ""}
             </div>
           `;
           const generateBlock = item.status === "ready"
             ? `
               <div class="detail-module-workbench-generate">
                 <div class="detail-module-workbench-generate-head">
-                  <strong>${isHeroModule ? "瑜版挸澧犻幍褑顢戦悩鑸碘偓? : "濮濓絽绱￠悽鐔稿灇閸忋儱褰?}</strong>
+                  <strong>正式生成入口</strong>
                   <div class="detail-module-workbench-generate-actions">
-                    ${generatedModule?.imageUrl ? `<button class="detail-confirm-btn" type="button" data-download-module="${escapeHtml(item.key)}">娑撳娴囬崢鐔锋禈</button>` : ""}
+                    ${generatedModule?.imageUrl ? `<button class="detail-confirm-btn" type="button" data-download-module="${escapeHtml(item.key)}">下载原图</button>` : ""}
                     ${supportsGeneration
-                      ? `<button class="detail-confirm-btn primary" type="button" data-generate-module="${escapeHtml(item.key)}">${isGenerating ? "閻㈢喐鍨氭稉?.." : (generatedModule ? "闁插秵鏌婇悽鐔稿灇" : "閻㈢喐鍨氶崶鍓у")}</button>`
-                      : `<span class="detail-module-tag">${isHeroModule ? "瀹稿弶閮ㄩ悽銊╊浕閸? : "娑撳绔村銉ュ晙閹恒儱鍙?}</span>`}
+                      ? `<button class="detail-confirm-btn primary" type="button" data-generate-module="${escapeHtml(item.key)}">${isGenerating ? "生成中..." : (generatedModule ? "重新生成" : "生成图片")}</button>`
+                      : `<span class="detail-module-tag">下一步再接入</span>`}
                   </div>
                 </div>
-                <p>${supportsGeneration
-                  ? `瑜版挸澧犲鏌モ偓鎰劄閹恒儱鍙嗛惇鐔风杽閺夊灝娼￠悽鐔稿灇閸忋儱褰涢敍宀€鏁ょ€瑰啯娼垫宀冪槈閸楁洘婢橀崸妤侇劀瀵繒鏁撻幋鎰版懠鐠侯垽绱濋懓灞肩瑝閺勵垳娲块幒銉︽殻婵傛澹掗柌蹇撳毉閸ヤ勘鈧倸缍嬮崜宥勭窗娑撯偓楠炶泛鐢崗?${linkedReferenceCount} 瀵姴鍑¤ぐ鎺旇閸欏倽鈧啫娴橀妴淇?
-                  : isHeroModule
-                    ? "鏉╂瑤绔撮崸妞剧瑝闂団偓鐟曚礁鍟€閸楁洜瀚悽鐔稿灇閿涘苯缍嬮崜宥囨纯閹恒儲閮ㄩ悽銊ь儑 6 濮濄儱鍑＄紒蹇曗€樼拋銈夆偓姘崇箖閻ㄥ嫰顩婚崶鎾呯礉娴ｆ粈璐熼弫鏉戭殰鐠囷附鍎忔い鐢垫畱缁楊兛绔寸仦蹇撶唨缁捐￥鈧?
-                    : "鏉╂瑤绔撮崸妤€缍嬮崜宥呭帥閹稿浼愭担婊冨酱缁撅附娼€瑰本鍨氱挧鍕灐閸戝棗顦敍灞惧姬鐡掕櫕娼禒璺烘倵鐏忓崬褰叉禒銉ф纯閹恒儴绻橀崗銉︻劀瀵繒鏁撻幋鎰┾偓?}</p>
-                ${generatedModule?.imageUrl ? `<img src="${escapeHtml(generatedModule.imageUrl)}" alt="${escapeHtml(item.name)}閻㈢喐鍨氱紒鎾寸亯">` : ""}
+                <p>${supportsGeneration ? `当前已逐步接入真实板块生成入口，用它来验证单板块正式生成链路，而不是直接整套批量出图。当前会一并带入 ${linkedReferenceCount} 张已归类参考图。` : "这个板块的正式生成入口下一批接入，当前先完成工作台和补资料约束。"}</p>
+                ${generatedModule?.imageUrl ? `<img src="${escapeHtml(generatedModule.imageUrl)}" alt="${escapeHtml(item.name)}生成结果">` : ""}
               </div>
             `
             : `
               <div class="detail-module-workbench-generate">
                 <div class="detail-module-workbench-generate-head">
-                  <strong>娑撳绔村銉ュЗ娴?/strong>
-                  ${item.status === "needs_input" ? `<button class="detail-confirm-btn primary" type="button" data-scroll-supplemental="true">閸樻槒藟鐠у嫭鏋?/button>` : ""}
+                  <strong>下一步动作</strong>
+                  ${item.status === "needs_input" ? `<button class="detail-confirm-btn primary" type="button" data-scroll-supplemental="true">去补资料</button>` : ""}
                 </div>
-                <p>${item.status === "needs_input"
-                  ? "鏉╂瑤閲滈弶鍨健閸忓牅绗夌憰浣烘纯閹恒儳鏁撻崶鎾呯礉閸忓牊濡告稉瀣桨閻ㄥ嫯绁弬娆捤夋鎰剁礉閸愬秳绻氱€涙ê鑻熼柌宥嗘煀濡偓閺屻儯鈧?
-                  : isHeroModule
-                    ? "鏉╂瑤绔撮崸妤€缍嬮崜宥囨纯閹恒儲閮ㄩ悽銊ュ嚒绾喛顓绘＃鏍ф禈閿涘奔绗夐棁鈧憰渚€顤傛径鏍у晙閻㈢喐鍨氭稉鈧鐘偓?
-                    : "鏉╂瑤绔撮崸妤€缍嬮崜宥呭帥閹稿鍑＄涵顔款吇閸╄櫣鍤庨崪灞戒紣娴ｆ粌褰撮悩鑸碘偓浣哥窔娑撳甯规潻娑崇礉濠娐ゅ喕閺夆€叉閸氬骸宓嗛崣顖濈箻閸忋儲顒滃蹇曟晸閹存劑鈧?}</p>
+                <p>${item.status === "needs_input" ? "这个板块先不要直接生图，先把下面的资料补齐，再保存并重新检查。" : "当前先沿用首图或等待后续生成入口接入。"}</p>
               </div>
             `;
           return `
@@ -5984,26 +5743,26 @@
               <strong>${escapeHtml(item.name)}</strong>
             </div>
             <div class="detail-module-workbench-badges">
-              <span class="detail-module-tag ${item.group === "required" ? "required" : ""}">${item.group === "required" ? "韫囧懎顦? : "閸欘垶鈧?}</span>
+              <span class="detail-module-tag ${item.group === "required" ? "required" : ""}">${item.group === "required" ? "必备" : "可选"}</span>
               <span class="detail-module-tag ${statusClass}">${escapeHtml(item.statusLabel)}</span>
             </div>
           </div>
           <div class="detail-module-workbench-copy">
             <div>
-              <label>鏉╂瑤绔撮崸妤勵洣鐎瑰本鍨氭禒鈧稊?/label>
-              <p>${escapeHtml(item.generationGoal || "瀵板懓藟閸?)}</p>
+              <label>这一块要完成什么</label>
+              <p>${escapeHtml(item.generationGoal || "待补充")}</p>
             </div>
             <div>
-              <label>鐟欏棜顫庨柌宥囧仯</label>
-              <p>${escapeHtml(item.visualFocus || "瀵板懓藟閸?)}</p>
+              <label>视觉重点</label>
+              <p>${escapeHtml(item.visualFocus || "待补充")}</p>
             </div>
             <div>
-              <label>閺傚洦顢嶇憴鎺戝</label>
-              <p>${escapeHtml(item.copyAngle || "瀵板懓藟閸?)}</p>
+              <label>文案角度</label>
+              <p>${escapeHtml(item.copyAngle || "待补充")}</p>
             </div>
             <div>
-              <label>鏉╂稑鍙嗗楦款唴</label>
-              <p>${escapeHtml(item.planHint || item.startAction || "瀵板懓藟閸?)}</p>
+              <label>进入建议</label>
+              <p>${escapeHtml(item.planHint || item.startAction || "待补充")}</p>
             </div>
           </div>
           ${moduleTextConfig ? `<div class="detail-module-workbench-copy">${moduleTextConfig}</div>` : ""}
@@ -6021,35 +5780,32 @@
             <div class="detail-module-workbench-head">
               <div>
                 <span class="detail-module-plan-kicker">Step 07 / Module Workbench</span>
-                <strong>鐠囷附鍎忔い鍨緲閸ф浼愭担婊冨酱瀹告彃鍣径鍥с偨</strong>
-                <p>${escapeHtml(workbench.stageSummary || "瀹稿弶鐗撮幑顔肩秼閸?hero 閸╄櫣鍤庨崪灞炬緲閸ф瀣€闁绮ㄩ弸婊愮礉閺佸鎮婇崙鍝勬倵缂侇厽膩閸ф绻橀崗銉┿€庢惔蹇嬧偓?)}</p>
-                <div class="detail-preview-tags">
-                  <span>瑜版挸澧犻悽鐔告櫏妞嬪孩鐗搁敍?{effectiveStyleText}</span>
-                </div>
+                <strong>详情页板块工作台已准备好</strong>
+                <p>${escapeHtml(workbench.stageSummary || "已根据当前 hero 基线和板块勾选结果，整理出后续模块进入顺序。")}</p>
               </div>
               ${heroPreview}
             </div>
 
             <div class="detail-module-stats">
               <article class="detail-module-stat">
-                <label>閺堫剚顐煎鑼€樼拋銈嗘緲閸?/label>
+                <label>本次已确认板块</label>
                 <strong>${workbench.totalSelected || 0}</strong>
-                <span>瑜版挸澧犲銉ょ稊閸欓绱伴幐澶庣箹娑擃亝绔婚崡鏇犳埛缂侇厼绶氭稉瀣泲閿涘奔绗夋导姘崇儲鏉╁洩顫夐崚鎺戠湴閻╁瓨甯撮弫鏉戭殰閹靛綊鍣洪崙鍝勬禈閵?/span>
+                <span>当前工作台会按这个清单继续往下走，不会跳过规划层直接整套批量出图。</span>
               </article>
               <article class="detail-module-stat">
-                <label>韫囧懎顦?/ 閸欘垶鈧?/label>
+                <label>必备 / 可选</label>
                 <strong>${workbench.requiredSelected || 0} / ${workbench.optionalSelected || 0}</strong>
-                <span>韫囧懎顦弶鍨健娣囨繆鐦夋稉璇插叡鐎瑰本鏆ｉ敍灞藉讲闁婢橀崸妤佸瘻閸濅胶琚崪宀冩祮閸栨牜鐡ラ悾銉ㄋ夊鎭掆偓?/span>
+                <span>必备板块保证主干完整，可选板块按品类和转化策略补强。</span>
               </article>
               <article class="detail-module-stat">
-                <label>瀵ら缚顔呴崗鍫ｇ箻閸?/label>
-                <strong>${escapeHtml(nextModule?.name || "瑜版挸澧犲鏌ユ敚鐎?)}</strong>
-                <span>${nextModule ? `瀵ら缚顔呮禒搴ｎ儑 ${nextModule.queueIndex} 娑擃亝婢橀崸妤€绱戞慨瀣劀瀵繒鏁撻幋鎰┾偓淇?: "瑜版挸澧犲鏌モ偓澶嬫緲閸ф鍏樼€瑰本鍨氭禍鍡楃唨绾偓闁夸礁鐣鹃敍灞藉讲缂佈呯敾鐞涖儱鍘栭弬鎵畱閺夊灝娼＄憴鍕灊閵?}</span>
+                <label>建议先进入</label>
+                <strong>${escapeHtml(nextModule?.name || "当前已锁定")}</strong>
+                <span>${nextModule ? `建议从第 ${nextModule.queueIndex} 个板块开始正式生成。` : "当前已选板块都完成了基础锁定，可继续补充新的板块规划。"}</span>
               </article>
               <article class="detail-module-stat">
-                <label>闂団偓閸忓牐藟娣団剝浼?/label>
+                <label>需先补信息</label>
                 <strong>${workbench.needsInputCount || 0}</strong>
-                <span>鏉╂瑤绨洪弶鍨健娑撳秳绱伴惄瀛樺复閺€鍓х舶 AI 閸樻槒鍓崇悰銉礉娴兼艾鍘涢幏锔跨秶楠炶埖褰佺粈楦克夌挧鍕灐閵?/span>
+                <span>这些板块不会直接放给 AI 去脑补，会先拦住并提示补资料。</span>
               </article>
             </div>
 
@@ -6057,8 +5813,8 @@
             ${supplementalPanel}
             <div class="detail-module-workbench-list">${moduleCards}</div>
             <div class="detail-module-planner-actions">
-              <p>瑜版挷缍樺鑼病瀵偓婵妾扮紒顓犳晸閹存劘顕涢幆鍛淬€夐弶鍨健閸氬函绱濋崣顖欎簰閹跺﹤缍嬮崜宥囩波閺嬫粓娉︽稉顓熸殻閻炲棗鍩屾稉鈧稉顏堛€夐棃銏ゅ櫡閿涘苯鎮楅棃銏㈢埠娑撯偓娑撳娴囨导姘纯韫囶偁鈧?/p>
-              <button type="button" class="detail-confirm-btn primary" id="detail-assembly-open-btn">${currentDetailAssemblyOpen ? "閸掗攱鏌婄拠锔藉剰妞ら潧顕遍崙鍝勫隘" : "缂佺喍绔寸€电厧鍤拠锔藉剰妞?}</button>
+              <p>当你已经开始陆续生成详情页板块后，可以把当前结果集中整理到一个页面里，后面统一下载会更快。</p>
+              <button type="button" class="detail-confirm-btn primary" id="detail-assembly-open-btn">${currentDetailAssemblyOpen ? "刷新详情页整理区" : "一键整理详情页"}</button>
             </div>
             ${currentDetailAssemblyOpen ? renderDetailAssemblySection(workbench) : ""}
           </section>
@@ -6068,13 +5824,12 @@
 
     function renderDetailModulePlanner() {
       const plan = currentDetailModulePlan || buildDetailModulePlan();
-      const effectiveStyleText = escapeHtml(getEffectiveDetailStyle());
       const selectedRequiredCount = plan.required.filter((item) => item.selected).length;
       const selectedOptionalCount = plan.optional.filter((item) => item.selected).length;
       const totalSelected = selectedRequiredCount + selectedOptionalCount;
       const startButtonLabel = currentDetailModuleWorkbench
-        ? "闁插秵鏌婇弫瀵告倞鐠囷附鍎忔い鍨緲閸ф浼愭担婊冨酱"
-        : "瀵偓婵鏁撻幋鎰嚊閹懘銆夐弶鍨健閿涘牅绗呮稉鈧銉礆";
+        ? "重新整理详情页板块工作台"
+        : "开始生成详情页板块（下一步）";
 
       const requiredHtml = plan.required.map((item) => `
         <article class="detail-module-card selectable ${item.selected ? "" : "inactive"}" data-required-module="${escapeHtml(item.key)}">
@@ -6082,11 +5837,11 @@
             <strong>${escapeHtml(item.name)}</strong>
             <p>${escapeHtml(item.note)}</p>
             <div class="detail-module-card-tags">
-              <span class="detail-module-tag required">韫囧懎顦?/span>
-              <span class="detail-module-tag ${item.selected ? "active" : "inactive"}">${item.selected ? "閺堫剚顐奸悽鐔稿灇" : "閺嗗倷绗夐悽鐔稿灇"}</span>
+              <span class="detail-module-tag required">必备</span>
+              <span class="detail-module-tag ${item.selected ? "active" : "inactive"}">${item.selected ? "本次生成" : "暂不生成"}</span>
             </div>
           </div>
-          <button class="detail-module-toggle ${item.selected ? "active" : ""}" type="button" aria-label="${item.selected ? "閸欐牗绉? : "閸氼垳鏁?} ${escapeHtml(item.name)}"></button>
+          <button class="detail-module-toggle ${item.selected ? "active" : ""}" type="button" aria-label="${item.selected ? "取消" : "启用"} ${escapeHtml(item.name)}"></button>
         </article>
       `).join("");
 
@@ -6096,11 +5851,11 @@
             <strong>${escapeHtml(item.name)}</strong>
             <p>${escapeHtml(item.note)}</p>
             <div class="detail-module-card-tags">
-              <span class="detail-module-tag">${item.recommended ? escapeHtml(item.recommendedLabel || "閸欘垶鈧藟閸?) : "瑜版挸澧犻棃鐐茬箑闁?}</span>
-              <span class="detail-module-tag ${item.selected ? "active" : "inactive"}">${item.selected ? "瀵ら缚顔呴悽鐔稿灇" : "閺嗗倷绗夐悽鐔稿灇"}</span>
+              <span class="detail-module-tag">${item.recommended ? escapeHtml(item.recommendedLabel || "可选补充") : "当前非必选"}</span>
+              <span class="detail-module-tag ${item.selected ? "active" : "inactive"}">${item.selected ? "建议生成" : "暂不生成"}</span>
             </div>
           </div>
-          <button class="detail-module-toggle ${item.selected ? "active" : ""}" type="button" aria-label="${item.selected ? "閸欐牗绉? : "閸氼垳鏁?} ${escapeHtml(item.name)}"></button>
+          <button class="detail-module-toggle ${item.selected ? "active" : ""}" type="button" aria-label="${item.selected ? "取消" : "启用"} ${escapeHtml(item.name)}"></button>
         </article>
       `).join("");
 
@@ -6108,54 +5863,51 @@
         <div class="detail-module-planner-head">
           <div>
             <span class="detail-module-plan-kicker">Step 07 / Module Planning</span>
-            <strong>妫ｆ牕娴橀柅姘崇箖閸氬函绱濋崗鍫⑩€樼拋銈堢箹濞喡ゎ洣閻㈢喐鍨氶崫顏冪昂鐠囷附鍎忔い鍨緲閸?/strong>
-            <p>鏉╂瑤绔村銉ュ帥閸嬫碍婢橀崸妤勵潐閸掓帊绗岀紒鐔活吀閿涘奔绗夐惄瀛樺复鐏炴洖绱戦弫鏉戭殰鐠囷附鍎忔い闈涘毉閸ヤ勘鈧倸绻€婢跺洦婢橀崸妤€娴愮€规氨鎾奸崗銉︽拱濞嗭紕鏁撻幋鎰剁礉閸欘垶鈧婢橀崸妤€鍘涢幐澶婃惂缁鎷版潪顒€瀵查棁鈧Ч鍌氫粵閸曢箖鈧缂撶拋顔衡偓?/p>
-            <div class="detail-preview-tags">
-              <span>瑜版挸澧犻悽鐔告櫏妞嬪孩鐗搁敍?{effectiveStyleText}</span>
-            </div>
+            <strong>首图通过后，先确认这次要生成哪些详情页板块</strong>
+            <p>这一步先做板块规划与统计，不直接展开整套详情页出图。必备板块固定纳入本次生成，可选板块先按品类和转化需求做勾选建议。</p>
           </div>
-          <span class="detail-module-plan-note">瑜版挸澧犻幀鏄忣吀 ${totalSelected} / ${DETAIL_REQUIRED_MODULES.length + DETAIL_OPTIONAL_MODULES.length} 妞?/span>
+          <span class="detail-module-plan-note">当前总计 ${totalSelected} / ${DETAIL_REQUIRED_MODULES.length + DETAIL_OPTIONAL_MODULES.length} 项</span>
         </div>
 
         <div class="detail-module-stats">
           <article class="detail-module-stat">
-            <label>韫囧懎顦弶鍨健</label>
+            <label>必备板块</label>
             <strong>${selectedRequiredCount}</strong>
-            <span>閸?${DETAIL_REQUIRED_MODULES.length} 妞ょ櫢绱濇妯款吇閼奉亜濮╅崗銊┾偓澶涚礉娑旂喎褰查幍瀣З鐠嬪啯鏆ｉ妴?/span>
+            <span>共 ${DETAIL_REQUIRED_MODULES.length} 项，默认自动全选，也可手动调整。</span>
           </article>
           <article class="detail-module-stat">
-            <label>閸欘垶鈧婢橀崸?/label>
+            <label>可选板块</label>
             <strong>${selectedOptionalCount}</strong>
-            <span>閸?${DETAIL_OPTIONAL_MODULES.length} 妞ょ櫢绱濋崣顖涘瘻閸濅胶琚崪灞芥櫌閸濅胶鐡ラ悾銉ョ磻閸忕偨鈧?/span>
+            <span>共 ${DETAIL_OPTIONAL_MODULES.length} 项，可按品类和商品策略开关。</span>
           </article>
           <article class="detail-module-stat">
-            <label>閺堫剚顐兼０鍕吀閻㈢喐鍨?/label>
+            <label>本次预计生成</label>
             <strong>${totalSelected}</strong>
-            <span>韫囧懎顦?+ 瀹告彃瀣€闁褰查柅澶嬫緲閸ф绱濇担婊€璐熼崥搴ｇ敾鐠囷附鍎忔い鐢垫晸閹存劖绔婚崡鏇樷偓?/span>
+            <span>必备 + 已勾选可选板块，作为后续详情页生成清单。</span>
           </article>
         </div>
 
         <div class="detail-module-groups">
           <section class="detail-module-group">
             <div class="detail-module-group-head">
-              <strong>韫囧懎顦弶鍨健閿涘牆鍙?${DETAIL_REQUIRED_MODULES.length} 妞ょ櫢绱?/strong>
-              <span>瀵ら缚顔呴懛顏勫З閸忋劌瀣€闁?/span>
+              <strong>必备板块（共 ${DETAIL_REQUIRED_MODULES.length} 项）</strong>
+              <span>建议自动全勾选</span>
             </div>
-            <p class="detail-module-group-note">濞夘煉绱板楦款唴閼奉亜濮╅崗銊╁劥閸曢箖鈧绱濇俊鍌涙箒閻楄鐣╅崯鍡楁惂娑旂喎褰叉禒銉﹀閸斻劌褰囧☉鍫涒偓?/p>
+            <p class="detail-module-group-note">注：建议自动全部勾选，如有特殊商品也可以手动取消。</p>
             <div class="detail-module-card-list">${requiredHtml}</div>
           </section>
 
           <section class="detail-module-group">
             <div class="detail-module-group-head">
-              <strong>閸欘垶鈧婢橀崸妤嬬礄瀹告煡鈧?${selectedOptionalCount} / ${DETAIL_OPTIONAL_MODULES.length}閿?/strong>
-              <span>閺€顖涘瘮閹靛濮╅崟楣冣偓?/span>
+              <strong>可选板块（已选 ${selectedOptionalCount} / ${DETAIL_OPTIONAL_MODULES.length}）</strong>
+              <span>支持手动勾选</span>
             </div>
             <div class="detail-module-card-list">${optionalHtml}</div>
           </section>
         </div>
 
         <div class="detail-module-planner-actions">
-          <p>娑撳绔村銉ョ紦鐠侇喕绮涢悞璺哄帥閸嬫粎鏆€閸︺劉鈧粎鏁撻幋鎰潐閸掓巻鈧繂鐪伴妴鍌滅搼娴ｇ姷鈥樼拋銈堢箹濞嗭紕娈戦弶鍨健濞撳懎宕熷▽锟犳６妫版﹫绱濋崘宥堢箻閸忋儳婀″锝囨畱鐠囷附鍎忔い鍨緲閸ф鏁撻幋鎰剁礉闁灝鍘ゆ潻鍥ㄦ－閹跺﹥鏆ｆ總妤伳侀崸妞剧濞嗏剝鈧冧粵濮濇眹鈧?/p>
+          <p>下一步建议仍然先停留在“生成规划”层。等你确认这次的板块清单没问题，再进入真正的详情页板块生成，避免过早把整套模块一次性做死。</p>
           <button type="button" id="detail-module-start-btn">${startButtonLabel}</button>
         </div>
         ${renderDetailModuleStage()}
@@ -6168,7 +5920,6 @@
       planner.innerHTML = renderDetailModulePlanner();
       bindDetailModulePlannerActions();
       bindDetailModuleSupplementalActions();
-      rememberCurrentResultView("detail");
     }
 
     async function refreshDetailModuleWorkbench(options = {}) {
@@ -6176,14 +5927,14 @@
 
       if (!currentDetailAnalysis) {
         if (options.showErrorToast !== false) {
-          showToast("鐠囧嘲鍘涚€瑰本鍨氱粭?5 濮濄儲鏌熷鍫熸喅鐟?);
+          showToast("请先完成第 5 步方案摘要");
         }
         return false;
       }
 
       if (currentDetailHeroApproval !== "approved") {
         if (options.showErrorToast !== false) {
-          showToast("鐠囧嘲鍘涚涵顔款吇鏉╂瑥绱舵＃鏍ф禈閸欘垯浜掔紒褏鐢婚敍灞藉晙鏉╂稑鍙嗙拠锔藉剰妞ゅ灚婢橀崸妤€浼愭担婊冨酱");
+          showToast("请先确认这张首图可以继续，再进入详情页板块工作台");
         }
         return false;
       }
@@ -6195,7 +5946,7 @@
       const selectedModules = getSelectedDetailModules();
       if (!selectedModules.length) {
         if (options.showErrorToast !== false) {
-          showToast("鐠囧嘲鍘涢崟楣冣偓澶嬫拱濞喡ゎ洣鏉╂稑鍙嗛悽鐔稿灇閻ㄥ嫯顕涢幆鍛淬€夐弶鍨健");
+          showToast("请先勾选本次要进入生成的详情页板块");
         }
         return false;
       }
@@ -6212,7 +5963,7 @@
       try {
         const data = await postJson("/api/prepare-detail-modules", {
           productName: currentDetailAnalysis.productName || detailProductNameInput.value.trim(),
-          style: getEffectiveDetailStyle(),
+          style: currentDetailStyle,
           summary: currentDetailAnalysis,
           selectedModules,
           heroImageUrl: currentDetailHeroImageUrl,
@@ -6233,27 +5984,21 @@
         if (options.successMessage) {
           showToast(options.successMessage);
         } else if (options.showSuccessToast !== false) {
-          showToast(data.result?.stageSummary || "瀹歌尪绻橀崗銉嚊閹懘銆夐弶鍨健瀹搞儰缍旈崣?);
+          showToast(data.result?.stageSummary || "已进入详情页板块工作台");
         }
         return true;
       } catch (error) {
         clearDetailModuleWorkbench();
         updateDetailModulePlanner();
         if (options.showErrorToast !== false) {
-          showToast(error.message || "鏉╂稑鍙嗙拠锔藉剰妞ゅ灚婢橀崸妤€浼愭担婊冨酱婢惰精瑙?);
+          showToast(error.message || "进入详情页板块工作台失败");
         }
         return false;
       } finally {
-        activeGenerationMode = "";
         isGenerating = false;
         btnDetailGenerate.disabled = false;
         updateResultActions();
       }
-    }
-
-    async function handleDetailModuleStart(event) {
-      event?.preventDefault?.();
-      await refreshDetailModuleWorkbench();
     }
 
     function bindDetailModulePlannerActions() {
@@ -6289,6 +6034,212 @@
       const startBtn = document.getElementById("detail-module-start-btn");
       if (startBtn) {
         startBtn.addEventListener("click", handleDetailModuleStart);
+      }
+    }
+
+    function bindDetailModuleSupplementalActionsLegacy() {
+      const planner = document.getElementById("detail-module-planner");
+      if (!planner) return;
+
+      planner.querySelectorAll("[data-supplemental-key]").forEach((field) => {
+        field.addEventListener("input", () => {
+          const key = field.dataset.supplementalKey;
+          if (!key) return;
+          currentDetailModuleSupplementalInfo = {
+            ...currentDetailModuleSupplementalInfo,
+            [key]: field.value.trim()
+          };
+        });
+      });
+
+      planner.querySelectorAll("[data-module-text-mode]").forEach((field) => {
+        field.addEventListener("change", () => {
+          const moduleKey = field.dataset.moduleTextMode;
+          if (!moduleKey) return;
+          setModuleTextSetting(moduleKey, { mode: field.value });
+        });
+      });
+
+      planner.querySelectorAll("[data-module-text-position]").forEach((field) => {
+        field.addEventListener("input", () => {
+          const moduleKey = field.dataset.moduleTextPosition;
+          if (!moduleKey) return;
+          setModuleTextSetting(moduleKey, { positionHint: field.value.trim() });
+        });
+      });
+
+      planner.querySelectorAll("[data-module-text-copy]").forEach((field) => {
+        field.addEventListener("input", () => {
+          const moduleKey = field.dataset.moduleTextCopy;
+          if (!moduleKey) return;
+          setModuleTextSetting(moduleKey, { userText: field.value.trim() });
+        });
+      });
+
+      planner.querySelectorAll("[data-module-text-note]").forEach((field) => {
+        field.addEventListener("input", () => {
+          const moduleKey = field.dataset.moduleTextNote;
+          if (!moduleKey) return;
+          setModuleTextSetting(moduleKey, { note: field.value.trim() });
+        });
+      });
+
+      planner.querySelectorAll("[data-suggest-supplemental-field]").forEach((button) => {
+        button.addEventListener("click", async () => {
+          const fieldKey = button.dataset.suggestSupplementalField;
+          if (!fieldKey) return;
+          const originalText = button.textContent;
+          try {
+            button.disabled = true;
+            button.textContent = "生成中...";
+            const data = await postJson("/api/suggest-detail-module-field", {
+              fieldKey,
+              productName: currentDetailAnalysis?.productName || detailProductNameInput.value.trim(),
+              productVisualSummary: currentDetailAnalysis?.productVisualSummary || "",
+              coreSellingPoints: currentDetailAnalysis?.coreSellingPoints || [],
+              scenes: detailScenes.value.trim(),
+              audience: currentDetailAnalysis?.audienceInsight || "",
+              style: currentDetailStyle,
+              existingInfo: currentDetailModuleSupplementalInfo[fieldKey] || ""
+            });
+            const suggestedText = String(data?.result?.text || "").trim();
+            if (!suggestedText) {
+              throw new Error("系统这次没有生成可用内容");
+            }
+            currentDetailModuleSupplementalInfo = {
+              ...currentDetailModuleSupplementalInfo,
+              [fieldKey]: suggestedText
+            };
+            updateDetailModulePlanner();
+            showToast("这项资料已按当前商品方向生成");
+          } catch (error) {
+            showToast(error.message || "一键生成失败");
+          } finally {
+            button.disabled = false;
+            button.textContent = originalText;
+          }
+        });
+      });
+
+      planner.querySelectorAll("[data-supplemental-upload-btn]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const key = button.dataset.supplementalUploadBtn;
+          const targetId = button.dataset.supplementalUploadTarget;
+          const fileInput = targetId
+            ? document.getElementById(targetId)
+            : key
+              ? document.getElementById(`detail-supplemental-file-${key}`)
+              : null;
+          if (!fileInput) return;
+          fileInput.value = "";
+          fileInput.click();
+        });
+      });
+
+      planner.querySelectorAll("[data-supplemental-file]").forEach((input) => {
+        input.addEventListener("change", async () => {
+          const key = input.dataset.supplementalFile;
+          const file = input.files?.[0];
+          if (!key || !file) return;
+
+          const dataUrl = await fileToDataUrl(file);
+          currentDetailModuleSupplementalImages = {
+            ...currentDetailModuleSupplementalImages,
+            [key]: dataUrl
+          };
+          updateDetailModulePlanner();
+          await handleDetailSupplementalImageRecognize(key, file, dataUrl);
+        });
+      });
+
+      planner.querySelectorAll("[data-generate-module]").forEach((button) => {
+        button.addEventListener("click", async () => {
+          const key = button.dataset.generateModule;
+          if (!key) return;
+          await handleDetailModuleGenerate(key);
+        });
+      });
+
+      planner.querySelectorAll("[data-download-module]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const key = button.dataset.downloadModule;
+          if (!key) return;
+          downloadDetailGeneratedModule(key);
+        });
+      });
+
+      planner.querySelectorAll("[data-inline-refresh-module]").forEach((button) => {
+        button.addEventListener("click", async () => {
+          const key = button.dataset.inlineRefreshModule;
+          if (!key) return;
+          await handleInlineModuleSubmit(key, false);
+        });
+      });
+
+      planner.querySelectorAll("[data-inline-generate-module]").forEach((button) => {
+        button.addEventListener("click", async () => {
+          const key = button.dataset.inlineGenerateModule;
+          if (!key) return;
+          await handleInlineModuleSubmit(key, true);
+        });
+      });
+
+      planner.querySelectorAll("[data-save-supplemental-field]").forEach((button) => {
+        button.addEventListener("click", async () => {
+          const key = button.dataset.saveSupplementalField;
+          if (!key) return;
+          if (!String(currentDetailModuleSupplementalInfo[key] || "").trim()) {
+            showToast("请先填写这项信息再保存");
+            return;
+          }
+          await refreshDetailModuleWorkbench({
+            preserveWorkbench: true,
+            successMessage: `${DETAIL_SUPPLEMENTAL_FIELD_COPY[key]?.label || key} 已保存并重新检查`
+          });
+        });
+      });
+
+      planner.querySelectorAll("[data-scroll-supplemental]").forEach((button) => {
+        button.addEventListener("click", () => {
+          if (!currentDetailSupplementalPanelOpen) {
+            currentDetailSupplementalPanelOpen = true;
+            updateDetailModulePlanner();
+          }
+          const panel = document.getElementById("detail-module-supplemental-panel");
+          if (!panel) return;
+          panel.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+      });
+
+      planner.querySelectorAll("[data-toggle-supplemental-panel]").forEach((button) => {
+        button.addEventListener("click", () => {
+          currentDetailSupplementalPanelOpen = !currentDetailSupplementalPanelOpen;
+          updateDetailModulePlanner();
+        });
+      });
+
+      planner.querySelectorAll("[data-reference-classification-choice]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const index = Number(button.dataset.referenceClassificationIndex);
+          const nextFieldKey = String(button.dataset.referenceClassificationChoice || "unknown").trim() || "unknown";
+          applyReferenceClassification(index, nextFieldKey);
+        });
+      });
+
+      const refreshBtn = document.getElementById("detail-supplemental-refresh-btn");
+      if (refreshBtn) {
+        refreshBtn.addEventListener("click", handleDetailModuleStart);
+      }
+
+      const assemblyBtn = document.getElementById("detail-assembly-open-btn");
+      if (assemblyBtn) {
+        assemblyBtn.addEventListener("click", () => {
+          currentDetailAssemblyOpen = true;
+          updateDetailModulePlanner();
+          requestAnimationFrame(() => {
+            document.getElementById("detail-assembly-board")?.scrollIntoView({ behavior: "smooth", block: "start" });
+          });
+        });
       }
     }
 
@@ -6380,7 +6331,7 @@
           const files = normalizeFileList(input.files);
           if (!key || !files.length) return;
           await recognizeSupplementalFiles(key, files);
-          showToast(`瀹歌尪鐦戦崚?${files.length} 瀵姾绁弬娆忔禈`);
+          showToast(`已识别 ${files.length} 张资料图`);
         });
       });
 
@@ -6395,48 +6346,7 @@
             [key]: dataUrls
           };
           updateDetailModulePlanner();
-          showToast(`瀹歌尪藟閸?${files.length} 瀵姴寮懓鍐╁笓閻楀牆娴榒);
-        });
-      });
-
-      planner.querySelectorAll("[data-suggest-supplemental-field]").forEach((button) => {
-        button.addEventListener("click", async () => {
-          const fieldKey = button.dataset.suggestSupplementalField;
-          if (!fieldKey) return;
-
-          const originalText = button.textContent;
-          try {
-            button.disabled = true;
-            button.textContent = "閻㈢喐鍨氭稉?..";
-
-            const data = await postJson("/api/suggest-detail-module-field", {
-              fieldKey,
-              productName: currentDetailAnalysis?.productName || detailProductNameInput.value.trim(),
-              productVisualSummary: currentDetailAnalysis?.productVisualSummary || "",
-              coreSellingPoints: currentDetailAnalysis?.coreSellingPoints || [],
-              scenes: detailScenes.value.trim(),
-              audience: currentDetailAnalysis?.audienceInsight || "",
-              style: getEffectiveDetailStyle(),
-              existingInfo: currentDetailModuleSupplementalInfo[fieldKey] || ""
-            });
-
-            const suggestedText = String(data?.result?.text || "").trim();
-            if (!suggestedText) {
-              throw new Error("缁崵绮烘潻娆愵偧濞屸剝婀侀悽鐔稿灇閸欘垳鏁ら崘鍛啇");
-            }
-
-            currentDetailModuleSupplementalInfo = {
-              ...currentDetailModuleSupplementalInfo,
-              [fieldKey]: suggestedText
-            };
-            updateDetailModulePlanner();
-            showToast("鏉╂瑩銆嶇挧鍕灐瀹稿弶瀵滆ぐ鎾冲閸熷棗鎼ч弬鐟版倻閻㈢喐鍨?);
-          } catch (error) {
-            showToast(error.message || "娑撯偓闁款喚鏁撻幋鎰亼鐠?);
-          } finally {
-            button.disabled = false;
-            button.textContent = originalText;
-          }
+          showToast(`已补充 ${files.length} 张参考排版图`);
         });
       });
 
@@ -6455,20 +6365,6 @@
           downloadDetailGeneratedModule(key);
         });
       });
-
-      planner.querySelectorAll("[data-download-hero]").forEach((button) => {
-        button.addEventListener("click", () => {
-          downloadImageUrl(currentDetailHeroImageUrl || currentDetailModuleWorkbench?.heroImageUrl || "", `detail-hero-${Date.now()}.png`);
-        });
-      });
-
-      const assemblyOpenBtn = document.getElementById("detail-assembly-open-btn");
-      if (assemblyOpenBtn) {
-        assemblyOpenBtn.addEventListener("click", () => {
-          openDetailAssemblyBoard();
-          showToast("瀹稿弶澧﹀鈧紒鐔剁鐎电厧鍤拠锔藉剰妞ら潧灏崺?);
-        });
-      }
 
       planner.querySelectorAll("[data-inline-refresh-module]").forEach((button) => {
         button.addEventListener("click", async () => {
@@ -6491,12 +6387,12 @@
           const key = button.dataset.saveSupplementalField;
           if (!key) return;
           if (!String(currentDetailModuleSupplementalInfo[key] || "").trim()) {
-            showToast("鐠囧嘲鍘涙繅顐㈠晸鏉╂瑩銆嶆穱鈩冧紖閸愬秳绻氱€?);
+            showToast("请先填写这项信息再保存");
             return;
           }
           await refreshDetailModuleWorkbench({
             preserveWorkbench: true,
-            successMessage: `${DETAIL_SUPPLEMENTAL_FIELD_COPY[key]?.label || key} 瀹歌弓绻氱€涙ê鑻熼柌宥嗘煀濡偓閺岊櫐
+            successMessage: `${DETAIL_SUPPLEMENTAL_FIELD_COPY[key]?.label || key} 已保存并重新检查`
           });
         });
       });
@@ -6536,7 +6432,7 @@
         const dataUrl = existingDataUrl || await fileToDataUrl(file);
         const imageBase64 = String(dataUrl || "").split(",")[1];
         if (!imageBase64) {
-          throw new Error("閸ュ墽澧栫拠璇插絿婢惰精瑙﹂敍宀冾嚞闁插秵鏌婃稉濠佺炊");
+          throw new Error("图片读取失败，请重新上传");
         }
 
         const data = await postJson("/api/analyze-detail-module-asset", {
@@ -6546,14 +6442,14 @@
 
         const recognizedText = String(data?.result?.text || "").trim();
         if (!recognizedText) {
-          throw new Error("閺嗗倹妞傚▽鈩冩箒娴犲骸娴橀悧鍥櫡鐠囧棗鍩嗛崙鍝勫讲閻劋淇婇幁?);
+          throw new Error("暂时没有从图片里识别出可用信息");
         }
 
         mergeSupplementalRecognizedText(fieldKey, recognizedText);
         updateDetailModulePlanner();
-        showToast("閸ュ墽澧栫拠鍡楀焼鐎瑰本鍨氶敍灞藉嚒閸ョ偛锝為崚鏉跨秼閸撳秷藟閸忓懏顢?);
+        showToast("图片识别完成，已回填到当前补充框");
       } catch (error) {
-        showToast(error.message || "閸ュ墽澧栫拠鍡楀焼婢惰精瑙?);
+        showToast(error.message || "图片识别失败");
       } finally {
         currentDetailSupplementalAnalyzingKey = "";
         updateDetailModulePlanner();
@@ -6563,20 +6459,20 @@
     async function handleInlineModuleSubmit(moduleKey, generateAfter = false) {
       const currentModule = (currentDetailModuleWorkbench?.modules || []).find((item) => item.key === moduleKey);
       if (!currentModule) {
-        showToast("鐠囧嘲鍘涙潻娑樺弳鐠囷附鍎忔い鍨緲閸ф浼愭担婊冨酱");
+        showToast("请先进入详情页板块工作台");
         return;
       }
 
       const missingKeys = Array.isArray(currentModule.missingRequiredInputs) ? currentModule.missingRequiredInputs : [];
       const unresolvedKeys = missingKeys.filter((key) => !String(currentDetailModuleSupplementalInfo[key] || "").trim());
       if (unresolvedKeys.length) {
-        showToast(`鐠囧嘲鍘涚悰銉╃秷閿?{unresolvedKeys.map((key) => DETAIL_SUPPLEMENTAL_FIELD_COPY[key]?.label || key).join("閵?)}`);
+        showToast(`请先补齐：${unresolvedKeys.map((key) => DETAIL_SUPPLEMENTAL_FIELD_COPY[key]?.label || key).join("、")}`);
         return;
       }
 
       const refreshed = await refreshDetailModuleWorkbench({
         showSuccessToast: !generateAfter,
-        successMessage: generateAfter ? "" : "鐠у嫭鏋″韫箽鐎涙﹫绱濆鏌ュ櫢閺傜増顥呴弻銉ョ秼閸撳秵婢橀崸妤冨Ц閹?
+        successMessage: generateAfter ? "" : "资料已保存，已重新检查当前板块状态"
       });
       if (!refreshed) return;
 
@@ -6584,7 +6480,7 @@
 
       const refreshedModule = (currentDetailModuleWorkbench?.modules || []).find((item) => item.key === moduleKey);
       if (!refreshedModule || refreshedModule.status !== "ready") {
-        showToast("鐠у嫭鏋″韫箽鐎涙﹫绱濇潻娆忔健鏉╂ɑ鐥呭陇鍐诲锝呯础閻㈢喐鍨氶弶鈥叉");
+        showToast("资料已保存，但这块暂时还不能正式生成");
         return;
       }
 
@@ -6595,17 +6491,17 @@
       if (isGenerating || currentDetailModuleGeneratingKey) return;
 
       if (!["selling-points", "details", "params", "scenes", "variants", "trust", "after-sales", "demo", "comparison", "size-guide", "bundle", "reviews"].includes(moduleKey)) {
-        showToast(moduleKey === "hero" ? "妫ｆ牕鐫嗗ù閿嬪Г瑜版挸澧犻惄瀛樺复濞岃法鏁ゅ鑼€樼拋銈夘浕閸ユ拝绱濋弮鐘绘付閸愬秴宕熼悪顒傛晸閹? : "瑜版挸澧犳潻娆忔健閸忓牊瀵滃銉ょ稊閸欐澘鐔€缁捐法鎴风紒顓ㄧ礉娑撳秹娓剁憰渚€顤傛径鏍у礋閻欘剛鏁撻幋?);
+        showToast("当前这个板块的正式生成入口还没接好");
         return;
       }
 
       if (!activeDetailProductFile) {
-        showToast("鐠囧嘲鍘涙稉濠佺炊閸熷棗鎼ч惂钘夌俺閸?);
+        showToast("请先上传商品白底图");
         return;
       }
 
       if (!currentDetailAnalysis || !currentDetailModuleWorkbench) {
-        showToast("鐠囧嘲鍘涚€瑰本鍨氬銉ょ稊閸欐澘鍣径?);
+        showToast("请先完成工作台准备");
         return;
       }
 
@@ -6620,7 +6516,7 @@
           moduleKey,
           productImageBase64,
           productName: currentDetailAnalysis.productName || detailProductNameInput.value.trim(),
-          style: getEffectiveDetailStyle(),
+          style: currentDetailStyle,
           scenes: detailScenes.value.trim(),
           summary: currentDetailAnalysis,
           supplementalInfo: currentDetailModuleSupplementalInfo,
@@ -6628,13 +6524,12 @@
           moduleCopyAngle: (currentDetailModuleWorkbench?.modules || []).find((item) => item.key === moduleKey)?.copyAngle || "",
           moduleUserNote: getModuleTextSetting(moduleKey).note || "",
           textOverlay: buildModuleTextOverlayPayload(moduleKey),
-          referenceStructureHints: buildModuleReferenceStructureHints(moduleKey),
           supplementalImageBase64List
         });
 
         const imageUrl = getFirstGeneratedImage(data);
         if (!imageUrl) {
-          throw new Error("閹恒儱褰涢張顏囩箲閸ョ偞婢橀崸妤€娴橀悧鍥╃波閺?);
+          throw new Error("接口未返回板块图片结果");
         }
 
         currentDetailGeneratedModules = {
@@ -6644,9 +6539,9 @@
           }
         };
         updateDetailModulePlanner();
-        showToast(`${(currentDetailModuleWorkbench?.modules || []).find((item) => item.key === moduleKey)?.name || moduleKey} 瀹歌尙鏁撻幋鎭?;
+        showToast(`${(currentDetailModuleWorkbench?.modules || []).find((item) => item.key === moduleKey)?.name || moduleKey} 已生成`);
       } catch (error) {
-        showToast(error.message || "閺夊灝娼￠悽鐔稿灇婢惰精瑙?);
+        showToast(error.message || "板块生成失败");
       } finally {
         currentDetailModuleGeneratingKey = "";
         updateDetailModulePlanner();
@@ -6664,14 +6559,14 @@
         reader.onload = (event) => {
           resolve(String(event.target?.result || ""));
         };
-        reader.onerror = () => reject(new Error("鐠囪褰囬崣鍌濃偓鍐╁焻閸ユ儳銇戠拹?));
+        reader.onerror = () => reject(new Error("读取参考截图失败"));
         reader.readAsDataURL(file);
       });
     }
 
     function downloadImageUrl(url, filename) {
       if (!url) {
-        showToast("瑜版挸澧犲▽鈩冩箒閸欘垯绗呮潪鐣屾畱閸ュ墽澧?);
+        showToast("当前没有可下载的图片");
         return;
       }
 
@@ -6685,93 +6580,19 @@
 
       try {
         link.click();
-        showToast("閸ュ墽澧栧鎻掔磻婵绗呮潪?);
+        showToast("图片已开始下载");
       } catch (error) {
         window.open(url, "_blank", "noopener");
-        showToast("娑撳娴囩悮顐ｅ閹搭亷绱濆韫礋娴ｇ姵澧﹀鈧０鍕潔");
+        showToast("下载被拦截，已为你打开预览");
       } finally {
         requestAnimationFrame(() => link.remove());
       }
     }
 
-    function downloadTextFile(content, filename, mimeType = "text/plain;charset=utf-8") {
-      const blob = new Blob([content], { type: mimeType });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = filename;
-      link.style.display = "none";
-      document.body.appendChild(link);
-
-      try {
-        link.click();
-      } finally {
-        requestAnimationFrame(() => {
-          link.remove();
-          URL.revokeObjectURL(url);
-        });
-      }
-    }
-
-    function buildDetailSummaryExportText() {
-      if (!currentDetailAnalysis) return "";
-
-      const summary = currentDetailAnalysis || {};
-      const exportSections = [
-        "# 鐠囷附鍎忔い鍨喅鐟?,
-        "",
-        `鐎电厧鍤弮鍫曟？閿?{new Date().toLocaleString()}`,
-        `娴溠冩惂閸氬秶袨閿?{summary.productName || detailProductNameInput.value.trim() || "閺堫亜鎳￠崥宥呮櫌閸?}`,
-        `鐟欏棜顫庢搴㈢壐閿?{getEffectiveDetailStyle() || "閺堫亜锝為崘?}`,
-        `娑撴槒顩︽担璺ㄦ暏閸︾儤娅欓敍?{detailScenes.value.trim() || "閺堫亜锝為崘?}`,
-        `閻╊喗鐖ｆ禍铏瑰參閿?{detailAudience.value.trim() || "閺堫亜锝為崘?}`,
-        "",
-        "## 閺嶇绺鹃崡鏍仯",
-        ...((summary.coreSellingPoints || []).length
-          ? (summary.coreSellingPoints || []).map((item) => `- ${item}`)
-          : ["- 閺嗗倹妫?]),
-        "",
-        "## 妫ｆ牕娴橀弬鐟版倻",
-        `- 閺嶅洭顣介敍?{summary.heroDirection?.headline || "閺嗗倹妫?}`,
-        `- 鐟欏棜顫庨柌宥囧仯閿?{summary.heroDirection?.visualFocus || "閺嗗倹妫?}`,
-        `- 閺傜懓鎮滈崢鐔锋礈閿?{summary.heroDirection?.reason || "閺嗗倹妫?}`,
-        "",
-        "## 濡€虫健鐟欏嫬鍨?,
-        ...((summary.modulePlan || []).length
-          ? (summary.modulePlan || []).map((item) => `- ${item}`)
-          : ["- 閺嗗倹妫?]),
-        "",
-        "## 濡€虫健閼存碍婀?,
-        ...((summary.moduleBlueprints || []).length
-          ? (summary.moduleBlueprints || []).flatMap((item) => [
-              `- ${item.name || "閺堫亜鎳￠崥宥喣侀崸?}`,
-              `  娴犺濮熼敍?{item.purpose || "閺嗗倹妫?}`,
-              `  鐟欏棜顫庨柌宥囧仯閿?{item.visualFocus || "閺嗗倹妫?}`,
-              `  閺傚洦顢嶇憴鎺戝閿?{item.copyAngle || "閺嗗倹妫?}`
-            ])
-          : ["- 閺嗗倹妫?]),
-        "",
-        "## 瀵板懓藟娣団剝浼?,
-        ...((summary.missingInfo || []).length
-          ? (summary.missingInfo || []).map((item) => `- ${item}`)
-          : ["- 閺嗗倹妫?]),
-      ];
-
-      return exportSections.join("\n");
-    }
-
-    function openDetailAssemblyBoard() {
-      currentDetailAssemblyOpen = true;
-      updateDetailModulePlanner();
-      requestAnimationFrame(() => {
-        document.getElementById("detail-assembly-board")?.scrollIntoView({ behavior: "smooth", block: "start" });
-      });
-    }
-
     function downloadDetailGeneratedModule(moduleKey) {
       const generatedModule = currentDetailGeneratedModules[moduleKey];
       if (!generatedModule?.imageUrl) {
-        showToast("鏉╂瑥娼℃潻妯荤梾閺堝褰叉稉瀣祰閻ㄥ嫮鏁撻幋鎰波閺?);
+        showToast("这块还没有可下载的生成结果");
         return;
       }
 
@@ -6817,6 +6638,37 @@
         .filter(Boolean);
     }
 
+    function getModuleSupplementalImageBase64List(moduleKey) {
+      const fieldKeys = getModuleSupplementalImageKeys(moduleKey);
+      const scopedImageDataUrls = fieldKeys.flatMap((key) => ([
+        ...getSupplementalRecognitionImages(key),
+        ...getSupplementalReferenceImages(key)
+      ]));
+      const globalReferenceDataUrls = fieldKeys.flatMap((key) => getFilteredGlobalDetailReferenceImages(key));
+
+      return [
+        ...scopedImageDataUrls,
+        ...globalReferenceDataUrls
+      ]
+        .map((dataUrl) => String(dataUrl || "").split(",")[1])
+        .filter(Boolean);
+    }
+
+    async function postJson(url, body) {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        const error = new Error(data.error || "请求失败");
+        error.payload = data;
+        throw error;
+      }
+      return data;
+    }
+
     function getFirstGeneratedImage(data) {
       const images = Array.isArray(data?.result?.images)
         ? data.result.images
@@ -6831,10 +6683,11 @@
       if (first.image_url) return first.image_url;
       if (first.result_url) return first.result_url;
       if (first.resource_url) return first.resource_url;
-      if (first.b64) return "data:image/png;base64," + first.b64;
-      if (first.imageBase64) return "data:image/png;base64," + first.imageBase64;
-      if (first.image_base64) return "data:image/png;base64," + first.image_base64;
-      if (first.b64_json) return "data:image/png;base64," + first.b64_json;
+      const mimeType = first.mimeType || first.mime_type || (String(first.b64 || first.imageBase64 || first.image_base64 || first.b64_json || "").startsWith("PHN2Zy") ? "image/svg+xml" : "image/png");
+      if (first.b64) return `data:${mimeType};base64,` + first.b64;
+      if (first.imageBase64) return `data:${mimeType};base64,` + first.imageBase64;
+      if (first.image_base64) return `data:${mimeType};base64,` + first.image_base64;
+      if (first.b64_json) return `data:${mimeType};base64,` + first.b64_json;
       return "";
     }
 
@@ -6852,22 +6705,22 @@
         try {
           data = rawText ? JSON.parse(rawText) : {};
         } catch (error) {
-          throw new Error("閹恒儱褰涙潻鏂挎礀娴滃棙妫ら弫?JSON閿涘矁顕涵顔款吇瑜版挸澧犻崥顖氬З閻ㄥ嫭妲搁張鈧弬鐗堟箛閸?);
+          throw new Error("接口返回了无效 JSON，请确认当前启动的是最新服务");
         }
       } else {
         const htmlLike = rawText.trim().startsWith("<");
         if (!response.ok) {
           throw new Error(
             htmlLike
-              ? "閹恒儱褰涙潻鏂挎礀娴?HTML 妞ょ敻娼伴敍宀冾嚞绾喛顓昏ぐ鎾冲濞村繗顫嶉崳銊ㄧ箾閻ㄥ嫭妲搁張鈧弬鐗堟拱閸︾増婀囬崝鈽呯礉閼板奔绗夐弰顖涙＋妞ょ敻娼伴幋鏍ㄦ＋鏉╂稓鈻?
-              : (rawText.trim() || "鐠囬攱鐪版径杈Е")
+              ? "接口返回了 HTML 页面，请确认当前浏览器连的是最新本地服务，而不是旧页面或旧进程"
+              : (rawText.trim() || "请求失败")
           );
         }
-        throw new Error("閹恒儱褰涘▽鈩冩箒鏉╂柨娲?JSON閿涘矁顕涵顔款吇瑜版挸澧犻崥顖氬З閻ㄥ嫭妲搁張鈧弬鐗堟箛閸?);
+        throw new Error("接口没有返回 JSON，请确认当前启动的是最新服务");
       }
 
       if (!response.ok) {
-        const error = new Error(data.error || "鐠囬攱鐪版径杈Е");
+        const error = new Error(data.error || "请求失败");
         error.payload = data;
         throw error;
       }
@@ -6880,9 +6733,9 @@
       const delta = max - min;
       const brightness = (red + green + blue) / 3;
 
-      if (brightness < 55) return "姒涙垼澹?;
-      if (brightness > 225 && delta < 18) return "閻у€熷";
-      if (delta < 22) return brightness > 170 ? "闁惧墎浼嗛懝? : "閻忔媽澹?;
+      if (brightness < 55) return "黑色";
+      if (brightness > 225 && delta < 18) return "白色";
+      if (delta < 22) return brightness > 170 ? "银灰色" : "灰色";
 
       let hue = 0;
       if (delta !== 0) {
@@ -6893,13 +6746,13 @@
       hue = Math.round(hue * 60);
       if (hue < 0) hue += 360;
 
-      if (hue >= 200 && hue < 255) return "閽冩繆澹?;
-      if (hue >= 255 && hue < 290) return "缁鳖偉澹?;
-      if (hue >= 85 && hue < 170) return "缂佽儻澹?;
-      if (hue >= 35 && hue < 85) return "姒涘嫯澹?;
-      if (hue >= 10 && hue < 35) return "濮楁瑨澹?;
-      if (hue >= 290 || hue < 10) return "缁俱垼澹?;
-      return "缂佺厧鎮庨懝?;
+      if (hue >= 200 && hue < 255) return "蓝色";
+      if (hue >= 255 && hue < 290) return "紫色";
+      if (hue >= 85 && hue < 170) return "绿色";
+      if (hue >= 35 && hue < 85) return "黄色";
+      if (hue >= 10 && hue < 35) return "橙色";
+      if (hue >= 290 || hue < 10) return "红色";
+      return "综合色";
     }
 
     function extractImageColorHint(file) {
@@ -6960,6 +6813,273 @@
       });
     }
 
+    function setDetailResultMock(payload) {
+      clearDetailPreviewUrls();
+      currentResultKind = "detail";
+      const { download } = getActionButtons();
+
+      const productName = payload.productName || "\u672a\u547d\u540d\u5546\u54c1";
+      const sellingPointText = payload.sellingPoints || "\u5356\u70b9\u5f85\u8865\u5145";
+      const primaryReferenceFile = getPrimaryDetailReferenceFile();
+      const previewImage = primaryReferenceFile
+        ? buildDetailPreviewUrl(primaryReferenceFile)
+        : (activeDetailProductFile ? buildDetailPreviewUrl(activeDetailProductFile) : "");
+      const heroImage = activeDetailProductFile
+        ? buildDetailPreviewUrl(activeDetailProductFile)
+        : previewImage;
+      const sizeText = payload.size || detailSize.value;
+      const sceneText = payload.scenes || "\u65e5\u5e38\u8f6c\u5316\u573a\u666f";
+      const audienceText = payload.audience || "\u7535\u5546\u76ee\u6807\u6d88\u8d39\u4eba\u7fa4";
+      const sourceText = payload.url ? "\u5df2\u7ed3\u5408\u7ade\u54c1\u8be6\u60c5\u9875\u94fe\u63a5\u4e0e\u5546\u54c1\u56fe\u505a\u7ed3\u6784\u62c6\u89e3" : "\u5f53\u524d\u65b9\u6848\u57fa\u4e8e\u5546\u54c1\u56fe\u4e0e\u624b\u52a8\u5356\u70b9\u751f\u6210";
+      const extraLine = payload.extra || "\u5efa\u8bae\u5148\u786e\u8ba4\u9996\u56fe\u98ce\u683c\uff0c\u518d\u7ee7\u7eed\u751f\u6210\u5356\u70b9\u6a21\u5757\u3001\u5c3a\u7801\u8868\u4e0e\u6574\u5957\u8be6\u60c5\u9875\u3002";
+      const safeProductName = escapeHtml(productName);
+      const safeStyle = escapeHtml(currentDetailStyle);
+      const safeSizeText = escapeHtml(sizeText);
+      const safeSceneText = escapeHtml(sceneText);
+      const safeAudienceText = escapeHtml(audienceText);
+      const safeSourceText = escapeHtml(sourceText);
+      const safeExtraLine = escapeHtml(extraLine);
+      const sellingPoints = splitDetailText(sellingPointText, ["\u6838\u5fc3\u5356\u70b9\u5f85\u8865\u5145", "\u5efa\u8bae\u8865\u5145\u6750\u8d28\u4e0e\u573a\u666f\u5173\u952e\u8bcd", "\u9996\u56fe\u4e0e\u8be6\u60c5\u9875\u4f1a\u66f4\u5bb9\u6613\u7edf\u4e00"]);
+      const sceneItems = splitDetailText(sceneText, ["\u901a\u52e4\u9648\u5217", "\u5c45\u5bb6\u8fd1\u666f", "\u793c\u8d60\u5c55\u793a"]).slice(0, 3);
+      const proofItems = payload.url
+        ? ["\u7ade\u54c1\u7ed3\u6784\u5df2\u53c2\u8003", "\u5356\u70b9\u987a\u5e8f\u66f4\u8d34\u8fd1\u5e73\u53f0\u9605\u8bfb\u4e60\u60ef", "\u51cf\u5c11\u63d0\u6848\u6c9f\u901a\u8f6e\u6b21"]
+        : ["\u5efa\u8bae\u8865\u5145\u7ade\u54c1\u94fe\u63a5", "\u540e\u7eed\u53ef\u52a0\u5165\u5bf9\u6bd4\u56fe", "\u53ef\u7ee7\u7eed\u7ec6\u5316\u8f6c\u5316\u8bc1\u636e"];
+      const heroPointsHtml = sellingPoints.slice(0, 3).map((point) => `<div>${escapeHtml(point)}</div>`).join("");
+      const sellingPointsHtml = sellingPoints.map((point, index) => `
+        <div class="detail-preview-point">
+          <strong>\u5356\u70b9 ${String(index + 1).padStart(2, "0")}</strong>
+          <span>${escapeHtml(point)}</span>
+        </div>
+      `).join("");
+      const sceneCardsHtml = sceneItems.map((item, index) => `
+        <div class="detail-preview-scene-card">
+          <img src="${index % 2 === 0 ? heroImage : (previewImage || heroImage)}" alt="\u4f7f\u7528\u573a\u666f\u9884\u89c8 ${index + 1}">
+          <div class="detail-preview-scene-copy">${escapeHtml(item)}</div>
+        </div>
+      `).join("");
+      const proofCardsHtml = proofItems.map((item, index) => `
+        <div class="detail-preview-proof-card${index === 0 ? " active" : ""}">
+          <strong>${index === 0 ? "\u5f53\u524d\u65b9\u6848" : "\u8865\u5145\u5efa\u8bae"}</strong>
+          <span>${escapeHtml(item)}</span>
+        </div>
+      `).join("");
+      const planItemsHtml = [
+        "\u9996\u5c4f\u5148\u9501\u5b9a\u4e3b\u89c6\u89c9\u4e0e\u98ce\u683c\u6807\u7b7e\uff0c\u4fbf\u4e8e\u5ba2\u6237\u5feb\u901f\u786e\u8ba4\u65b9\u5411\u3002",
+        "\u4e2d\u6bb5\u56f4\u7ed5\u5356\u70b9\u3001\u6750\u8d28\u3001\u5c3a\u7801\u548c\u4f7f\u7528\u573a\u666f\u5c55\u5f00\uff0c\u51cf\u5c11\u4fe1\u606f\u8df3\u8dc3\u3002",
+        payload.url ? "\u5df2\u53c2\u8003\u7ade\u54c1\u7ed3\u6784\u8282\u594f\uff0c\u9002\u5408\u76f4\u63a5\u8fdb\u5165\u4e0b\u4e00\u8f6e\u8be6\u60c5\u9875\u51fa\u56fe\u3002" : "\u5f53\u524d\u4e3a\u524d\u7aef\u6f14\u793a\u7248\u7ed3\u6784\uff0c\u63a5\u5165\u771f\u5b9e\u540e\u7aef\u540e\u53ef\u7ee7\u7eed\u7ec6\u5316\u6a21\u5757\u5185\u5bb9\u3002",
+        extraLine
+      ].map((item) => `<div class="detail-preview-list-item">${escapeHtml(item)}</div>`).join("");
+
+      resultPanel.classList.add("show");
+      resultZone.innerHTML = `
+        <div class="detail-preview-stage">
+          <div class="detail-preview-summary">
+            <section class="detail-preview-card detail-preview-brief">
+              <div class="detail-preview-kicker">详情页系统预览</div>
+              <div class="detail-preview-title">
+                <strong>${safeProductName} \u8be6\u60c5\u9875\u751f\u6210\u65b9\u6848</strong>
+                <span>${safeSourceText}</span>
+              </div>
+              <div class="detail-preview-chip-row">
+                <em>\u9996\u56fe\u786e\u8ba4</em>
+                <em>\u5356\u70b9\u62c6\u89e3</em>
+                <em>\u957f\u56fe\u7ed3\u6784\u9884\u89c8</em>
+              </div>
+              <div class="detail-preview-meta-grid">
+                <div class="detail-preview-meta">
+                  <label>\u98ce\u683c\u65b9\u5411</label>
+                  <strong>${safeStyle}</strong>
+                </div>
+                <div class="detail-preview-meta">
+                  <label>\u8be6\u60c5\u5c3a\u5bf8</label>
+                  <strong>${safeSizeText}</strong>
+                </div>
+                <div class="detail-preview-meta">
+                  <label>\u76ee\u6807\u4eba\u7fa4</label>
+                  <strong>${safeAudienceText}</strong>
+                </div>
+              </div>
+            </section>
+            <aside class="detail-preview-card detail-preview-plan">
+              <strong>\u672c\u8f6e\u8f93\u51fa\u91cd\u70b9</strong>
+              <div class="detail-preview-list">${planItemsHtml}</div>
+            </aside>
+          </div>
+
+          <section class="detail-preview-sheet">
+            <article class="detail-preview-module detail-preview-hero">
+              <div class="detail-preview-hero-copy">
+                <div>
+                  <div class="detail-preview-module-header">
+                    <span class="detail-preview-module-index">模块 01</span>
+                    <span class="detail-preview-module-label">首屏确认</span>
+                  </div>
+                  <h3>${safeProductName}</h3>
+                  <p>\u9996\u5c4f\u5148\u660e\u786e\u4ea7\u54c1\u4e3b\u89c6\u89c9\u3001\u98ce\u683c\u8c03\u6027\u548c\u5e73\u53f0\u9002\u914d\u65b9\u5411\uff0c\u8ba9\u8be6\u60c5\u9875\u540e\u7eed\u6a21\u5757\u90fd\u56f4\u7ed5\u540c\u4e00\u5957\u7535\u5546\u8868\u8fbe\u7ee7\u7eed\u5c55\u5f00\u3002</p>
+                </div>
+                <div class="detail-preview-hero-points">${heroPointsHtml}</div>
+              </div>
+              <div class="detail-preview-image-wrap">
+                <img src="${heroImage}" alt="\u8be6\u60c5\u9875\u9996\u56fe\u786e\u8ba4">
+                <div class="detail-preview-image-badge">${safeStyle} / ${safeSizeText}</div>
+              </div>
+            </article>
+
+            <article class="detail-preview-module">
+              <div class="detail-preview-module-header">
+                <span class="detail-preview-module-index">Module 02</span>
+                <span class="detail-preview-module-label">Selling Points / \u5356\u70b9\u6a21\u5757</span>
+              </div>
+              <div class="detail-preview-two-col">
+                <div class="detail-preview-section-copy">
+                  <h3>\u6838\u5fc3\u5356\u70b9\u6392\u5e03</h3>
+                  <p>\u628a\u8f93\u5165\u7684\u5356\u70b9\u62c6\u6210\u66f4\u5bb9\u6613\u9605\u8bfb\u7684\u6a21\u5757\u5361\u7247\uff0c\u6a21\u62df\u771f\u5b9e\u7535\u5546\u8be6\u60c5\u9875\u91cc\u201c\u6807\u9898 + \u8bc1\u636e + \u573a\u666f\u201d\u7684\u8868\u8fbe\u8282\u594f\u3002</p>
+                  <div class="detail-preview-points-grid">${sellingPointsHtml}</div>
+                </div>
+                <div class="detail-preview-image-wrap">
+                  <img src="${previewImage || heroImage}" alt="\u5356\u70b9\u6a21\u5757\u9884\u89c8">
+                  <div class="detail-preview-image-badge">${safeSceneText}</div>
+                </div>
+              </div>
+            </article>
+
+            <article class="detail-preview-module">
+              <div class="detail-preview-module-header">
+                <span class="detail-preview-module-index">Module 03</span>
+                <span class="detail-preview-module-label">Material / \u7ec6\u8282\u4e0e\u6750\u8d28</span>
+              </div>
+              <div class="detail-preview-two-col">
+                <div class="detail-preview-image-wrap">
+                  <img src="${heroImage}" alt="\u6750\u8d28\u7ec6\u8282\u9884\u89c8">
+                  <div class="detail-preview-image-badge">\u6750\u8d28\u8fd1\u666f / \u5c40\u90e8\u653e\u5927</div>
+                </div>
+                <div class="detail-preview-section-copy">
+                  <h3>\u6750\u8d28\u7ec6\u8282\u5f3a\u5316</h3>
+                  <p>\u8fd9\u91cc\u6a21\u62df\u9762\u6599\u3001\u505a\u5de5\u3001\u7ed3\u6784\u6216\u5305\u88c5\u7b49\u8fd1\u666f\u4fe1\u606f\uff0c\u7528\u6765\u652f\u6491\u4e3b\u5356\u70b9\uff0c\u51cf\u5c11\u201c\u53ea\u6709\u4e00\u53e5\u6587\u6848\u6ca1\u6709\u8bc1\u636e\u201d\u7684\u5ec9\u4ef7\u611f\u3002</p>
+                  <div class="detail-preview-tags">
+                    <span>\u5c40\u90e8\u7279\u5199</span>
+                    <span>\u5de5\u827a\u8bf4\u660e</span>
+                    <span>\u7ec6\u8282\u53ef\u4fe1\u5ea6</span>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <article class="detail-preview-module">
+              <div class="detail-preview-module-header">
+                <span class="detail-preview-module-index">Module 04</span>
+                <span class="detail-preview-module-label">Specs / \u5c3a\u7801\u4e0e\u4fe1\u606f</span>
+              </div>
+              <div class="detail-preview-two-col">
+                <div class="detail-preview-section-copy">
+                  <h3>\u5c3a\u7801\u4e0e\u8d2d\u4e70\u4fe1\u606f</h3>
+                  <p>\u628a\u5e73\u53f0\u5e38\u89c1\u7684\u5c3a\u7801\u3001\u9002\u7528\u4eba\u7fa4\u548c\u8d2d\u4e70\u63d0\u793a\u62c6\u6210\u6e05\u6670\u4fe1\u606f\u5361\uff0c\u4fdd\u8bc1\u8be6\u60c5\u9875\u5728\u201c\u597d\u770b\u201d\u4e4b\u5916\u4e5f\u8db3\u591f\u5b9e\u7528\u3002</p>
+                  <div class="detail-preview-spec-grid">
+                    <div class="detail-preview-spec-card">
+                      <strong>\u8be6\u60c5\u9875\u5c3a\u5bf8</strong>
+                      <span>${safeSizeText}</span>
+                    </div>
+                    <div class="detail-preview-spec-card">
+                      <strong>\u76ee\u6807\u4eba\u7fa4</strong>
+                      <span>${safeAudienceText}</span>
+                    </div>
+                    <div class="detail-preview-spec-card">
+                      <strong>\u6295\u653e\u5efa\u8bae</strong>
+                      <span>\u9002\u5408\u9996\u5c4f\u786e\u8ba4\u540e\u7ee7\u7eed\u6269\u5c55\u6574\u5957\u8be6\u60c5\u9875\u6a21\u5757</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="detail-preview-plan">
+                  <strong>\u4fe1\u606f\u6a21\u5757\u5efa\u8bae</strong>
+                  <div class="detail-preview-list">
+                    <div class="detail-preview-list-item">\u7edf\u4e00\u5c3a\u7801\u3001\u5356\u70b9\u3001\u4f7f\u7528\u63d0\u9192\u7684\u89c6\u89c9\u6837\u5f0f\uff0c\u964d\u4f4e\u9605\u8bfb\u8d1f\u62c5\u3002</div>
+                    <div class="detail-preview-list-item">\u89c4\u683c\u6a21\u5757\u9002\u5408\u9760\u8fd1\u6750\u8d28\u533a\uff0c\u4fbf\u4e8e\u7528\u6237\u8fde\u7eed\u5224\u65ad\u662f\u5426\u9002\u5408\u8d2d\u4e70\u3002</div>
+                    <div class="detail-preview-list-item">${safeExtraLine}</div>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <article class="detail-preview-module">
+              <div class="detail-preview-module-header">
+                <span class="detail-preview-module-index">Module 05</span>
+                <span class="detail-preview-module-label">Scenes / \u4f7f\u7528\u573a\u666f</span>
+              </div>
+              <div class="detail-preview-two-col">
+                <div class="detail-preview-section-copy">
+                  <h3>\u4f7f\u7528\u573a\u666f\u5ef6\u5c55</h3>
+                  <p>\u901a\u8fc7\u573a\u666f\u6a21\u5757\u544a\u8bc9\u4e70\u5bb6\u201c\u8fd9\u4ef6\u5546\u54c1\u9002\u5408\u5728\u4ec0\u4e48\u60c5\u5883\u4e0b\u4f7f\u7528\u201d\uff0c\u5e2e\u52a9\u5c0f\u5356\u5bb6\u628a\u767d\u5e95\u56fe\u5ef6\u5c55\u6210\u66f4\u5b8c\u6574\u7684\u8f6c\u5316\u53d9\u4e8b\u3002</p>
+                  <div class="detail-preview-tags">
+                    <span>${safeSceneText}</span>
+                    <span>\u5e73\u53f0\u6d4f\u89c8\u53cb\u597d</span>
+                    <span>\u53ef\u7ee7\u7eed\u51fa\u6a2a\u7ad6\u7248</span>
+                  </div>
+                </div>
+                <div class="detail-preview-scene-stack">${sceneCardsHtml}</div>
+              </div>
+            </article>
+
+            <article class="detail-preview-module">
+              <div class="detail-preview-module-header">
+                <span class="detail-preview-module-index">Module 06</span>
+                <span class="detail-preview-module-label">Proof / \u5bf9\u6bd4\u4e0e\u4fe1\u4efb</span>
+              </div>
+              <div class="detail-preview-two-col">
+                <div class="detail-preview-proof-grid">${proofCardsHtml}</div>
+                <div class="detail-preview-section-copy">
+                  <h3>\u8865\u5145\u8f6c\u5316\u8bc1\u636e</h3>
+                  <p>\u8fd9\u4e00\u5c4f\u9884\u7559\u7ed9\u5bf9\u6bd4\u3001\u53c2\u6570\u8bc1\u636e\u3001\u4e70\u5bb6\u7591\u95ee\u56de\u5e94\u6216\u5e73\u53f0\u4f18\u52bf\u8bf4\u660e\uff0c\u7528\u6765\u8865\u8db3\u4e0b\u5355\u524d\u7684\u6700\u540e\u4e00\u6b65\u8bf4\u670d\u529b\u3002</p>
+                  <div class="detail-preview-tags">
+                    <span>\u5bf9\u6bd4\u8bf4\u660e</span>
+                    <span>\u5e73\u53f0\u4fe1\u4efb\u611f</span>
+                    <span>\u51cf\u5c11\u53cd\u590d\u6c9f\u901a</span>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <article class="detail-preview-module">
+              <div class="detail-preview-module-header">
+                <span class="detail-preview-module-index">Module 07</span>
+                <span class="detail-preview-module-label">CTA / \u6536\u53e3\u6a21\u5757</span>
+              </div>
+              <div class="detail-preview-cta">
+                <div class="detail-preview-cta-copy">
+                  <h3>\u9996\u56fe\u786e\u8ba4\u901a\u8fc7\u540e\uff0c\u5373\u53ef\u7ee7\u7eed\u751f\u6210\u6574\u5957\u8be6\u60c5\u9875</h3>
+                  <p>\u5f53\u524d\u7ed3\u679c\u533a\u5df2\u7ecf\u4ece\u63d0\u6848\u5361\u7247\u5347\u7ea7\u4e3a\u957f\u56fe\u7ed3\u6784\u9884\u89c8\uff0c\u66f4\u9002\u5408\u62ff\u53bb\u8ddf\u5ba2\u6237\u6216\u8fd0\u8425\u540c\u4e8b\u786e\u8ba4\u6a21\u5757\u5b8c\u6574\u5ea6\u4e0e\u8f6c\u5316\u903b\u8f91\u3002</p>
+                  <div class="detail-preview-tags">
+                    <span>\u5148\u786e\u8ba4\u65b9\u5411</span>
+                    <span>\u518d\u6279\u91cf\u51fa\u56fe</span>
+                    <span>\u66f4\u8d34\u8fd1\u771f\u5b9e\u7535\u5546\u6d41\u7a0b</span>
+                  </div>
+                </div>
+                <div class="detail-preview-cta-stat">
+                  <div>
+                    <strong>\u5f53\u524d\u65b9\u6848\u57fa\u7ebf</strong>
+                    <span>${safeSourceText}</span>
+                  </div>
+                  <div>
+                    <strong>\u5efa\u8bae\u4e0b\u4e00\u6b65</strong>
+                    <span>\u8fdb\u5165\u9996\u56fe\u786e\u8ba4\u540e\uff0c\u7ee7\u7eed\u751f\u6210\u5356\u70b9\u56fe\u3001\u5c3a\u7801\u56fe\u3001\u573a\u666f\u56fe\u548c\u6536\u53e3 CTA\u3002</span>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </section>
+        </div>
+      `;
+
+      const nextStepItems = resultZone.querySelectorAll(".detail-preview-plan .detail-preview-list-item");
+      if (nextStepItems[2]) {
+        nextStepItems[2].textContent = "如果这张首图通过，就先把这个方向当作后续详情页的基线。具体模块名称和提示区，等你给出更准确的说法后再补。";
+      }
+
+      currentResultUrl = heroImage || "";
+      resultStatus.textContent = "\u8be6\u60c5\u9875\u65b9\u6848\u5df2\u751f\u6210";
+      if (download) download.disabled = false;
+      updateResultActions();
+    }
+
     function setDetailHeroResult(imageUrl, promptText = "") {
       clearDetailPreviewUrls();
       currentResultKind = "detail";
@@ -6975,52 +7095,53 @@
 
       const { download } = getActionButtons();
       const summary = currentDetailAnalysis || {};
-      const productName = escapeHtml(summary.productName || detailProductNameInput.value.trim() || "閺堫亜鎳￠崥宥呮櫌閸?);
-      const heroHeadline = escapeHtml(summary.heroDirection?.headline || "妫ｆ牕娴橀弬鐟版倻瀹歌尙鈥樼拋?);
-      const heroFocus = escapeHtml(summary.heroDirection?.visualFocus || "閸熷棗鎼ф稉璁崇秼 + 缁楊兛绔撮崡鏍仯");
-      const styleText = escapeHtml(getEffectiveDetailStyle());
-      const sellingPoints = splitDetailText(detailSellingPoints.value.trim(), ["閺嶇绺鹃崡鏍仯瀵板懓藟閸?]).slice(0, 3);
+      const productName = escapeHtml(summary.productName || detailProductNameInput.value.trim() || "未命名商品");
+      const heroHeadline = escapeHtml(summary.heroDirection?.headline || "首图方向已确认");
+      const heroFocus = escapeHtml(summary.heroDirection?.visualFocus || "商品主体 + 第一卖点");
+      const styleText = escapeHtml(currentDetailStyle);
+      const sellingPoints = splitDetailText(detailSellingPoints.value.trim(), ["核心卖点待补充"]).slice(0, 3);
       const heroPointsHtml = sellingPoints.map((point) => `<div>${escapeHtml(point)}</div>`).join("");
       const visualKeywords = (summary.visualKeywords || [])
         .slice(0, 6)
         .map((item) => `<span>${escapeHtml(item)}</span>`)
-        .join("") || "<span>閻㈤潧鏅㈡＃鏍ф禈</span><span>閸熷棗鎼ф稉璁崇秼濞撳懏娅?/span><span>閸氬海鐢婚崣顖氭鐏?/span>";
+        .join("") || "<span>电商首图</span><span>商品主体清晰</span><span>后续可延展</span>";
 
-      const html = `
+      resultPanel.classList.add("show");
+      resultZone.innerHTML = `
         <div class="detail-preview-stage">
           <div class="detail-preview-summary">
             <section class="detail-preview-card detail-preview-brief">
               <div class="detail-preview-kicker">Step 06 / Hero Generation</div>
               <div class="detail-preview-title">
-                <strong>${productName} 妫ｆ牕娴樺鑼晸閹?/strong>
-                <span>鏉╂瑤绔村銉ュ涧閸忓牏鈥樼拋銈夘浕閸ョ偓鏌熼崥鎴礉閺嗗倹妞傛潻妯圭瑝鏉╂稑鍙嗛弫鏉戭殰鐠囷附鍎忔い鍨闁插繐鍤崶淇扁偓?/span>
+                <strong>${productName} 首图已生成</strong>
+                <span>这一步只先确认首图方向，暂时还不进入整套详情页批量出图。</span>
               </div>
               <div class="detail-preview-chip-row">
-                <em>妫ｆ牕娴樺鑼舵儰閸?/em>
+                <em>首图已落地</em>
                 <em>${styleText}</em>
-                <em id="detail-hero-chip-status">瀵板懐鈥樼拋銈嗘Ц閸氾妇鎴风紒?/em>
+                <em id="detail-hero-chip-status">待确认是否继续</em>
               </div>
               <div class="detail-preview-meta-grid">
                 <div class="detail-preview-meta">
-                  <label>妫ｆ牕娴樻稉缁樺ⅵ</label>
+                  <label>首图主打</label>
                   <strong>${heroHeadline}</strong>
                 </div>
                 <div class="detail-preview-meta">
-                  <label>鐟欏棜顫庨柌宥囧仯</label>
+                  <label>视觉重点</label>
                   <strong>${heroFocus}</strong>
                 </div>
                 <div class="detail-preview-meta">
-                  <label>瑜版挸澧犻悩鑸碘偓?/label>
-                  <strong>缁?6 濮濄儱鍑＄€瑰本鍨?/strong>
+                  <label>当前状态</label>
+                  <strong>第 6 步已完成</strong>
                 </div>
               </div>
             </section>
             <aside class="detail-preview-card detail-preview-plan">
-              <strong>娑撳绔村銉ョ紦鐠?/strong>
+              <strong>下一步建议</strong>
               <div class="detail-preview-list">
-                <div class="detail-preview-list-item">閸忓牏鈥樼拋銈堢箹瀵娀顩婚崶鍓ф畱娑撹缍嬮妴浣稿礌閻愮懓鎷版搴㈢壐閺勵垰鎯佺粙鍐茬暰閿涘苯鍟€缂佈呯敾閹碘晛鐫嶉崥搴ｇ敾鐠囷附鍎忔い闈涘敶鐎瑰箍鈧?/div>
-                <div class="detail-preview-list-item">婵″倹鐏夋＃鏍ф禈閺傜懓鎮滄潻妯款洣閺€鐧哥礉閸欘垯浜掗惄瀛樺复閻愬厜鈧粓鍣搁弬鎵晸閹存劙顩婚崶閿偓婵撶礉娑撳秹娓剁憰浣告礀閸掔増鏆ｆ總妤勵嚊閹懘銆夐梼鑸殿唽閵?/div>
-                <div class="detail-preview-list-item">婵″倹鐏夋潻娆忕炊妫ｆ牕娴橀柅姘崇箖閿涘苯姘ㄩ崣顖欎簰鏉╂稑鍙嗛崥搴ｇ敾鐠囷附鍎忔い鐢告▉濞堢绱遍崗铚傜秼濡€虫健閸氬秶袨缁涘缍樼涵顔款吇閸氬骸鍟€鐞涖儯鈧?/div>
+                <div class="detail-preview-list-item">先确认这张首图的主体、卖点和风格是否稳定，再继续扩展后续详情页内容。</div>
+                <div class="detail-preview-list-item">如果首图方向还要改，可以直接点“重新生成首图”，不需要回到整套详情页阶段。</div>
+                <div class="detail-preview-list-item">如果这张首图通过，就可以进入后续详情页阶段；具体模块名称等你确认后再补。</div>
               </div>
             </aside>
           </div>
@@ -7030,32 +7151,32 @@
               <div class="detail-preview-hero-copy">
                 <div>
                   <div class="detail-preview-module-header">
-                    <span class="detail-preview-module-index">濡€虫健 01</span>
-                    <span class="detail-preview-module-label">妫ｆ牕娴樼紒鎾寸亯</span>
+                    <span class="detail-preview-module-index">模块 01</span>
+                    <span class="detail-preview-module-label">首图结果</span>
                   </div>
                   <h3>${productName}</h3>
-                  <p>鏉╂瑥绱堕崶鎯у嚒缂佸繋绮犵粭?5 濮濄儳娈戦弬瑙勵攳閹芥顩︽潻娑樺弳娴滃棛顑?6 濮濄儱鐤勯梽鍛毉閸ヤ勘鈧倸缍嬮崜宥夊櫢閻愯妲搁崗鍫⑩€樼拋銈呯暊閼虫垝绗夐懗鎴掔稊娑撳搫鎮楃紒顓☆嚊閹懘銆夐崘鍛啇閻ㄥ嫮顑囨稉鈧仦蹇撶唨缁捐￥鈧?/p>
+                  <p>这张图已经从第 5 步的方案摘要进入了第 6 步实际出图。当前重点是先确认它能不能作为后续详情页内容的第一屏基线。</p>
                 </div>
                 <div class="detail-preview-hero-points">${heroPointsHtml}</div>
               </div>
               <div class="detail-preview-image-wrap">
-                <img src="${imageUrl}" alt="鐠囷附鍎忔い鐢割浕閸ュ墽鏁撻幋鎰波閺?>
-                <div class="detail-preview-image-badge">${styleText} / 缁?6 濮濄儵顩婚崶?/div>
+                <img src="${imageUrl}" alt="详情页首图生成结果">
+                <div class="detail-preview-image-badge">${styleText} / 第 6 步首图</div>
               </div>
             </article>
 
             <article class="detail-preview-module">
               <div class="detail-preview-module-header">
-                <span class="detail-preview-module-index">妞嬪孩鐗?/span>
-                <span class="detail-preview-module-label">閺堫剝鐤嗛悽鐔锋禈鐠囧瓨妲?/span>
+                <span class="detail-preview-module-index">风格</span>
+                <span class="detail-preview-module-label">本轮生图说明</span>
               </div>
               <div class="detail-preview-two-col">
                 <div class="detail-preview-section-copy">
-                  <h3>鏉╂瑨鐤嗘＃鏍ф禈閺勵垱瀵滄禒鈧稊鍫熸煙閸氭垹鏁撻幋鎰畱</h3>
-                  <p>閸氬海鐢荤拠锔藉剰妞ゅ灚膩閸фぞ绱扮紒褎澹欐潻娆忕炊妫ｆ牕娴橀惃鍕殻娴ｆ挻鐨电拹銊ｂ偓浣虹翱閼锋潙瀹抽妴浣藉瑜扳晛鐔€鐠嬪啫鎷伴悽闈涙櫌閸涘牏骞囬弬鐟扮础閿涘奔绲炬稉宥勭窗閹跺﹤鍞撮柈銊ㄥ閺傚洦褰佺粈楦跨槤閹存牗濡ч張顖涘伎鏉╂壆娲块幒銉ョ潔缁€铏圭舶鐎广垺鍩涢妴?/p>
+                  <h3>这轮首图是按什么方向生成的</h3>
+                  <p>后续详情页模块会继承这张首图的整体气质、精致度、色彩基调和电商呈现方式，但不会把内部英文提示词或技术描述直接展示给客户。</p>
                 </div>
                 <div class="detail-preview-plan">
-                  <strong>鐟欏棜顫庨崗鎶芥暛鐠?/strong>
+                  <strong>视觉关键词</strong>
                   <div class="detail-preview-tags">
                     ${visualKeywords}
                   </div>
@@ -7065,23 +7186,23 @@
 
             <article class="detail-preview-module">
               <div class="detail-preview-module-header">
-                <span class="detail-preview-module-index">娑撳绔村?/span>
-                <span class="detail-preview-module-label">妫ｆ牕娴樼涵顔款吇閸斻劋缍?/span>
+                <span class="detail-preview-module-index">下一步</span>
+                <span class="detail-preview-module-label">首图确认动作</span>
               </div>
               <div class="detail-confirm-bar">
                 <div class="detail-confirm-head">
-                  <strong>鏉╂瑥绱舵＃鏍ф禈閺勵垰鎯侀崣顖欎簰缂佈呯敾</strong>
-                  <span class="detail-confirm-status" id="detail-hero-status">瀵板懐鈥樼拋?/span>
+                  <strong>这张首图是否可以继续</strong>
+                  <span class="detail-confirm-status" id="detail-hero-status">待确认</span>
                 </div>
-                <p class="detail-confirm-copy" id="detail-hero-copy">婵″倹鐏夋潻娆忕炊妫ｆ牕娴樺鑼病閼虫垝缍旀稉鍝勬倵缂侇叀顕涢幆鍛淬€夐崘鍛啇閻ㄥ嫮顑囨稉鈧仦蹇撶唨缁惧尅绱濈亸杈╂埛缂侇厼鎮楅棃銏㈡畱闂冭埖顔岄敍娑橆洤閺嬫粏绻曟稉宥咁檮缁嬬绱濋崣顖欎簰閻╁瓨甯撮柌宥呬粵閿涘本鍨ㄩ懓鍛礀閸掔増鎲崇憰渚€妯佸▓闈涘帥瀵邦喛鐨熼弬瑙勵攳閵?/p>
+                <p class="detail-confirm-copy" id="detail-hero-copy">如果这张首图已经能作为后续详情页内容的第一屏基线，就继续后面的阶段；如果还不够稳，可以直接重做，或者回到摘要阶段先微调方案。</p>
                 <div class="detail-confirm-actions">
-                  <button class="detail-confirm-btn primary" type="button" id="detail-hero-approve-btn">鏉╂瑥绱堕崣顖欎簰缂佈呯敾</button>
-                  <button class="detail-confirm-btn" type="button" id="detail-hero-regenerate-btn">鏉╂瑥绱舵潻妯款洣闁插秴浠?/button>
-                  <button class="detail-confirm-btn" type="button" id="detail-hero-back-btn">閸ョ偛鍩岄幗妯款洣瀵邦喛鐨?/button>
+                  <button class="detail-confirm-btn primary" type="button" id="detail-hero-approve-btn">这张可以继续</button>
+                  <button class="detail-confirm-btn" type="button" id="detail-hero-regenerate-btn">这张还要重做</button>
+                  <button class="detail-confirm-btn" type="button" id="detail-hero-back-btn">回到摘要微调</button>
                 </div>
                 <div class="detail-confirm-actions">
-                  <button class="detail-confirm-btn" type="button" id="detail-hero-download-btn">娑撳娴囬崢鐔锋禈</button>
-                  <button class="detail-confirm-btn" type="button" id="detail-hero-regenerate-secondary-btn">闁插秵鏌婇悽鐔稿灇妫ｆ牕娴?/button>
+                  <button class="detail-confirm-btn" type="button" id="detail-hero-download-btn">下载原图</button>
+                  <button class="detail-confirm-btn" type="button" id="detail-hero-regenerate-secondary-btn">重新生成首图</button>
                 </div>
               </div>
             </article>
@@ -7089,10 +7210,10 @@
         </div>
       `;
 
-      setStoredResultView("detail", html, "妫ｆ牕娴樺鑼晸閹?, { show: true });
+      resultStatus.textContent = "首图已生成";
       if (download) download.disabled = false;
+      updateDetailModulePlanner();
       bindDetailHeroActions();
-      rememberCurrentResultView("detail");
       updateResultActions();
     }
 
@@ -7106,18 +7227,49 @@
 
       statusEl.classList.remove("approved", "revise");
       if (state === "approved") {
-        statusEl.textContent = "瀹歌尙鈥樼拋銈忕礉閸欘垯浜掔紒褏鐢?;
+        statusEl.textContent = "已确认，可以继续";
         statusEl.classList.add("approved");
-        chipStatusEl.textContent = "閸欘垳鎴风紒顓熷⒖鐏炴洝顕涢幆鍛淬€?;
-        copyEl.textContent = "鏉╂瑥绱舵＃鏍ф禈瀹歌尙绮￠柅姘崇箖閿涘苯褰叉禒銉﹀Ω鐎瑰啩缍旀稉鍝勬倵缂侇叀顕涢幆鍛淬€夐崘鍛啇閻ㄥ嫮顑囨稉鈧仦蹇撶唨缁捐￥鈧?;
-        if (!currentDetailModulePlan) {
-          currentDetailModulePlan = buildDetailModulePlan(currentDetailAnalysis || {});
-        }
+        chipStatusEl.textContent = "可继续扩展详情页";
+        copyEl.textContent = "这张首图已经通过，可以把它作为后续详情页内容的第一屏基线。";
+        resultStatus.textContent = "首图方向已确认";
+        return;
+      }
+
+      if (state === "revise") {
+        statusEl.textContent = "待回到摘要";
+        statusEl.classList.add("revise");
+        chipStatusEl.textContent = "建议先回摘要微调";
+        copyEl.textContent = "这张图先不要继续往后扩。建议回到第 5 步摘要，把首图方向、卖点或风格再收一版，然后重新生成首图。";
+        resultStatus.textContent = "首图待微调";
+        return;
+      }
+
+      statusEl.textContent = "待确认";
+      chipStatusEl.textContent = "待确认是否继续";
+      copyEl.textContent = "如果这张首图已经能作为后续详情页内容的第一屏基线，就继续后面的阶段；如果还不够稳，可以直接重做，或者回到摘要阶段先微调方案。";
+      resultStatus.textContent = "首图已生成";
+    }
+
+    function setDetailHeroApprovalState(state) {
+      currentDetailHeroApproval = state;
+      const statusEl = document.getElementById("detail-hero-status");
+      const copyEl = document.getElementById("detail-hero-copy");
+      const chipStatusEl = document.getElementById("detail-hero-chip-status");
+      const planner = document.getElementById("detail-module-planner");
+      if (!statusEl || !copyEl || !chipStatusEl) return;
+
+      statusEl.classList.remove("approved", "revise");
+
+      if (state === "approved") {
+        statusEl.textContent = "已确认，可以继续";
+        statusEl.classList.add("approved");
+        chipStatusEl.textContent = "可继续规划详情页";
+        copyEl.textContent = "这张首图已经通过，可以先把它当作后续详情页第一屏的基线。下面先确认本次详情页需要生成哪些板块。";
         let activePlanner = planner;
         if (!activePlanner) {
           const plannerHost = document.querySelector(".detail-preview-module:last-child");
           if (plannerHost) {
-            plannerHost.insertAdjacentHTML("beforeend", '<div class="detail-module-planner show" id="detail-module-planner"></div>');
+            plannerHost.insertAdjacentHTML("beforeend", '<div class="detail-module-planner" id="detail-module-planner"></div>');
             activePlanner = document.getElementById("detail-module-planner");
           }
         }
@@ -7125,30 +7277,27 @@
           activePlanner.classList.add("show");
           updateDetailModulePlanner();
         }
-        resultStatus.textContent = "妫ｆ牕娴橀弬鐟版倻瀹歌尙鈥樼拋?;
-        rememberCurrentResultView("detail");
+        resultStatus.textContent = "首图方向已确认";
         return;
       }
 
       if (state === "revise") {
-        statusEl.textContent = "瀵板懎娲栭崚鐗堟喅鐟?;
+        statusEl.textContent = "待回到摘要";
         statusEl.classList.add("revise");
-        chipStatusEl.textContent = "瀵ら缚顔呴崗鍫濇礀閹芥顩﹀顔跨殶";
-        copyEl.textContent = "鏉╂瑥绱堕崶鎯у帥娑撳秷顩︾紒褏鐢诲鈧崥搴㈠⒖閵嗗倸缂撶拋顔兼礀閸掓壆顑?5 濮濄儲鎲崇憰渚婄礉閹跺﹪顩婚崶鐐煙閸氭垯鈧礁宕犻悙瑙勫灗妞嬪孩鐗搁崘宥嗘暪娑撯偓閻楀牞绱濋悞璺烘倵闁插秵鏌婇悽鐔稿灇妫ｆ牕娴橀妴?;
+        chipStatusEl.textContent = "建议先回摘要微调";
+        copyEl.textContent = "这张图先不要继续往后扩。建议回到第 5 步摘要，把首图方向、卖点或风格再收一版，然后重新生成首图。";
         planner?.classList.remove("show");
         clearDetailModuleWorkbench();
-        resultStatus.textContent = "妫ｆ牕娴樺鍛簳鐠?;
-        rememberCurrentResultView("detail");
+        resultStatus.textContent = "首图待微调";
         return;
       }
 
-      statusEl.textContent = "瀵板懐鈥樼拋?;
-      chipStatusEl.textContent = "瀵板懐鈥樼拋銈嗘Ц閸氾妇鎴风紒?;
-      copyEl.textContent = "婵″倹鐏夋潻娆忕炊妫ｆ牕娴樺鑼病閼虫垝缍旀稉鍝勬倵缂侇叀顕涢幆鍛淬€夐崘鍛啇閻ㄥ嫮顑囨稉鈧仦蹇撶唨缁惧尅绱濈亸杈╂埛缂侇厼鎮楅棃銏㈡畱闂冭埖顔岄敍娑橆洤閺嬫粏绻曟稉宥咁檮缁嬬绱濋崣顖欎簰閻╁瓨甯撮柌宥呬粵閿涘本鍨ㄩ懓鍛礀閸掔増鎲崇憰渚€妯佸▓闈涘帥瀵邦喛鐨熼弬瑙勵攳閵?;
+      statusEl.textContent = "待确认";
+      chipStatusEl.textContent = "待确认是否继续";
+      copyEl.textContent = "如果这张首图已经能作为后续详情页内容的第一屏基线，就继续后面的阶段；如果还不够稳，可以直接重做，或者回到摘要阶段先微调方案。";
       planner?.classList.remove("show");
       clearDetailModuleWorkbench();
-      resultStatus.textContent = "妫ｆ牕娴樺鑼晸閹?;
-      rememberCurrentResultView("detail");
+      resultStatus.textContent = "首图已生成";
     }
 
     function bindDetailHeroActions() {
@@ -7161,7 +7310,7 @@
       if (approveBtn) {
         approveBtn.addEventListener("click", () => {
           setDetailHeroApprovalState("approved");
-          showToast("妫ｆ牕娴橀弬鐟版倻瀹歌尙鈥樼拋銈忕礉閸欘垯浜掔紒褏鐢婚崥搴ｇ敾鐠囷附鍎忔い鐢告▉濞?);
+          showToast("首图方向已确认，可以继续后续详情页阶段");
         });
       }
 
@@ -7182,7 +7331,7 @@
       if (backBtn) {
         backBtn.addEventListener("click", () => {
           if (!currentDetailAnalysis) {
-            showToast("瑜版挸澧犲▽鈩冩箒閸欘垰娲栭柅鈧惃鍕煙濡楀牊鎲崇憰?);
+            showToast("当前没有可回退的方案摘要");
             return;
           }
           currentDetailHeroImageUrl = "";
@@ -7194,7 +7343,7 @@
           clearDetailGeneratedModules();
           setDetailAnalysisResult(currentDetailAnalysis, currentDetailAnalysisMeta || {});
           setDetailApprovalState("revise");
-          showToast("瀹告彃娲栭崚鎵儑 5 濮濄儲鎲崇憰渚婄礉閸欘垯浜掔紒褏鐢诲顔跨殶閺傝顢?);
+          showToast("已回到第 5 步摘要，可以继续微调方案");
         });
       }
 
@@ -7202,6 +7351,140 @@
         downloadBtn.addEventListener("click", () => {
           downloadImageUrl(currentDetailHeroImageUrl, `detail-hero-${Date.now()}.png`);
         });
+      }
+    }
+
+    async function handleDetailModuleStartLegacy() {
+      if (isGenerating) return;
+
+      if (!currentDetailAnalysis) {
+        showToast("请先完成第 5 步方案摘要");
+        return;
+      }
+
+      if (currentDetailHeroApproval !== "approved") {
+        showToast("请先确认第 6 步首图通过，再进入详情页板块工作台");
+        return;
+      }
+
+      if (!currentDetailModulePlan) {
+        currentDetailModulePlan = buildDetailModulePlan(currentDetailAnalysis || {});
+      }
+
+      const selectedModules = getSelectedDetailModules();
+      if (!selectedModules.length) {
+        showToast("请先勾选本次要进入生成的详情页板块");
+        return;
+      }
+
+      isGenerating = true;
+      btnDetailGenerate.disabled = true;
+      currentDetailModuleStageState = "loading";
+      currentDetailModuleWorkbench = null;
+      updateDetailModulePlanner();
+
+      try {
+        const data = await postJson("/api/prepare-detail-modules", {
+          productName: currentDetailAnalysis.productName || detailProductNameInput.value.trim(),
+          style: currentDetailStyle,
+          summary: currentDetailAnalysis,
+          selectedModules,
+          heroImageUrl: currentDetailHeroImageUrl,
+          sellingPoints: detailSellingPoints.value.trim(),
+          scenes: detailScenes.value.trim(),
+          audience: detailAudience.value.trim(),
+          extra: detailExtra.value.trim(),
+          readResult: getEffectiveDetailReadResult(),
+          hasProductImage: Boolean(activeDetailProductFile),
+          supplementalInfo: currentDetailModuleSupplementalInfo
+        });
+
+        currentDetailModuleWorkbench = data.result || null;
+        currentDetailSupplementalPanelOpen = Boolean(data.result?.needsInputCount);
+        currentDetailModuleStageState = "ready";
+        updateDetailModulePlanner();
+        showToast(data.result?.stageSummary || "已进入详情页板块工作台");
+      } catch (error) {
+        clearDetailModuleWorkbench();
+        updateDetailModulePlanner();
+        showToast(error.message || "进入详情页板块工作台失败");
+      } finally {
+        isGenerating = false;
+        btnDetailGenerate.disabled = false;
+        updateResultActions();
+      }
+    }
+
+    async function handleDetailModuleStart() {
+      await refreshDetailModuleWorkbench();
+    }
+
+    async function handleDetailModuleGenerateLegacy(moduleKey) {
+      if (isGenerating || currentDetailModuleGeneratingKey) return;
+
+      if (!["selling-points", "details", "params", "scenes", "variants", "trust", "after-sales"].includes(moduleKey)) {
+        showToast("当前先接入核心卖点、细节图和产品参数板块的正式生成");
+        return;
+      }
+
+      if (!activeDetailProductFile) {
+        showToast("请先上传商品白底图");
+        return;
+      }
+
+      if (!currentDetailAnalysis || !currentDetailModuleWorkbench) {
+        showToast("请先完成工作台准备");
+        return;
+      }
+
+      currentDetailModuleGeneratingKey = moduleKey;
+      updateDetailModulePlanner();
+
+      try {
+        const productImageDataUrl = await fileToDataUrl(activeDetailProductFile);
+        const productImageBase64 = String(productImageDataUrl || "").split(",")[1];
+        const data = await postJson("/api/generate-detail-module", {
+          moduleKey,
+          productImageBase64,
+          productName: currentDetailAnalysis.productName || detailProductNameInput.value.trim(),
+          style: currentDetailStyle,
+          scenes: detailScenes.value.trim(),
+          summary: currentDetailAnalysis,
+          supplementalInfo: currentDetailModuleSupplementalInfo
+        });
+
+        const imageUrl = getFirstGeneratedImage(data);
+        if (!imageUrl) {
+          throw new Error("接口未返回板块图片结果");
+        }
+
+        currentDetailGeneratedModules = {
+          ...currentDetailGeneratedModules,
+          [moduleKey]: {
+            imageUrl
+          }
+        };
+        updateDetailModulePlanner();
+
+        const moduleToast = moduleKey === "selling-points"
+          ? "核心卖点板块已生成首版"
+          : moduleKey === "details"
+            ? "细节图板块已生成首版"
+            : "产品参数板块已生成首版";
+        showToast(({
+          "selling-points": "核心卖点板块已生成首版",
+          "details": "细节图板块已生成首版",
+          "params": "产品参数板块已生成首版",
+          "scenes": "场景使用图板块已生成首版",
+          "variants": "款式/颜色分类板块已生成首版",
+          "trust": "资质/品牌保障板块已生成首版",
+          "after-sales": "售后说明板块已生成首版"
+        })[moduleKey] || moduleToast);
+      } catch (error) {
+        showToast(error.message || "板块生成失败");
+      } finally {
+        currentDetailModuleGeneratingKey = "";
+        updateDetailModulePlanner();
       }
     }
 
@@ -7214,29 +7497,27 @@
       const activeReadResult = getEffectiveDetailReadResult();
       const revisionFeedback = String(options.revisionFeedback || "").trim();
       const revisionTags = Array.isArray(options.revisionTags) ? options.revisionTags : [];
-
       if (!activeDetailProductFile) {
-        showToast("鐠囧嘲鍘涙稉濠佺炊閸熷棗鎼ч惂钘夌俺閸?);
+        showToast("\u8bf7\u5148\u4e0a\u4f20\u5546\u54c1\u767d\u5e95\u56fe");
         return;
       }
       if (!productName) {
-        showToast("鐠囧嘲鍘涙繅顐㈠晸娴溠冩惂閸氬秶袨");
+        showToast("\u8bf7\u5148\u586b\u5199\u4ea7\u54c1\u540d\u79f0");
         detailProductNameInput.focus();
         return;
       }
       if (!sellingPoints) {
-        showToast("鐠囧嘲鍘涙繅顐㈠晸閺嶇绺鹃崡鏍仯");
+        showToast("\u8bf7\u5148\u586b\u5199\u6838\u5fc3\u5356\u70b9");
         detailSellingPoints.focus();
         return;
       }
       if (targetUrl && !activeReadResult) {
-        showToast("瑜版挸澧犻柧鐐复鏉╂ɑ鐥呴張澶愬櫢閺傛媽顕伴崣鏍电礉鐠囧嘲鍘涢悙鍏夆偓婊冨帥鐠囪褰囬柧鐐复閳?);
+        showToast("当前链接还没重新读取，请先点“先读取链接”");
         detailUrl.focus();
         return;
       }
 
       isGenerating = true;
-      activeGenerationMode = "detail";
       btnDetailGenerate.disabled = true;
       setDetailResultLoading();
       resultPanel.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -7247,14 +7528,13 @@
         const referenceScreenshotBase64List = (await filesToDataUrls(activeDetailReferenceFiles))
           .map((dataUrl) => String(dataUrl || "").split(",")[1])
           .filter(Boolean);
-
         const data = await postJson("/api/analyze-detail-page", {
           productName,
           sellingPoints,
           scenes: detailScenes.value.trim(),
           audience: detailAudience.value.trim(),
           extra: detailExtra.value.trim(),
-          style: getEffectiveDetailStyle(),
+          style: currentDetailStyle,
           url: targetUrl,
           readResult: activeReadResult,
           revisionFeedback,
@@ -7262,16 +7542,14 @@
           revisionRound: revisionFeedback || revisionTags.length ? currentDetailRevisionRound + 1 : currentDetailRevisionRound,
           productColorHint,
           productImageBase64: productImageBase64 || undefined,
-          referenceScreenshotBase64List
+          referenceScreenshotBase64List,
         });
 
-        currentDetailOptimizedPromptDraft = "";
         setDetailAnalysisResult(data.result, data.meta || {});
-        showToast(data.meta?.mode === "model" ? "閺傝顢嶉幗妯款洣瀹歌尙鏁卞Ο鈥崇€烽弫瀵告倞鐎瑰本鍨? : "閺傝顢嶉幗妯款洣瀹告彃鐔€绾偓閺佸鎮婄€瑰本鍨?);
+        showToast(data.meta?.mode === "model" ? "方案摘要已由模型整理完成" : "方案摘要已基础整理完成");
       } catch (error) {
-        setResultError(error.message || "閺佸鎮婇弬瑙勵攳婢惰精瑙?, "detail");
+        setResultError(error.message || "整理方案失败");
       } finally {
-        activeGenerationMode = "";
         isGenerating = false;
         btnDetailGenerate.disabled = false;
         updateResultActions();
@@ -7282,20 +7560,21 @@
       if (isGenerating) return;
 
       if (!activeDetailProductFile) {
-        showToast("鐠囧嘲鍘涙稉濠佺炊閸熷棗鎼ч惂钘夌俺閸?);
+        showToast("请先上传商品白底图");
         return;
       }
+
       if (!currentDetailAnalysis) {
-        showToast("鐠囧嘲鍘涚€瑰本鍨氱粭?5 濮濄儲鏌熷鍫熸喅鐟?);
+        showToast("请先完成第 5 步方案摘要");
         return;
       }
+
       if (currentDetailApproval !== "approved") {
-        showToast("鐠囧嘲鍘涚涵顔款吇缁?5 濮濄儲鎲崇憰渚€鈧俺绻冮敍灞藉晙鏉╂稑鍙嗘＃鏍ф禈閻㈢喐鍨?);
+        showToast("请先确认第 5 步摘要通过，再进入首图生成");
         return;
       }
 
       isGenerating = true;
-      activeGenerationMode = "detail";
       btnDetailGenerate.disabled = true;
       setDetailHeroLoading();
       resultPanel.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -7306,26 +7585,25 @@
         const data = await postJson("/api/generate-detail-hero", {
           productImageBase64,
           productName: currentDetailAnalysis.productName || detailProductNameInput.value.trim(),
-          style: getEffectiveDetailStyle(),
-          imagePromptDraft: getEffectiveDetailPromptDraft(currentDetailAnalysis),
+          style: currentDetailStyle,
+          imagePromptDraft: currentDetailAnalysis.imagePromptDraft || "",
           heroDirection: currentDetailAnalysis.heroDirection || {},
           emotionalHook: currentDetailAnalysis.emotionalHook || "",
           audienceInsight: currentDetailAnalysis.audienceInsight || "",
           visualKeywords: currentDetailAnalysis.visualKeywords || [],
-          productVisualSummary: currentDetailAnalysis.productVisualSummary || ""
+          productVisualSummary: currentDetailAnalysis.productVisualSummary || "",
         });
 
         const imgUrl = getFirstGeneratedImage(data);
         if (!imgUrl) {
-          throw new Error("閹恒儱褰涢張顏囩箲閸ョ偤顩婚崶鍓х波閺?);
+          throw new Error("接口未返回首图结果");
         }
 
         setDetailHeroResult(imgUrl, "");
-        showToast("缁?6 濮濄儵顩婚崶鍓ф晸閹存劕鐣幋?);
+        showToast("第 6 步首图生成完成");
       } catch (error) {
-        setResultError(error.message || "妫ｆ牕娴橀悽鐔稿灇婢惰精瑙?, "detail");
+        setResultError(error.message || "首图生成失败");
       } finally {
-        activeGenerationMode = "";
         isGenerating = false;
         btnDetailGenerate.disabled = false;
         updateResultActions();
@@ -7338,7 +7616,7 @@
       const selectedTags = currentDetailRevisionDraft.selectedTags || [];
 
       if (!feedbackText && !selectedTags.length) {
-        showToast("閼峰啿鐨崘娆庣閸欍儰鎱ㄩ弨瑙勫壈鐟欎緤绱濋幋鏍偓鍛帥閻愰€涚娑擃亜鐖剁憴渚€妫舵０?);
+        showToast("至少写一句修改意见，或者先点一个常见问题");
         feedbackInput?.focus();
         return;
       }
@@ -7359,13 +7637,12 @@
 
       const targetUrl = detailUrl.value.trim();
       if (!targetUrl) {
-        showToast("鐠囧嘲鍘涙繅顐㈠晸閸欏倽鈧啳顕涢幆鍛淬€夐柧鐐复");
+        showToast("请先填写参考详情页链接");
         detailUrl.focus();
         return;
       }
 
       isGenerating = true;
-      activeGenerationMode = "detail";
       if (btnDetailRead) btnDetailRead.disabled = true;
       btnDetailGenerate.disabled = true;
       setDetailReadLoading();
@@ -7373,17 +7650,17 @@
 
       try {
         const data = await postJson("/api/read-detail-page", { url: targetUrl });
+
         setDetailReadResult(data.result);
-        showToast("閸欏倽鈧啳顕涢幆鍛淬€夌拠璇插絿鐎瑰本鍨?);
+        showToast("参考详情页读取完成");
       } catch (error) {
         if (error?.payload?.result) {
           setDetailReadResult(error.payload.result);
         } else if (!currentDetailReadResult) {
-          setResultError(error.message || "鐠囪褰囩拠锔藉剰妞ら潧銇戠拹?, "detail");
+          setResultError(error.message || "读取详情页失败");
         }
-        showToast(error.message || "鐠囪褰囩拠锔藉剰妞ら潧銇戠拹?);
+        showToast(error.message || "读取详情页失败");
       } finally {
-        activeGenerationMode = "";
         isGenerating = false;
         if (btnDetailRead) btnDetailRead.disabled = !canReadDetailLink();
         btnDetailGenerate.disabled = false;
@@ -7404,27 +7681,8 @@
     }
 
     function downloadCurrentResult() {
-      if (currentMode === "detail") {
-        if (currentDetailHeroImageUrl) {
-          openDetailAssemblyBoard();
-          showToast("瀹稿弶澧﹀鈧紒鐔剁鐎电厧鍤拠锔藉剰妞ら潧灏崺?);
-          return;
-        }
-
-        if (currentDetailAnalysis) {
-          const content = buildDetailSummaryExportText();
-          if (!content) {
-            showToast("瑜版挸澧犲▽鈩冩箒閸欘垰顕遍崙铏规畱閹芥顩?);
-            return;
-          }
-          downloadTextFile(content, `detail-summary-${Date.now()}.md`, "text/markdown;charset=utf-8");
-          showToast("閹芥顩﹀鎻掝嚤閸?);
-          return;
-        }
-      }
-
       if (!currentResultUrl) {
-        showToast("瑜版挸澧犲▽鈩冩箒閸欘垯绗呮潪鐣屾畱缂佹挻鐏?);
+        showToast("当前没有可下载的结果");
         return;
       }
 
@@ -7439,10 +7697,10 @@
 
       try {
         link.click();
-        showToast(currentMode === "scene" ? "閸ュ墽澧栧鈧慨瀣╃瑓鏉? : "妫ｆ牕娴樺鍙夊ⅵ瀵偓閹存牕绱戞慨瀣╃瑓鏉?);
+        showToast(currentMode === "scene" ? "图片开始下载" : "首图已打开或开始下载");
       } catch (error) {
         window.open(currentResultUrl, "_blank", "noopener");
-        showToast("娑撳娴囩悮顐ｅ閹搭亷绱濆韫礋娴ｇ姵澧﹀鈧０鍕潔");
+        showToast("下载被拦截，已为你打开预览");
       } finally {
         requestAnimationFrame(() => link.remove());
       }
@@ -7452,7 +7710,7 @@
       settingsRatioLabel.textContent = currentSettings.ratio;
       settingsSizeLabel.textContent = currentSettings.size;
       settingsFormatLabel.textContent = currentSettings.format;
-      countLabel.innerHTML = `<strong>${currentSettings.count} 瀵?/strong>`;
+      countLabel.innerHTML = `<strong>${currentSettings.count} 张</strong>`;
     }
 
     function openDetail(item) {
@@ -7460,8 +7718,8 @@
       detailOriginalImage.src = item.original || item.img;
       detailPreviewImage.src = item.img;
       detailPromptText.textContent = item.prompt;
-      detailTitle.textContent = "鐎佃鐦崶?;
-      detailCaseTitle.textContent = item.title || "閻㈤潧鏅㈠鍫滅伐鐠囷附鍎?;
+      detailTitle.textContent = "对比图";
+      detailCaseTitle.textContent = item.title || "电商案例详情";
       detailModal.classList.add("show");
       document.body.style.overflow = "hidden";
     }
@@ -7476,25 +7734,6 @@
       countAnchor.classList.remove("open");
     }
 
-    function scrollToSection(sectionId, options = {}) {
-      const target = document.getElementById(sectionId);
-      if (!target) return false;
-      target.scrollIntoView({
-        behavior: "smooth",
-        block: options.block || "start"
-      });
-      return true;
-    }
-
-    function openSceneConfigPanel() {
-      setMode("scene");
-      toggleMenu(settingsAnchor);
-      requestAnimationFrame(() => {
-        scrollToSection("create");
-        document.getElementById("btn-settings")?.focus();
-      });
-    }
-
     function toggleMenu(anchor) {
       const isOpen = anchor.classList.contains("open");
       closeMenus();
@@ -7506,19 +7745,18 @@
       const sceneDesc = promptInput.value.trim();
 
       if (!activeFile) {
-        showToast("鐠囧嘲鍘涙稉濠佺炊閸熷棗鎼ф惔鏇炴禈");
+        showToast("请先上传商品底图");
         return;
       }
       if (!sceneDesc) {
-        showToast("鐠囧嘲鍘涙繅顐㈠晸閸︾儤娅欓幓蹇氬牚");
+        showToast("请先填写场景描述");
         promptInput.focus();
         return;
       }
 
       isGenerating = true;
-      activeGenerationMode = "scene";
       btnGenerate.disabled = true;
-      setResultLoading("scene");
+      setResultLoading();
       resultPanel.scrollIntoView({ behavior: "smooth", block: "start" });
 
       const reader = new FileReader();
@@ -7530,30 +7768,27 @@
             imageBase64: base64,
             sceneDesc
           });
-          if (!response.ok) throw new Error(data.error || "閻㈢喐鍨氭径杈Е");
+          if (!response.ok) throw new Error(data.error || "生成失败");
 
           const imgUrl = getFirstGeneratedImage(data);
           if (!imgUrl) {
-            throw new Error("閹恒儱褰涢張顏囩箲閸ョ偛娴橀悧鍥╃波閺?);
+            throw new Error("接口未返回图片结果");
           }
 
-          currentSceneResultUrl = imgUrl;
           currentResultUrl = imgUrl;
-          setResultImage(imgUrl, "scene");
-          showToast("閸︾儤娅欓崶鍓ф晸閹存劕鐣幋?);
+          setResultImage(imgUrl);
+          showToast("场景图生成完成");
         } catch (error) {
-          setResultError(error.message || "閻㈢喐鍨氭径杈Е");
+          setResultError(error.message || "生成失败");
         } finally {
-        activeGenerationMode = "";
-        isGenerating = false;
+          isGenerating = false;
           btnGenerate.disabled = false;
         }
       };
       reader.onerror = () => {
-        activeGenerationMode = "";
         isGenerating = false;
         btnGenerate.disabled = false;
-        setResultError("鐠囪褰囬崶鍓у婢惰精瑙﹂敍宀冾嚞闁插秵鏌婃稉濠佺炊閵?);
+        setResultError("读取图片失败，请重新上传。");
       };
       reader.readAsDataURL(activeFile);
     }
@@ -7585,31 +7820,59 @@
       event.stopPropagation();
       toggleMenu(countAnchor);
     });
-    $("#btn-open-config").addEventListener("click", openSceneConfigPanel);
-    $("#btn-optimize").addEventListener("click", () => {
-      if (currentMode === "detail") {
-        if (!currentDetailAnalysis) {
-          showToast("閸忓牊鏆ｉ悶鍡曠閻楀牐顕涢幆鍛淬€夐弬瑙勵攳閹芥顩﹂敍灞惧灉閸愬秴搴滄担鐘辩喘閸栨牠顩婚崶鎹愵嚛閺勫簺鈧?);
-          return;
-        }
-        currentDetailOptimizedPromptDraft = buildOptimizedDetailPromptDraft(currentDetailAnalysis);
-        setDetailAnalysisResult(currentDetailAnalysis, currentDetailAnalysisMeta || {});
-        showToast("棣栧浘璇存槑宸茬敓鎴愪竴鐗堝彲缂栬緫浼樺寲鑽夌");
+    $("#btn-open-config").addEventListener("click", () => {
+      showToast("当前版本先保留配置入口，下一轮可做成弹层。");
+    });
+    $("#btn-optimize").addEventListener("click", async () => {
+      const originalPrompt = promptInput.value.trim();
+      if (!originalPrompt) {
+        showToast("先输入一个场景描述，我再帮你优化。");
         return;
       }
 
-      if (!promptInput.value.trim()) {
-        showToast("閸忓牐绶崗銉ょ娑擃亜婧€閺咁垱寮挎潻甯礉閹存垵鍟€鐢喕缍樻导妯哄閵?);
-        return;
+      const button = $("#btn-optimize");
+      const imageBase64 = activeFile
+        ? String(await fileToDataUrl(activeFile)).split(",")[1] || ""
+        : "";
+
+      const payload = {
+        mode: currentMode,
+        originalPrompt,
+        productName: currentDetailAnalysis?.productName || detailProductNameInput.value.trim() || "",
+        productVisualSummary: currentDetailAnalysis?.productVisualSummary || "",
+        style: typeof getEffectiveDetailStyle === "function" ? getEffectiveDetailStyle() : "",
+        referenceSummary: Array.isArray(currentDetailAnalysis?.referenceTakeaways)
+          ? currentDetailAnalysis.referenceTakeaways.join("；")
+          : "",
+        sceneContext: originalPrompt,
+        imageBase64,
+      };
+
+      try {
+        button.disabled = true;
+        button.textContent = "优化中...";
+        const data = await postJson("/api/optimize-prompt", payload);
+        const improvedPrompt = String(data?.result?.improvedPrompt || "").trim();
+        if (!improvedPrompt) {
+          throw new Error("优化结果为空");
+        }
+        promptInput.value = improvedPrompt;
+        const strategy = Array.isArray(data?.result?.strategy)
+          ? data.result.strategy.filter(Boolean).slice(0, 3)
+          : [];
+        showToast(strategy.length ? strategy.join(" / ") : "提示词已优化");
+      } catch (error) {
+        showToast(error.message || "优化失败");
+      } finally {
+        button.disabled = false;
+        button.textContent = "优化提示词";
       }
-      promptInput.value = buildOptimizedScenePrompt(promptInput.value);
-      showToast("閹绘劗銇氱拠宥呭嚒婢х偛宸?);
     });
 
     fileInput.addEventListener("change", () => {
       if (fileInput.files?.[0]) {
         setFile(fileInput.files[0]);
-        showToast("閸熷棗鎼ф惔鏇炴禈瀹歌尪娴囬崗?);
+        showToast("商品底图已载入");
         if (!resultPanel.classList.contains("show")) setResultPlaceholder();
       }
     });
@@ -7618,7 +7881,7 @@
       if (detailProductInput.files?.[0]) {
         setDetailUploadState("product", detailProductInput.files[0]);
         resetDetailResultForNewAsset("product");
-        showToast("鐠囷附鍎忔い闈涙櫌閸濅礁娴樺鑼舵祰閸?);
+        showToast("详情页商品图已载入");
       }
     });
 
@@ -7631,6 +7894,22 @@
     btnGenerate.addEventListener("click", handleGenerate);
     btnDetailRead.addEventListener("click", handleDetailRead);
     btnDetailGenerate.addEventListener("click", handleDetailGenerate);
+    btnRegenerate.addEventListener("click", handleGenerate);
+    btnDownload.addEventListener("click", () => {
+      if (currentMode === "detail" && currentDetailHeroImageUrl) {
+        currentDetailAssemblyOpen = true;
+        updateDetailModulePlanner();
+        requestAnimationFrame(() => {
+          document.getElementById("detail-assembly-board")?.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+        return;
+      }
+      if (!currentResultUrl) return;
+      const a = document.createElement("a");
+      a.href = currentResultUrl;
+      a.download = `scene_${Date.now()}.png`;
+      a.click();
+    });
 
     promptInput.addEventListener("keydown", (event) => {
       if (event.key === "Enter" && (event.metaKey || event.ctrlKey)) {
@@ -7652,7 +7931,7 @@
       if (button) {
         promptInput.value = button.dataset.prompt;
         promptInput.focus();
-        showToast("瀹告彃锝為崗銉ユ倱濞嗘儳婧€閺咁垵顕㈢懛鈧?);
+        showToast("已填入同款场景语言");
         window.scrollTo({ top: 0, behavior: "smooth" });
         return;
       }
@@ -7681,16 +7960,16 @@
       closeDetail();
       window.scrollTo({ top: 0, behavior: "smooth" });
       promptInput.focus();
-      showToast("瀹告彃锝為崗銉ユ倱濞嗙偓褰佺粈楦跨槤");
+      showToast("已填入同款提示词");
     });
 
     detailCopyBtn.addEventListener("click", async () => {
       if (!currentDetailItem) return;
       try {
         await navigator.clipboard.writeText(currentDetailItem.prompt);
-        showToast("閹绘劗銇氱拠宥呭嚒婢跺秴鍩?);
+        showToast("提示词已复制");
       } catch (error) {
-        showToast("婢跺秴鍩楁径杈Е閿涘矁顕幍瀣З婢跺秴鍩?);
+        showToast("复制失败，请手动复制");
       }
     });
 
@@ -7699,9 +7978,9 @@
       const shareText = `${currentDetailItem.title}\n\n${currentDetailItem.prompt}`;
       try {
         await navigator.clipboard.writeText(shareText);
-        showToast("濡楀牅绶ラ崘鍛啇瀹告彃顦查崚璁圭礉閸欘垳娲块幒銉ュ瀻娴?);
+        showToast("案例内容已复制，可直接分享");
       } catch (error) {
-        showToast("閸掑棔闊╅崘鍛啇婢跺秴鍩楁径杈Е");
+        showToast("分享内容复制失败");
       }
     });
 
@@ -7711,16 +7990,8 @@
       currentDetailStyle = chip.dataset.style;
       $$("#detail-style-row .style-chip").forEach((el) => el.classList.remove("active"));
       chip.classList.add("active");
-      syncDetailStyleHint();
       updateResultActions();
     });
-
-    detailStyleNote?.addEventListener("input", () => {
-      syncDetailStyleHint();
-      updateResultActions();
-    });
-
-    syncDetailStyleHint();
 
     $("#ratio-options").addEventListener("click", (event) => {
       const option = event.target.closest("[data-ratio]");
@@ -7768,13 +8039,15 @@
     document.querySelector(".floating-dock").addEventListener("click", (event) => {
       const target = event.target.closest("button");
       if (!target) return;
-      const sectionId = target.dataset.dockTarget;
-      if (!sectionId) return;
-      if (sectionId === "works") {
-        scrollToSection("result-panel");
+      if (target.classList.contains("dock-fab") || target.textContent.includes("创作")) {
+        document.getElementById("create").scrollIntoView({ behavior: "smooth" });
         return;
       }
-      scrollToSection(sectionId);
+      if (target.textContent.includes("作品")) {
+        document.getElementById("gallery").scrollIntoView({ behavior: "smooth" });
+        return;
+      }
+      showToast("这一项先做占位，下一轮继续接真实功能。");
     });
 
     fileInput.addEventListener("change", updateResultActions);
@@ -7797,8 +8070,14 @@
       input.addEventListener("input", updateResultActions);
       input.addEventListener("change", updateResultActions);
     });
-    btnRegenerate.addEventListener("click", handleRegenerate);
-    btnDownload.addEventListener("click", downloadCurrentResult);
+
+    const freshRegenerate = btnRegenerate.cloneNode(true);
+    btnRegenerate.replaceWith(freshRegenerate);
+    freshRegenerate.addEventListener("click", handleRegenerate);
+
+    const freshDownload = btnDownload.cloneNode(true);
+    btnDownload.replaceWith(freshDownload);
+    freshDownload.addEventListener("click", downloadCurrentResult);
 
     renderGallery();
     syncSettingsLabels();
@@ -7808,13 +8087,3 @@
   </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
