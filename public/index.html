@@ -386,12 +386,32 @@
       color: var(--muted);
       font-size: 13px;
       line-height: 1.6;
+      cursor: pointer;
+      transition: border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease, background 180ms ease;
+    }
+
+    .detail-upload-box:hover {
+      border-color: rgba(139, 92, 246, 0.34);
+      transform: translateY(-1px);
+      box-shadow: 0 18px 38px rgba(126, 104, 191, 0.08);
+    }
+
+    .detail-upload-box:focus-visible {
+      outline: 2px solid rgba(139, 92, 246, 0.34);
+      outline-offset: 3px;
     }
 
     .detail-upload-box.has-file {
       border-style: solid;
       color: var(--text);
       background: rgba(255,255,255,0.92);
+    }
+
+    .detail-upload-copy {
+      width: 100%;
+      display: grid;
+      gap: 14px;
+      justify-items: center;
     }
 
     .detail-upload-box strong {
@@ -405,6 +425,132 @@
       margin-top: 10px;
       font-size: 12px;
       color: var(--muted);
+    }
+
+    .scene-upload-preview-tray,
+    .detail-upload-preview-list {
+      display: none;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: flex-start;
+    }
+
+    .scene-upload-preview-tray.show,
+    .detail-upload-preview-list.show {
+      display: flex;
+    }
+
+    .scene-upload-preview-tray {
+      margin-left: 2px;
+    }
+
+    .detail-upload-preview-list {
+      justify-content: center;
+      width: 100%;
+    }
+
+    .upload-thumb-item {
+      display: grid;
+      gap: 7px;
+      justify-items: center;
+    }
+
+    .upload-thumb-card {
+      position: relative;
+      width: 72px;
+      height: 72px;
+      overflow: visible;
+      border-radius: 18px;
+      border: 1px solid rgba(124, 103, 184, 0.14);
+      background: rgba(255, 255, 255, 0.92);
+      box-shadow: 0 16px 34px rgba(122, 98, 186, 0.12);
+    }
+
+    .upload-thumb-media {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      border-radius: 17px;
+      background: linear-gradient(135deg, rgba(238, 232, 255, 0.9), rgba(247, 249, 255, 0.95));
+    }
+
+    .upload-thumb-media img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+      transition: opacity 220ms ease, transform 220ms ease, filter 220ms ease;
+    }
+
+    .upload-thumb-card.is-dissolving .upload-thumb-media img {
+      opacity: 0;
+      transform: scale(0.94);
+      filter: saturate(1.1);
+    }
+
+    .upload-thumb-remove {
+      position: absolute;
+      top: -7px;
+      right: -7px;
+      width: 22px;
+      height: 22px;
+      border: 0;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #ff6b7a, #ff3d57);
+      color: white;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1;
+      box-shadow: 0 10px 20px rgba(255, 75, 99, 0.28);
+      cursor: pointer;
+      transition: transform 160ms ease, box-shadow 160ms ease;
+      z-index: 2;
+    }
+
+    .upload-thumb-remove:hover {
+      transform: scale(1.06);
+      box-shadow: 0 12px 22px rgba(255, 75, 99, 0.34);
+    }
+
+    .upload-thumb-remove:focus-visible {
+      outline: 2px solid rgba(255, 61, 87, 0.24);
+      outline-offset: 2px;
+    }
+
+    .upload-thumb-label {
+      max-width: 92px;
+      font-size: 11px;
+      line-height: 1.3;
+      color: rgba(68, 58, 103, 0.72);
+      text-align: center;
+      word-break: break-word;
+    }
+
+    .upload-thumb-particle-layer {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      border-radius: 17px;
+    }
+
+    .upload-thumb-particle {
+      position: absolute;
+      opacity: 0.96;
+      background-repeat: no-repeat;
+      animation: upload-thumb-pixel-out 680ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    @keyframes upload-thumb-pixel-out {
+      100% {
+        transform: translate(var(--dx, 0px), var(--dy, 0px)) scale(0.38) rotate(var(--dr, 0deg));
+        opacity: 0;
+        filter: blur(1px);
+      }
     }
 
     .field-stack {
@@ -3583,6 +3729,7 @@
                 </div>
               </div>
               <div class="soft-chip file-chip" id="file-chip"></div>
+              <div class="scene-upload-preview-tray" id="scene-upload-preview"></div>
             </div>
 
             <button class="generate-button" type="button" id="btn-generate">生成</button>
@@ -3595,20 +3742,26 @@
               <h3>上传商品与参考</h3>
               <p>先上传商品白底图，再补一个竞品链接或参考截图。这个流程更适合演示“整套详情页生成”能力。</p>
               <div class="detail-upload-stack">
-                <button class="detail-upload-box" type="button" id="detail-product-box">
-                  <span>
+                <div class="detail-upload-box" id="detail-product-box" role="button" tabindex="0" aria-label="上传商品白底图">
+                  <div class="detail-upload-copy">
+                    <span>
                     <strong>上传商品白底图</strong>
                     支持 PNG / JPG。用于生成首图、卖点图、尺码表和整套详情页视觉。
                     <span class="detail-file-name" id="detail-product-name">未选择文件</span>
-                  </span>
-                </button>
-                <button class="detail-upload-box" type="button" id="detail-reference-box">
-                  <span>
+                    </span>
+                    <div class="detail-upload-preview-list" id="detail-product-preview"></div>
+                  </div>
+                </div>
+                <div class="detail-upload-box" id="detail-reference-box" role="button" tabindex="0" aria-label="上传参考截图或竞品页面">
+                  <div class="detail-upload-copy">
+                    <span>
                     <strong>上传参考截图或竞品页面</strong>
                     可以先不传 URL，直接传竞品详情页截图。前端先把这条路径完整搭起来。
                     <span class="detail-file-name" id="detail-reference-name">未选择文件</span>
-                  </span>
-                </button>
+                    </span>
+                    <div class="detail-upload-preview-list" id="detail-reference-preview"></div>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -3929,6 +4082,7 @@
     const detailReferenceInput = $("#detail-reference-input");
     const promptInput = $("#prompt-input");
     const fileChip = $("#file-chip");
+    const sceneUploadPreview = $("#scene-upload-preview");
     const galleryGrid = $("#gallery-grid");
     const resultPanel = $("#result-panel");
     const resultZone = $("#result-zone");
@@ -3960,6 +4114,8 @@
     const detailReferenceBox = $("#detail-reference-box");
     const detailProductName = $("#detail-product-name");
     const detailReferenceName = $("#detail-reference-name");
+    const detailProductPreview = $("#detail-product-preview");
+    const detailReferencePreview = $("#detail-reference-preview");
     const detailProductNameInput = $("#detail-product-name-input");
     const detailSellingPoints = $("#detail-selling-points");
     const detailScenes = $("#detail-scenes");
@@ -3983,6 +4139,9 @@
     let activeFile = null;
     let activeDetailProductFile = null;
     let activeDetailReferenceFiles = [];
+    let currentSceneUploadPreviewUrls = [];
+    let currentDetailProductUploadPreviewUrls = [];
+    let currentDetailReferenceUploadPreviewUrls = [];
     let currentResultUrl = "";
     let currentSceneResultUrl = "";
     let currentSceneResultStatus = "idle";
@@ -4137,6 +4296,190 @@
       return merged;
     }
 
+    function revokePreviewUrls(urlList) {
+      normalizeFileList(urlList).forEach((url) => {
+        if (url) URL.revokeObjectURL(url);
+      });
+    }
+
+    function makePreviewUrls(files) {
+      return normalizeFileList(files).map((file) => URL.createObjectURL(file));
+    }
+
+    function getUploadThumbLabel(file) {
+      if (!file) return "";
+      return `${file.name} / ${formatBytes(Number(file.size || 0))}`;
+    }
+
+    function renderUploadPreviewList(host, files, previewUrls, options = {}) {
+      if (!host) return;
+
+      const normalizedFiles = normalizeFileList(files);
+      if (!normalizedFiles.length || !Array.isArray(previewUrls) || !previewUrls.length) {
+        host.innerHTML = "";
+        host.classList.remove("show");
+        return;
+      }
+
+      const {
+        removeAction = "",
+        idPrefix = "upload",
+      } = options;
+
+      host.innerHTML = normalizedFiles.map((file, index) => {
+        const previewUrl = previewUrls[index] || "";
+        const label = getUploadThumbLabel(file);
+        return `
+          <div class="upload-thumb-item" data-upload-index="${index}">
+            <div class="upload-thumb-card" data-upload-card="${idPrefix}-${index}">
+              <div class="upload-thumb-media">
+                <img src="${escapeHtml(previewUrl)}" alt="${escapeHtml(file.name || `上传图片 ${index + 1}`)}">
+                <div class="upload-thumb-particle-layer" hidden></div>
+              </div>
+              <button
+                class="upload-thumb-remove"
+                type="button"
+                data-upload-remove="${escapeHtml(removeAction)}"
+                data-upload-index="${index}"
+                aria-label="${escapeHtml(`移除${file.name || `图片 ${index + 1}`}`)}"
+              >×</button>
+            </div>
+            <div class="upload-thumb-label">${escapeHtml(label)}</div>
+          </div>
+        `;
+      }).join("");
+      host.classList.add("show");
+    }
+
+    function refreshSceneUploadPreview() {
+      revokePreviewUrls(currentSceneUploadPreviewUrls);
+      currentSceneUploadPreviewUrls = makePreviewUrls(activeFile ? [activeFile] : []);
+      renderUploadPreviewList(sceneUploadPreview, activeFile ? [activeFile] : [], currentSceneUploadPreviewUrls, {
+        removeAction: "scene",
+        idPrefix: "scene"
+      });
+    }
+
+    function refreshDetailUploadPreview(kind) {
+      if (kind === "product") {
+        revokePreviewUrls(currentDetailProductUploadPreviewUrls);
+        currentDetailProductUploadPreviewUrls = makePreviewUrls(activeDetailProductFile ? [activeDetailProductFile] : []);
+        renderUploadPreviewList(detailProductPreview, activeDetailProductFile ? [activeDetailProductFile] : [], currentDetailProductUploadPreviewUrls, {
+          removeAction: "detail-product",
+          idPrefix: "detail-product"
+        });
+        return;
+      }
+
+      revokePreviewUrls(currentDetailReferenceUploadPreviewUrls);
+      currentDetailReferenceUploadPreviewUrls = makePreviewUrls(activeDetailReferenceFiles);
+      renderUploadPreviewList(detailReferencePreview, activeDetailReferenceFiles, currentDetailReferenceUploadPreviewUrls, {
+        removeAction: "detail-reference",
+        idPrefix: "detail-reference"
+      });
+    }
+
+    function playUploadDissolve(card) {
+      return new Promise((resolve) => {
+        if (!card || card.classList.contains("is-dissolving")) {
+          resolve();
+          return;
+        }
+
+        const media = card.querySelector(".upload-thumb-media");
+        const image = media?.querySelector("img");
+        const layer = media?.querySelector(".upload-thumb-particle-layer");
+        const imageUrl = image?.currentSrc || image?.src || "";
+
+        if (!media || !layer || !imageUrl) {
+          resolve();
+          return;
+        }
+
+        const cols = 5;
+        const rows = 5;
+        layer.hidden = false;
+        layer.innerHTML = "";
+        card.classList.add("is-dissolving");
+
+        for (let y = 0; y < rows; y += 1) {
+          for (let x = 0; x < cols; x += 1) {
+            const pixel = document.createElement("span");
+            pixel.className = "upload-thumb-particle";
+            pixel.style.width = `${100 / cols}%`;
+            pixel.style.height = `${100 / rows}%`;
+            pixel.style.left = `${(x * 100) / cols}%`;
+            pixel.style.top = `${(y * 100) / rows}%`;
+            pixel.style.backgroundImage = `url("${imageUrl}")`;
+            pixel.style.backgroundSize = `${cols * 100}% ${rows * 100}%`;
+            pixel.style.backgroundPosition = `${(cols === 1 ? 0 : (x / (cols - 1)) * 100)}% ${(rows === 1 ? 0 : (y / (rows - 1)) * 100)}%`;
+            pixel.style.setProperty("--dx", `${(Math.random() - 0.5) * 54}px`);
+            pixel.style.setProperty("--dy", `${-18 - Math.random() * 42}px`);
+            pixel.style.setProperty("--dr", `${(Math.random() - 0.5) * 60}deg`);
+            pixel.style.animationDelay = `${Math.random() * 120}ms`;
+            layer.appendChild(pixel);
+          }
+        }
+
+        window.setTimeout(() => {
+          card.classList.remove("is-dissolving");
+          layer.innerHTML = "";
+          layer.hidden = true;
+          resolve();
+        }, 760);
+      });
+    }
+
+    async function removeSceneUpload(button) {
+      if (isGenerating) {
+        showToast("正在生成时先不要移除场景商品图");
+        return;
+      }
+      if (!activeFile) return;
+      await playUploadDissolve(button.closest(".upload-thumb-card"));
+      fileInput.value = "";
+      setFile(null);
+      updateResultActions();
+      showToast("已移除场景商品图");
+    }
+
+    async function removeDetailProductUpload(button) {
+      if (isGenerating) {
+        showToast("正在处理中时先不要移除详情页商品图");
+        return;
+      }
+      if (!activeDetailProductFile) return;
+      await playUploadDissolve(button.closest(".upload-thumb-card"));
+      detailProductInput.value = "";
+      setDetailUploadState("product", []);
+      resetDetailResultForNewAsset("product");
+      showToast("已移除详情页商品白底图");
+    }
+
+    async function removeDetailReferenceUpload(button, index) {
+      if (isGenerating) {
+        showToast("正在处理中时先不要移除参考图");
+        return;
+      }
+      const currentFiles = normalizeFileList(activeDetailReferenceFiles);
+      if (!currentFiles[index]) return;
+
+      await playUploadDissolve(button.closest(".upload-thumb-card"));
+      const nextFiles = currentFiles.filter((_, fileIndex) => fileIndex !== index);
+      detailReferenceInput.value = "";
+      resetDetailResultForNewAsset("reference");
+      setDetailUploadState("reference", nextFiles);
+      currentDetailReferenceImageDataUrls = nextFiles.length ? await filesToDataUrls(nextFiles) : [];
+      currentDetailReferenceAssetClassifications = [];
+
+      if (nextFiles.length) {
+        await classifyDetailReferenceAssets(currentDetailReferenceImageDataUrls);
+      }
+
+      updateDetailModulePlanner();
+      showToast(nextFiles.length ? `已移除 1 张参考图，剩余 ${nextFiles.length} 张` : "已清空参考图");
+    }
+
     async function classifyDetailReferenceAssets(dataUrls) {
       const normalizedDataUrls = Array.isArray(dataUrls) ? dataUrls.filter(Boolean) : [];
       if (!normalizedDataUrls.length) {
@@ -4196,11 +4539,13 @@
         fileInput.value = "";
         fileChip.textContent = "";
         fileChip.classList.remove("show");
+        refreshSceneUploadPreview();
         btnRegenerate.disabled = true;
         return;
       }
       fileChip.textContent = `${file.name} · ${formatBytes(file.size)}`;
       fileChip.classList.add("show");
+      refreshSceneUploadPreview();
       btnRegenerate.disabled = false;
     }
 
@@ -4234,11 +4579,13 @@
       if (!files.length) {
         box.classList.remove("has-file");
         nameEl.textContent = "未选择文件";
+        refreshDetailUploadPreview(kind);
         return;
       }
 
       box.classList.add("has-file");
       nameEl.textContent = formatFileListSummary(files);
+      refreshDetailUploadPreview(kind);
     }
 
     async function handleDetailReferenceUpload(incomingFiles) {
@@ -8216,13 +8563,54 @@
       }
       fileInput.click();
     });
-    detailProductBox.addEventListener("click", () => {
+    const openDetailProductPicker = () => {
       detailProductInput.value = "";
       detailProductInput.click();
-    });
-    detailReferenceBox.addEventListener("click", () => {
+    };
+    const openDetailReferencePicker = () => {
       detailReferenceInput.value = "";
       detailReferenceInput.click();
+    };
+    [detailProductBox, detailReferenceBox].forEach((box) => {
+      box?.addEventListener("keydown", (event) => {
+        if (event.key !== "Enter" && event.key !== " ") return;
+        event.preventDefault();
+        if (box === detailProductBox) {
+          openDetailProductPicker();
+          return;
+        }
+        openDetailReferencePicker();
+      });
+    });
+    detailProductBox.addEventListener("click", (event) => {
+      if (event.target.closest(".upload-thumb-remove")) return;
+      openDetailProductPicker();
+    });
+    detailReferenceBox.addEventListener("click", (event) => {
+      if (event.target.closest(".upload-thumb-remove")) return;
+      openDetailReferencePicker();
+    });
+    sceneUploadPreview?.addEventListener("click", async (event) => {
+      const button = event.target.closest('[data-upload-remove="scene"]');
+      if (!button) return;
+      event.preventDefault();
+      event.stopPropagation();
+      await removeSceneUpload(button);
+    });
+    detailProductPreview?.addEventListener("click", async (event) => {
+      const button = event.target.closest('[data-upload-remove="detail-product"]');
+      if (!button) return;
+      event.preventDefault();
+      event.stopPropagation();
+      await removeDetailProductUpload(button);
+    });
+    detailReferencePreview?.addEventListener("click", async (event) => {
+      const button = event.target.closest('[data-upload-remove="detail-reference"]');
+      if (!button) return;
+      event.preventDefault();
+      event.stopPropagation();
+      const index = Number(button.dataset.uploadIndex || "-1");
+      await removeDetailReferenceUpload(button, index);
     });
     sceneModeBtn.addEventListener("click", () => setMode("scene"));
     detailModeBtn.addEventListener("click", () => setMode("detail"));
