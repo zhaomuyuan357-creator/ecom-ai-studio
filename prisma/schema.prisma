@@ -1,0 +1,153 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum LoginType {
+  email_code
+  phone_code
+  admin_seed
+}
+
+enum UserStatus {
+  active
+  disabled
+}
+
+enum AuthCodeScene {
+  login
+  bind_email
+  bind_phone
+}
+
+enum AssetType {
+  scene_source
+  detail_product
+  detail_reference
+  result_image
+  hero_image
+}
+
+enum TaskType {
+  scene
+  detail_hero
+  detail_module
+  detail_page
+}
+
+enum TaskStatus {
+  pending
+  running
+  success
+  failed
+  canceled
+}
+
+enum ResultKind {
+  primary
+  variant
+  preview
+}
+
+model User {
+  id             String           @id @default(cuid())
+  email          String?          @unique
+  phone          String?          @unique
+  nickname       String?
+  avatarUrl      String?          @map("avatar_url")
+  loginType      LoginType        @default(email_code) @map("login_type")
+  status         UserStatus       @default(active)
+  createdAt      DateTime         @default(now()) @map("created_at")
+  updatedAt      DateTime         @updatedAt @map("updated_at")
+  authCodes      AuthCode[]
+  mediaAssets    MediaAsset[]
+  generationTasks GenerationTask[]
+
+  @@map("users")
+}
+
+model AuthCode {
+  id         String        @id @default(cuid())
+  userId     String?       @map("user_id")
+  target     String
+  codeHash   String        @map("code_hash")
+  scene      AuthCodeScene
+  expiresAt  DateTime      @map("expires_at")
+  usedAt     DateTime?     @map("used_at")
+  createdAt  DateTime      @default(now()) @map("created_at")
+  user       User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([target, scene])
+  @@index([userId])
+  @@map("auth_codes")
+}
+
+model MediaAsset {
+  id              String                @id @default(cuid())
+  userId          String                @map("user_id")
+  assetType       AssetType             @map("asset_type")
+  sourceName      String                @map("source_name")
+  storageUrl      String                @map("storage_url")
+  mimeType        String?               @map("mime_type")
+  fileSize        Int?                  @map("file_size")
+  width           Int?
+  height          Int?
+  metadata        Json?
+  createdAt       DateTime              @default(now()) @map("created_at")
+  user            User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  taskAssets      GenerationTaskAsset[]
+  resultRecords   GenerationResult[]
+
+  @@index([userId, assetType])
+  @@map("media_assets")
+}
+
+model GenerationTask {
+  id             String                @id @default(cuid())
+  userId         String                @map("user_id")
+  taskType       TaskType              @map("task_type")
+  taskStatus     TaskStatus            @default(pending) @map("task_status")
+  inputPayload   Json?                 @map("input_payload")
+  resultPayload  Json?                 @map("result_payload")
+  createdAt      DateTime              @default(now()) @map("created_at")
+  updatedAt      DateTime              @updatedAt @map("updated_at")
+  user           User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sourceAssets   GenerationTaskAsset[]
+  results        GenerationResult[]
+
+  @@index([userId, taskType, taskStatus])
+  @@map("generation_tasks")
+}
+
+model GenerationTaskAsset {
+  id         String          @id @default(cuid())
+  taskId     String          @map("task_id")
+  assetId    String          @map("asset_id")
+  role       String?
+  createdAt  DateTime        @default(now()) @map("created_at")
+  task       GenerationTask  @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  asset      MediaAsset      @relation(fields: [assetId], references: [id], onDelete: Cascade)
+
+  @@unique([taskId, assetId])
+  @@index([assetId])
+  @@map("generation_task_assets")
+}
+
+model GenerationResult {
+  id          String          @id @default(cuid())
+  taskId       String         @map("task_id")
+  assetId      String         @map("asset_id")
+  resultKind   ResultKind     @default(primary) @map("result_kind")
+  displayName  String?        @map("display_name")
+  createdAt    DateTime       @default(now()) @map("created_at")
+  task         GenerationTask @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  asset        MediaAsset     @relation(fields: [assetId], references: [id], onDelete: Cascade)
+
+  @@index([taskId, resultKind])
+  @@index([assetId])
+  @@map("generation_results")
+}

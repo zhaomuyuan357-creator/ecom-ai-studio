@@ -12,160 +12,134 @@ Start the next conversation by reading:
 - `docs/detail-page-generation-step-plan.md`
 - `docs/detail-page-generation-step-05-confirmation-panel.md`
 - `docs/detail-page-generation-step-06-hero-generation.md`
+- `docs/product-backbone-phase-plan.md`
+- `docs/product-backbone-implementation-split.md`
+- `docs/adr/0001-product-backbone-db-stack.md`
 
-## Current Product Stage
+## Current Product State
 
 - Project: `Ecom AI Studio`
 - Active workspace: `D:\ECONY`
 - Active preview target: `http://localhost:3000/`
-- Current focus: Step 7 detail-page module planning, reference-image classification, supplemental fact completion, single-module generation, and dedicated detail-page assembly
-- Current real blocker: historical script corruption inside `public/index.html`
+- Active branch: `codex/deploy-render-prep`
 
-## Clear Status Judgment
+There are now two parallel tracks:
 
-### Whole project
+1. existing detail-page workflow track
+2. new product-backbone track
 
-- Direction is clear
-- Core workflow architecture exists
-- Full acceptance is not closed
-- Current top priority is still frontend script structural recovery, then browser chain revalidation
+The new track does not replace the old one.
 
-### Phase 1
+## Track A: Detail-page Workflow
 
-- Status: not closed
-- Judgment: in regression-repair / acceptance-repair mode
+### Still true
 
-### Phase 2
+- The workflow must remain:
+  1. confirm summary
+  2. generate hero
+  3. confirm hero
+  4. enter module planning
+  5. classify references
+  6. supplement facts
+  7. generate modules one by one
+  8. assemble/export detail page
+- Do not skip the Step 7 planning layer.
+- Existing priority rules still apply:
+  - user facts define content truth
+  - reference images define layout and composition
+  - approved hero image defines style baseline
+  - AI can only do controlled extension
 
-- Status: partially touched, not formally closed
-- Judgment: do not reopen as broad cleanup right now
+### Status judgment
 
-### Phase 3
+- Phase 1-5 are still not fully browser-accepted.
+- `public/index.html` still has legacy corruption and duplicate layers.
+- Do not reopen broad cleanup here while the backbone work is being connected.
 
-- Status: first slice implemented
-- Judgment: code-level complete for first slice, browser acceptance pending
+## Track B: Product Backbone
 
-### Phase 4
+### Stage decision already made
 
-- Status: first slice implemented
-- Judgment: code-level complete for first slice, browser/module acceptance pending
-- Current-model limitation items:
-  - `variants`
-  - `details`
+This is now documented in:
 
-### Phase 5
+- `docs/product-backbone-phase-plan.md`
+- `docs/product-backbone-implementation-split.md`
+- `docs/adr/0001-product-backbone-db-stack.md`
 
-- Status: started and partially implemented
-- Judgment: first core slice is done, but not closed
+### Fixed technical choice
 
-## Latest Checkpoint
+- first database: `SQLite`
+- ORM: `Prisma`
+- layering: `Route -> Service -> Repository -> Prisma`
+- future migration target: `PostgreSQL`
 
-Current work was intentionally narrowed to a very specific goal:
+### What already landed
 
-- do a **small frontend script structure repair**
-- do not widen into broad refactor
-- do not mix in later-phase cleanup
+- Prisma dependencies added to `package.json`
+- `.env.example` added with `DATABASE_URL="file:./dev.db"`
+- `prisma/schema.prisma` created
+- Prisma migration files created
+- backend skeleton created under `src/`
 
-Main repair method:
+New code areas:
 
-1. extract the `<script>` block from `public/index.html`
-2. run `node --check` on the extracted script
-3. fix only the current first syntax breakpoint
-4. rerun the check
-5. repeat until the whole script passes
+- `src/app.js`
+- `src/lib/prisma.js`
+- `src/routes/`
+- `src/services/`
+- `src/repositories/`
+- `prisma/`
 
-## What Has Been Recovered In This Script-Repair Loop
+### What was already verified
 
-Already repaired in this loop:
+- `Prisma 6.9.0` is the working version path in this repo
+- `prisma generate` succeeded
+- `prisma migrate dev --name init_product_backbone` succeeded using a temporary `DATABASE_URL`
+- `node --check` passed on the new `src/**/*.js` files
 
-- broken `GALLERY` block
-- broken `currentSettings` / constants block
-- result placeholder / loading / error / success text blocks
-- detail read result rendering
-- revision summary / revision panel rendering
-- summary main rendering
-- approval-state rendering
-- confirmation toasts
-- reference-classification warning copy
-- reference-structure hints
-- module text config
-- supplemental summary / supplemental panel / inline quick fill
-- multiple Phase 5 draft-layer areas were preserved during repair
+## Current Real Blockers
 
-## Current Latest Script State
+1. the real `.env` still appears to be missing `DATABASE_URL`
+2. the new backend skeleton is not yet mounted into the live app entry
+3. the new auth/me/assets/tasks endpoints have not yet been smoke-tested through the running app
 
-- `public/index.html` still does not fully pass `node --check`
-- but the first syntax error has been pushed much further down the file than where it started
-- this confirms the repair route is working
-- the current task is still to continue that same repair loop until the script fully passes
+## Important Boundaries
 
-## Important Current Reality
-
-- The app must be validated through `http://localhost:3000/`
-- `file:///D:/ECONY/public/index.html` is only acceptable for rough screenshots, not real workflow validation
-- Do not judge the real API workflow from static preview mode
-
-## Important Current Boundary
-
-Do not collapse the Step 7 planning/workbench layer into direct full-page batch generation.
-
-The current product direction is:
-
-1. confirm summary
-2. generate hero
-3. confirm hero
-4. plan modules
-5. classify references
-6. supplement missing real facts
-7. generate modules one by one
-8. assemble them into a dedicated detail-page arrangement page
-
-## Current Rules
-
-- user facts define content truth
-- reference images define layout and composition
-- approved hero image defines style baseline
-- AI is only allowed controlled extension inside those boundaries
-- when fixing regressions, restore the last accepted behavior first
-- do not mix regression repair with wider cleanup
-- during refactors, do not move accepted working logic unless strictly necessary
-
-## Current Risks
-
-- `public/index.html` still contains duplicate layers and historical corruption
-- stale server/browser state can still create false signals
-- `variants` is a current-model limitation item
-- `details` is a current-model limitation item
-- arrangement/export area still needs final browser validation
+- Keep changes additive.
+- Do not destabilize the accepted localhost:3000 flow.
+- Do not do broad refactors inside `public/index.html`.
+- Keep repository and service responsibilities separated.
+- If a multi-table atomic flow is needed, open the transaction in the service layer.
 
 ## Recommended Next Step
 
-1. Continue the small script repair loop in `public/index.html`
-2. Keep using `node --check` after every small patch
-3. Finish making the main script syntactically recoverable
-4. Then rerun the accepted browser chain:
-   - summary confirm
-   - hero generate
-   - hero approve
-   - Step 7 planner start
-   - workbench open
-   - `统一导出详情页` opens even with hero-only baseline
+Continue from the backbone track first:
+
+1. add `DATABASE_URL=file:./dev.db` into the real `.env` carefully
+2. minimally wire the new route layer into the current server entry
+3. smoke-test:
+   - `POST /api/auth/send-code`
+   - `POST /api/auth/login`
+   - `GET /api/me`
+   - `POST /api/assets`
+   - `POST /api/tasks`
+   - `GET /api/tasks/:id`
+4. only after that, decide whether to commit/push this backend checkpoint
 
 ## Suggested Resume Prompt
 
 ```text
-先读 AGENTS.md、CONTEXT.md、PROGRESS.md、docs/current-handoff.md、docs/detail-page-upgrade-optimization-plan.md、docs/detail-page-generation-step-plan.md、docs/detail-page-generation-step-05-confirmation-panel.md、docs/detail-page-generation-step-06-hero-generation.md，然后继续当前项目。
+先读 AGENTS.md、CONTEXT.md、PROGRESS.md、docs/current-handoff.md、docs/detail-page-upgrade-optimization-plan.md、docs/detail-page-generation-step-plan.md、docs/detail-page-generation-step-05-confirmation-panel.md、docs/detail-page-generation-step-06-hero-generation.md、docs/product-backbone-phase-plan.md、docs/product-backbone-implementation-split.md、docs/adr/0001-product-backbone-db-stack.md，然后继续当前项目。
 
 当前基线：
-1. 活跃根目录是 D:\ECONY，不是旧的 ecom-ai-studio 子目录
-2. 当前流程已经进入 Step 7：模块规划 + 参考图归类 + 单模块正式生成
-3. 不要跳过当前规划层直接做整套批量详情页
-4. 当前规则是：用户资料定事实、参考图定版式、首图定基调、AI 受控发挥
-5. 先遵循 docs/detail-page-upgrade-optimization-plan.md 的阶段顺序推进
-6. 当前 Phase 1 还不能算关闭，因为 public/index.html 正在做小范围前端脚本结构修复
-7. 当前要优先回归验证这条链路：摘要确认 → 首图生成 → 首图确认 → Step 7 工作台 → 统一导出详情页
-8. 当前具体任务是：继续按最小定点修补，清掉 public/index.html 里历史乱码导致的脚本断点；每修一小块就重新跑 node --check，直到整个主脚本通过
-9. Phase 3 和 Phase 4 的第一批代码已落地，但浏览器验收未完全关闭
-10. Phase 5 已开始并完成第一批核心能力，但还不能算关闭
+1. 活跃根目录是 D:\ECONY，预览目标还是 http://localhost:3000/
+2. 详情页主工作流仍然保持 Step 7 结构，不能跳过模块规划层直接批量生成整套详情页
+3. 详情页规则不变：用户资料定事实、参考图定版式、首图定基调、AI 受控发挥
+4. Phase 1-5 的详情页能力还没有完成整体验收关闭，public/index.html 也仍然有历史层和局部腐坏
+5. 但当前新开的“产品骨架闭环阶段”已经进入实现态，不再只是文档阶段
+6. 第一版数据库固定为 SQLite，ORM 固定为 Prisma，架构固定为 Route -> Service -> Repository -> Prisma，未来再切 PostgreSQL
+7. Prisma 6.9.0 已装通，prisma generate 和 prisma migrate dev --name init_product_backbone 已成功
+8. prisma/ 和 src/ 下的新后端骨架已经落地，但还没正式接入现有 server，也还没做接口烟测
+9. 当前不要大改旧前端流程，优先做最小接入：补 .env 的 DATABASE_URL、挂载新路由、跑 auth/me/assets/tasks 烟测
+10. 这轮目标是先把产品骨架第一段接通，再决定是否提交和推送，然后再回到详情页链路验收
 ```
-
